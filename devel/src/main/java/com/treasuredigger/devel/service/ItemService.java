@@ -1,30 +1,100 @@
 package com.treasuredigger.devel.service;
 
-import com.treasuredigger.devel.comm.GeneratedKey;
+import com.treasuredigger.devel.dto.ItemFormDto;
 import com.treasuredigger.devel.entity.Item;
+import com.treasuredigger.devel.entity.ItemImg;
+import com.treasuredigger.devel.repository.ItemImgRepository;
 import com.treasuredigger.devel.repository.ItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.List;
+
+import com.treasuredigger.devel.dto.ItemImgDto;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+
+import com.treasuredigger.devel.dto.ItemSearchDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.treasuredigger.devel.dto.MainItemDto;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class ItemService {
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
 
-    @Autowired
-    private GeneratedKey generatedKey;
+    private final ItemImgService itemImgService;
 
-    public void saveItem(String categoryId, Item item){
+    private final ItemImgRepository itemImgRepository;
 
-        String itemkey = generatedKey.itemKey(categoryId);
-        item.setItemId(itemkey);
+    public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
 
+        //상품 등록
+        Item item = itemFormDto.createItem();
         itemRepository.save(item);
 
+        //이미지 등록
+        for(int i=0;i<itemImgFileList.size();i++){
+            ItemImg itemImg = new ItemImg();
+            itemImg.setItem(item);
+
+            if(i == 0)
+                itemImg.setRepimgYn("Y");
+            else
+                itemImg.setRepimgYn("N");
+
+            itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));
+        }
+
+        return item.getId();
     }
+
+    @Transactional(readOnly = true)
+    public ItemFormDto getItemDtl(Long itemId){
+        List<ItemImg> itemImgList = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
+        List<ItemImgDto> itemImgDtoList = new ArrayList<>();
+        for (ItemImg itemImg : itemImgList) {
+            ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
+            itemImgDtoList.add(itemImgDto);
+        }
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(EntityNotFoundException::new);
+        ItemFormDto itemFormDto = ItemFormDto.of(item);
+        itemFormDto.setItemImgDtoList(itemImgDtoList);
+        return itemFormDto;
+    }
+
+    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
+        //상품 수정
+        Item item = itemRepository.findById(itemFormDto.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        item.updateItem(itemFormDto);
+        List<Long> itemImgIds = itemFormDto.getItemImgIds();
+
+        //이미지 등록
+        for(int i=0;i<itemImgFileList.size();i++){
+            itemImgService.updateItemImg(itemImgIds.get(i),
+                    itemImgFileList.get(i));
+        }
+
+        return item.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
+        return itemRepository.getAdminItemPage(itemSearchDto, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
+        return itemRepository.getMainItemPage(itemSearchDto, pageable);
+    }
+
 }

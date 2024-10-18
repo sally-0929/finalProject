@@ -1,63 +1,60 @@
 package com.treasuredigger.devel.entity;
 
-import com.treasuredigger.devel.constant.ItemStatus;
-import jakarta.persistence.*;
+import com.treasuredigger.devel.constant.ItemSellStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 
-import java.sql.Timestamp;
-
+import jakarta.persistence.*;
+import com.treasuredigger.devel.dto.ItemFormDto;
+import com.treasuredigger.devel.exception.OutOfStockException;
 
 @Entity
-@Table(name="items_tbl")
+@Table(name="item")
 @Getter
 @Setter
 @ToString
-public class Item extends BaseEntity{
+public class Item extends BaseEntity {
 
     @Id
-    @Column(name="item_id",length = 50)
-    private String itemId;
+    @Column(name="item_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;       //상품 코드
 
-    @Column(name="item_name",length = 50, nullable = false)
-    private String itemName;
+    @Column(nullable = false, length = 50)
+    private String itemNm; //상품명
 
-    @Column(name = "item_desc", length = 1000, nullable = false)
-    private String itemDesc;
+    @Column(name="price", nullable = false)
+    private int price; //가격
 
-    @Column(name = "start_price")
-    private Long startPrice;
+    @Column(nullable = false)
+    private int stockNumber; //재고수량
 
-    @Column(name = "max_price")
-    private Long maxPrice;
-
-    @Column(name = "bid_start_date")
-    private Timestamp bidStartDate;
-
-    @Column(name = "bid_end_date")
-    private Timestamp bidEndDate;
+    @Lob
+    @Column(nullable = false)
+    private String itemDetail; //상품 상세 설명
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ItemStatus itemStatus;
+    private ItemSellStatus itemSellStatus; //상품 판매 상태
 
-    @Column(nullable = false)
-    private String cid;
+    public void updateItem(ItemFormDto itemFormDto){
+        this.itemNm = itemFormDto.getItemNm();
+        this.price = itemFormDto.getPrice();
+        this.stockNumber = itemFormDto.getStockNumber();
+        this.itemDetail = itemFormDto.getItemDetail();
+        this.itemSellStatus = itemFormDto.getItemSellStatus();
+    }
 
-    private String id;
+    public void removeStock(int stockNumber){
+        int restStock = this.stockNumber - stockNumber;
+        if(restStock<0){
+            throw new OutOfStockException("상품의 재고가 부족 합니다. (현재 재고 수량: " + this.stockNumber + ")");
+        }
+        this.stockNumber = restStock;
+    }
 
-
-    // 연관관계 매핑
-    @ManyToOne
-    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "cid", referencedColumnName = "cid", insertable = false, updatable = false)
-    private ItemCategory itemCategory;
-
-
+    public void addStock(int stockNumber){
+        this.stockNumber += stockNumber;
+    }
 
 }
