@@ -1,8 +1,11 @@
 package com.treasuredigger.devel.service;
 
+import com.treasuredigger.devel.dto.MemberFormDto;
 import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,26 +27,27 @@ public class MemberService implements UserDetailsService {
     }
 
     private void validateDuplicateMember(Member member){
-        Member findMember = memberRepository.findByEmail(member.getEmail());
+        Member findMember = memberRepository.findByMid(member.getMid());
         if(findMember != null){
             throw new IllegalStateException("이미 가입된 회원입니다.");
         }
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String mid) throws UsernameNotFoundException {
 
-        Member member = memberRepository.findByEmail(email);
+        Member member = memberRepository.findByMid(mid);
 
         if(member == null){
-            throw new UsernameNotFoundException(email);
+            throw new UsernameNotFoundException(mid);
         }
 
         return User.builder()
-                .username(member.getEmail())
+                .username(member.getMid())
                 .password(member.getPassword())
                 .roles(member.getRole().toString())
                 .build();
     }
+
 
 }

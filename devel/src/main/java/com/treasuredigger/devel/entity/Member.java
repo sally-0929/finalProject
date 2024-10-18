@@ -23,6 +23,8 @@ public class Member extends BaseEntity {
     private String name;
 
     @Column(unique = true)
+    private String mid;
+
     private String email;
 
     private String password;
@@ -37,6 +39,7 @@ public class Member extends BaseEntity {
         member.setName(memberFormDto.getName());
         member.setEmail(memberFormDto.getEmail());
         member.setAddress(memberFormDto.getAddress());
+        member.setMid(memberFormDto.getMid());
         String password = passwordEncoder.encode(memberFormDto.getPassword());
         member.setPassword(password);
         member.setRole(Role.ADMIN);

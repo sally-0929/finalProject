@@ -35,12 +35,12 @@ public class OrderService {
 
     private final ItemImgRepository itemImgRepository;
 
-    public Long order(OrderDto orderDto, String email){
+    public Long order(OrderDto orderDto, String mid){
 
         Item item = itemRepository.findById(orderDto.getItemId())
                 .orElseThrow(EntityNotFoundException::new);
 
-        Member member = memberRepository.findByEmail(email);
+        Member member = memberRepository.findByMid(mid);
 
         List<OrderItem> orderItemList = new ArrayList<>();
         OrderItem orderItem = OrderItem.createOrderItem(item, orderDto.getCount());
@@ -77,8 +77,8 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public boolean validateOrder(Long orderId, String email){
-        Member curMember = memberRepository.findByEmail(email);
+    public boolean validateOrder(Long orderId, String mid){
+        Member curMember = memberRepository.findByMid(mid);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(EntityNotFoundException::new);
         Member savedMember = order.getMember();
@@ -96,9 +96,9 @@ public class OrderService {
         order.cancelOrder();
     }
 
-    public Long orders(List<OrderDto> orderDtoList, String email){
+    public Long orders(List<OrderDto> orderDtoList, String mid){
 
-        Member member = memberRepository.findByEmail(email);
+        Member member = memberRepository.findByMid(mid);
         List<OrderItem> orderItemList = new ArrayList<>();
 
         for (OrderDto orderDto : orderDtoList) {
