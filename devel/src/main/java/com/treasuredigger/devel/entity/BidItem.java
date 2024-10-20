@@ -1,9 +1,12 @@
 package com.treasuredigger.devel.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.treasuredigger.devel.constant.ItemStatus;
+import com.treasuredigger.devel.dto.BidItemFormDto;
+import com.treasuredigger.devel.dto.ItemFormDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +15,7 @@ import lombok.Setter;
 @Table(name = "bid_items_tbl")
 @Getter
 @Setter
-public class BidItem {
+public class BidItem extends BaseEntity{
 
     @Id
     @Column(name = "bid_item_id")
@@ -51,5 +54,15 @@ public class BidItem {
 
     @OneToMany(mappedBy = "bidItem", cascade = CascadeType.ALL)
     private List<Bid> bids;
+
+    public void updateItem(BidItemFormDto itemFormDto){
+        this.bidItemName = itemFormDto.getBidItemName();
+        this.bidStartDate = itemFormDto.getBidStartDate();
+        this.bidEndDate = itemFormDto.getBidEndDate();
+        this.bidItemDesc = itemFormDto.getBidItemDesc();
+
+        this.itemStatus = itemFormDto.getItemStatus();
+
+    }
 
 }
