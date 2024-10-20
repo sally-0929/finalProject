@@ -46,6 +46,9 @@ public class BidController {
     public String itemNew(@Valid BidItemFormDto BiditemFormDto, BindingResult bindingResult,
                           Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
 
+        log.info("itemImgFileList + " + itemImgFileList);
+
+
         if(bindingResult.hasErrors()){
             return "bid/register";
         }
@@ -58,6 +61,7 @@ public class BidController {
         try {
             bidItemService.saveItem(BiditemFormDto, itemImgFileList);
         } catch (Exception e){
+            e.printStackTrace();
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
             return "bid/register";
         }

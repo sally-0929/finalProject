@@ -3,10 +3,12 @@ package com.treasuredigger.devel.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name="bid_item_img")
 @Getter @Setter
+@ToString
 public class BidItemImg extends BaseEntity{
 
     @Id
@@ -26,10 +28,11 @@ public class BidItemImg extends BaseEntity{
     @JoinColumn(name = "bid_item_id")
     private BidItem bidItem;
 
-    public void updateItemImg(String bidOriImgName, String bidImgName, String bidImgUrl){
-        this.bidImgName = bidOriImgName;
+    public void updateItemImg(String bidOriImgName, String bidImgName, String bidImgUrl) {
+        this.bidOriImgName = bidOriImgName;
         this.bidImgName = bidImgName;
         this.bidImgUrl = bidImgUrl;
     }
+
 
 }

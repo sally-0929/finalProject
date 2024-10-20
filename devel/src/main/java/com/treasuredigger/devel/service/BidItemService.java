@@ -7,6 +7,7 @@ import com.treasuredigger.devel.dto.BidItemFormDto;
 import com.treasuredigger.devel.entity.BidItem;
 import com.treasuredigger.devel.entity.BidItemImg;
 import com.treasuredigger.devel.entity.ItemCategory;
+import com.treasuredigger.devel.entity.ItemImg;
 import com.treasuredigger.devel.repository.BidItemImgRepository;
 import com.treasuredigger.devel.repository.BidItemRepository;
 import com.treasuredigger.devel.repository.CategoryRepository;
@@ -30,10 +31,12 @@ public class BidItemService {
     private final BidItemImgService itemImgService;
     private final BidItemImgRepository itemImgRepository;
     private final CategoryRepository itemCategoryRepository;
-    private final MemberRepository memberRepository;
+
     @Autowired
     private GeneratedKey generatedKey;
 
+
+    @Transactional
     public void saveItem(BidItemFormDto bidItemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
 
         ItemCategory itemCategory = itemCategoryRepository.findById(bidItemFormDto.getCid()).orElseThrow(EntityNotFoundException::new);
@@ -41,13 +44,21 @@ public class BidItemService {
         BidItem bidItem = bidItemFormDto.createBidItem(itemCategory);
         bidItem.setBidItemId(generatedKey.itemKey(bidItemFormDto.getCid()));
         bidItemRepository.save(bidItem);
-//
-//        for (int i = 0; i < itemImgFileList.size(); i++) {
-//            BidItemImg bidItemImg = new BidItemImg();
-//            bidItemImg.setBidItem(bidItem);
-//            bidItemImg.setBidRepimgYn(i == 0 ? "Y" : "N");
-//            itemImgService.saveItemImg(bidItemImg, itemImgFileList.get(i), true);
-//        }
+
+
+        for(int i=0;i<itemImgFileList.size();i++){
+            BidItemImg bidItemImg = new BidItemImg();
+            bidItemImg.setBidItem(bidItem);
+
+            if(i == 0)
+                bidItemImg.setBidRepimgYn("Y");
+            else
+                bidItemImg.setBidRepimgYn("N");
+
+            System.out.println("bidItemImg data +++++++++++++" +  bidItemImg);
+            itemImgService.saveItemImg(bidItemImg, itemImgFileList.get(i), true);
+        }
+
     }
 
     @Transactional(readOnly = true)

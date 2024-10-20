@@ -10,11 +10,13 @@ import com.treasuredigger.devel.dto.ItemFormDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "bid_items_tbl")
 @Getter
 @Setter
+@ToString
 public class BidItem extends BaseEntity{
 
     @Id

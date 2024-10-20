@@ -32,16 +32,19 @@ public class BidItemImgService {
         String imgUrl = "";
         String targetLocation = isAuction ? auctionImgLocation : itemImgLocation;
 
-        // 파일 업로드
         if (!StringUtils.isEmpty(oriImgName)) {
             imgName = fileService.uploadFile(targetLocation, oriImgName, itemImgFile.getBytes());
             imgUrl = (isAuction ? "/images/auction/" : "/images/item/") + imgName;
+            System.out.println("File uploaded successfully: " + imgName);
         }
 
-        // 상품 이미지 정보 저장
         itemImg.updateItemImg(oriImgName, imgName, imgUrl);
+        System.out.println("Updated Item Image: oriImgName=" + oriImgName + ", imgName=" + imgName + ", imgUrl=" + imgUrl);
+
         itemImgRepository.save(itemImg);
+        System.out.println("Item image saved: " + itemImg);
     }
+
 
     public void updateItemImg(Long itemImgId, MultipartFile itemImgFile, boolean isAuction) throws Exception {
         if (!itemImgFile.isEmpty()) {

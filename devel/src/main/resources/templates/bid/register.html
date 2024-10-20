@@ -125,7 +125,7 @@
         <div class="custom-file img-div">
           <input type="file" class="custom-file-input" name="itemImgFile">
           <input type="hidden" name="itemImgIds" th:value="${bidItemFormDto.id}">
-          <label class="custom-file-label" th:text="${not #strings.isEmpty(bidItemFormDto.oriImgName)} ? ${bidItemFormDto.oriImgName} : '상품이미지 ' + ${status.index + 1}"></label>
+          <label class="custom-file-label" th:text="${not #strings.isEmpty(bidItemFormDto.bidOriImgName)} ? ${bidItemFormDto.bidOriImgName} : '상품이미지 ' + ${status.index + 1}"></label>
         </div>
       </div>
     </div>
