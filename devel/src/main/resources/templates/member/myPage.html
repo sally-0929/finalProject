@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>마이페이지</title>
+</head>
+<body>
+<h1>마이페이지</h1>
+<div>
+    <h2>회원 정보</h2>
+    <p>이름: <span th:text="${member.name}"></span></p>
+    <p>이메일: <span th:text="${member.email}"></span></p>
+    <p>아이디: <span th:text="${member.mid}"></span></p>
+    <p>주소: <span th:text="${member.address}"></span></p>
+</div>
+<div>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+</div>
+</body>
+</html>

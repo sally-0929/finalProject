@@ -1,11 +1,8 @@
 package com.treasuredigger.devel.service;
 
-import com.treasuredigger.devel.dto.MemberFormDto;
 import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 
 @Service
 @Transactional
@@ -49,5 +47,8 @@ public class MemberService implements UserDetailsService {
                 .build();
     }
 
+    public Member findMemberByMid(String mid) {
+        return memberRepository.findByMid(mid);
+    }
 
 }

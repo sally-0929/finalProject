@@ -24,6 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         .requestMatchers("/", "/members/**", "/item/**", "/images/**", "/bid").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/members/mypage").authenticated()
                         .anyRequest()
                         .authenticated()
                 ).formLogin(formLoginCustomizer -> formLoginCustomizer

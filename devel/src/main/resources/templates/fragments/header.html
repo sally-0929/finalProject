@@ -32,10 +32,13 @@
                     <a class="nav-link" href="/members/logout">로그아웃</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" href="/members/mypage">마이페이지</a>
+                    <a class="nav-link" href="/members/myPage">마이페이지</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link" href="/members/mypage">경매로</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <span class="nav-link" id="username" th:text="${#authentication.name}"></span>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" th:action="@{/}" method="get">
@@ -56,6 +59,16 @@
             </script>
             <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
             <!-- Google 번역.끝 -->
+            <!-- 마지막 글자 *표시 하기 -->
+            <script>
+                window.onload = function() {
+                    const usernameElement = document.getElementById("username");
+                    const originalUsername = usernameElement.textContent;
+                    if (originalUsername.length > 0) {
+                        usernameElement.textContent = originalUsername.slice(0, -1) + "*"; // 마지막 글자를 *로 변경
+                    }
+                };
+            </script>
         </div>
     </nav>
 </div>
