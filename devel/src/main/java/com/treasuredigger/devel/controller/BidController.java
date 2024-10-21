@@ -47,7 +47,7 @@ public class BidController {
                           Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
 
         log.info("itemImgFileList + " + itemImgFileList);
-
+        model.addAttribute("categories", categoryService.list());
 
         if(bindingResult.hasErrors()){
             return "biditem/register";
