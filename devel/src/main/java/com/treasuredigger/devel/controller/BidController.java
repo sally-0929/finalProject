@@ -21,7 +21,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/bid")
+@RequestMapping("/biditem")
 @Log4j2
 public class BidController {
 
@@ -39,7 +39,7 @@ public class BidController {
         model.addAttribute("categories", categoryService.list());
         log.info("category" + categoryService.list());
 
-        return "bid/register";
+        return "biditem/register";
     }
 
     @PostMapping(value = "/register")
@@ -50,12 +50,12 @@ public class BidController {
 
 
         if(bindingResult.hasErrors()){
-            return "bid/register";
+            return "biditem/register";
         }
 
         if(itemImgFileList.get(0).isEmpty() && BiditemFormDto.getBidItemId() == null){
             model.addAttribute("errorMessage", "첫번째 상품 이미지는 필수 입력 값 입니다.");
-            return "bid/register";
+            return "biditem/register";
         }
 
         try {
@@ -63,7 +63,7 @@ public class BidController {
         } catch (Exception e){
             e.printStackTrace();
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
-            return "bid/register";
+            return "biditem/register";
         }
 
         return "redirect:/";

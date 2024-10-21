@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
+//@Transactional
 @RequiredArgsConstructor
 public class BidItemService {
 
@@ -36,7 +36,7 @@ public class BidItemService {
     private GeneratedKey generatedKey;
 
 
-    @Transactional
+//    @Transactional
     public void saveItem(BidItemFormDto bidItemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
 
         ItemCategory itemCategory = itemCategoryRepository.findById(bidItemFormDto.getCid()).orElseThrow(EntityNotFoundException::new);

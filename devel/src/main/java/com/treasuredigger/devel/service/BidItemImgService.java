@@ -14,7 +14,7 @@ import org.thymeleaf.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+//@Transactional
 public class BidItemImgService {
 
     @Value("${itemImgLocation}")
