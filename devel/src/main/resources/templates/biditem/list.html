@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout1}">
+      layout:decorate="~{layouts/layout2}">
 
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
@@ -37,15 +37,17 @@
     <div id="carouselControls" class="carousel slide margin" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active item">
-                <img class="d-block w-100 banner" src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png" alt="First slide">
+                <img class="d-block w-100 banner"
+                     src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png"
+                     alt="First slide">
             </div>
         </div>
     </div>
 
-<!--    <input type="hidden" name="searchQuery" th:value="${itemSearchDto.searchQuery}">-->
-<!--    <div th:if="${not #strings.isEmpty(itemSearchDto.searchQuery)}" class="center">-->
-<!--        <p class="h3 font-weight-bold" th:text="${itemSearchDto.searchQuery} + '검색 결과'"></p>-->
-<!--    </div>-->
+    <!--    <input type="hidden" name="searchQuery" th:value="${itemSearchDto.searchQuery}">-->
+    <!--    <div th:if="${not #strings.isEmpty(itemSearchDto.searchQuery)}" class="center">-->
+    <!--        <p class="h3 font-weight-bold" th:text="${itemSearchDto.searchQuery} + '검색 결과'"></p>-->
+    <!--    </div>-->
 
     <div class="row">
         <th:block th:each="item, status: ${bidItemList}">
@@ -54,17 +56,62 @@
                     <a th:href="'/bid/' + ${item.bidItemId}" class="text-dark">
                         <img th:src="${item.bidImgUrl}" class="card-img-top" height="400">
                         <div class="card-body">
+
+                            <p class="card-text">
+                                <span th:if="${item.itemStatus eq 'WAIT'}">경매대기중</span>
+                                <span th:if="${item.itemStatus eq 'ING'}">경매중</span>
+                                <span th:if="${item.itemStatus eq 'END'}">경매종료</span>
+                                <span th:if="${item.itemStatus ne 'WAIT' and item.itemStatus ne 'ING' and item.itemStatus ne 'END'}">알 수 없음</span>
+                            </p>
+
+
                             <h4 class="card-title">[[${item.bidItemName}]]</h4>
-                            <p class="card-text">[[${item.itemStatus}]]</p>
-                            <h3 class="card-title text-danger">[[${item.bidEndDate}]]</h3>
+                            <h3 class="card-title text-danger" th:attr="data-enddate=${item.bidEndDate}"></h3>
+                            <p th:id="'remainingTime-' + ${item.bidItemId}">남은 시간 계산 중...</p>
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const cardElements = document.querySelectorAll('.card');
+                                    cardElements.forEach(function(cardElement) {
+                                        const endDateElement = cardElement.querySelector('.card-title.text-danger');
+                                        const endDateStr = endDateElement.getAttribute('data-enddate');
+                                        const endDate = new Date(endDateStr);
+                                        const remainingTimeElement = cardElement.querySelector('p[id^="remainingTime-"]');
+
+                                        function updateRemainingTime() {
+                                            const now = new Date();
+                                            const timeDiff = endDate - now;
+
+                                            if (timeDiff <= 0) {
+                                                remainingTimeElement.textContent = '경매 종료';
+                                                return;
+                                            }
+
+                                            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                                            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                                            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+                                            remainingTimeElement.textContent = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초 남음`;
+
+                                             if (timeDiff <= 1000 * 60 * 60 * 24) {
+                                                    remainingTimeElement.style.color = 'red';
+                                                }
+                                        }
+
+                                        updateRemainingTime();
+                                        setInterval(updateRemainingTime, 1000);
+                                    });
+                                });
+                            </script>
+
+
                         </div>
                     </a>
                 </div>
             </div>
         </th:block>
     </div>
-
-
 
 
 </div>

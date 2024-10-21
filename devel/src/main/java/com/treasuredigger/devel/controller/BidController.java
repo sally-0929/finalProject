@@ -34,7 +34,7 @@ public class BidController {
 
     @GetMapping("/list")
     public void bidlist(Model model){
-
+            log.info("model value ++ " + bidItemService.getList());
            model.addAttribute("bidItemList", bidItemService.getList());
 
 
@@ -73,6 +73,6 @@ public class BidController {
             return "biditem/register";
         }
 
-        return "redirect:/";
+        return "redirect:/biditem/list";
     }
 }

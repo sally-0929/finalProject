@@ -18,7 +18,7 @@ public class BidItemDto {
     private long maxPrice;
     private LocalDateTime bidStartDate;
     private LocalDateTime bidEndDate;
-    private ItemStatus itemStatus;
+    private String itemStatus;
     private String memberId;       // Member entity의 ID
     private String itemCategoryId;
     private String bidImgName;

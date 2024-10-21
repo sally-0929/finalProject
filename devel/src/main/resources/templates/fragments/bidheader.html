@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+            <a class="navbar-brand" href="/biditem/list">
+                <img th:src="@{/images/AE.gif}" alt="WhiteLogo" class="img-fluid" style="width:250px;">
+            </a>
+
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                    <a class="nav-link" href="/biditem/register">경매 등록</a>
+                </li>
+<!--                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">-->
+<!--                    <a class="nav-link" href="/biditem/register">상품 관리</a>-->
+<!--                </li>-->
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" href="/members/login">로그인</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/members/logout">로그아웃</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/members/myPage">마이페이지</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">마켓으로</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <span class="nav-link" id="username" th:text="${#authentication.name}"></span>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" th:action="@{/}" method="get">
+                <input name="searchQuery" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <!-- Google 번역 -->
+            <div id="google_translate_element" class="hd_lang"></div>
+            <script>
+                function googleTranslateElementInit() {
+                    new google.translate.TranslateElement({
+                        pageLanguage: 'ko',
+                        includedLanguages: 'ko,zh-CN,zh-TW,ja,vi,th,tl,km,my,mn,ru,en,fr,ar',
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                        autoDisplay: false
+                    }, 'google_translate_element');
+                }
+            </script>
+            <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+            <!-- Google 번역.끝 -->
+            <!-- 마지막 글자 *표시 하기 -->
+            <script>
+                window.onload = function() {
+                    const usernameElement = document.getElementById("username");
+                    const originalUsername = usernameElement.textContent;
+                    if (originalUsername.length > 0) {
+                        usernameElement.textContent = originalUsername.slice(0, -1) + "*"; // 마지막 글자를 *로 변경
+                    }
+                };
+            </script>
+        </div>
+    </nav>
+</div>
+
+</html>
