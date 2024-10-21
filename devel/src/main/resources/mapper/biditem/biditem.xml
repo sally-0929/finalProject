@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.treasuredigger.devel.mapper.BidItemMapper">
+    <select id="selectBidList" resultType="com.treasuredigger.devel.dto.BidItemDto">
+        SELECT
+        btt.bid_item_id AS bidItemId,
+        btt.bid_item_name AS bidItemName,
+        btt.bid_item_desc AS bidItemDesc,
+        btt.start_price AS startPrice,
+        btt.max_price AS maxPrice,
+        btt.bid_start_date AS bidStartDate,
+        btt.bid_end_date AS bidEndDate,
+        btt.item_status AS itemStatus,
+        btt.mid AS memberId,
+        btt.cid AS itemCategoryId,
+        bii.bid_img_name as bidImgName,
+        bii.bid_img_url as bidImgUrl,
+        bii.bid_ori_img_name as bidOriImgName
+        FROM bid_items_tbl btt join bid_item_img bii on btt.bid_item_id = bii.bid_item_id
+        where bii.bid_repimg_yn = 'Y'
+    </select>
+
+</mapper>

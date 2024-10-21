@@ -1,13 +1,15 @@
 package com.treasuredigger.devel.controller;
 
-import com.treasuredigger.devel.dto.BidItemFormDto;
-import com.treasuredigger.devel.dto.ItemFormDto;
+import com.treasuredigger.devel.dto.*;
 import com.treasuredigger.devel.service.BidItemService;
 import com.treasuredigger.devel.service.CategoryService;
 import com.treasuredigger.devel.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,7 +33,11 @@ public class BidController {
     private final BidItemService bidItemService;
 
     @GetMapping("/list")
-    public void bidlist(){
+    public void bidlist(Model model){
+
+           model.addAttribute("bidItemList", bidItemService.getList());
+
+
     }
 
     @GetMapping("/register")
@@ -47,7 +54,7 @@ public class BidController {
                           Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
 
         log.info("itemImgFileList + " + itemImgFileList);
-
+        model.addAttribute("categories", categoryService.list());
 
         if(bindingResult.hasErrors()){
             return "biditem/register";
