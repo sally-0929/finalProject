@@ -2,7 +2,6 @@ package com.treasuredigger.devel.entity;
 
 import com.treasuredigger.devel.constant.Role;
 import com.treasuredigger.devel.dto.MemberFormDto;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
