@@ -1,13 +1,13 @@
 package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.comm.GeneratedKey;
-import com.treasuredigger.devel.dto.BIdItemImgDto;
-import com.treasuredigger.devel.dto.BidItemFormDto;
+import com.treasuredigger.devel.dto.*;
 
 import com.treasuredigger.devel.entity.BidItem;
 import com.treasuredigger.devel.entity.BidItemImg;
 import com.treasuredigger.devel.entity.ItemCategory;
 import com.treasuredigger.devel.entity.ItemImg;
+import com.treasuredigger.devel.mapper.BidItemMapper;
 import com.treasuredigger.devel.repository.BidItemImgRepository;
 import com.treasuredigger.devel.repository.BidItemRepository;
 import com.treasuredigger.devel.repository.CategoryRepository;
@@ -15,6 +15,8 @@ import com.treasuredigger.devel.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +36,13 @@ public class BidItemService {
 
     @Autowired
     private GeneratedKey generatedKey;
+
+    @Autowired
+    private BidItemMapper bidItemMapper;
+
+    public List<BidItemDto> getList(){
+        return bidItemMapper.selectBidList();
+    }
 
 
 //    @Transactional
@@ -89,4 +98,5 @@ public class BidItemService {
 //            itemImgService.updateItemImg(itemImgIds.get(i), itemImgFileList.get(i), true);
 //        }
 //    }
+
 }
