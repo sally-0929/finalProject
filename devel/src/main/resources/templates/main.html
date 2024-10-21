@@ -61,14 +61,24 @@
                         <div class="card-body">
                             <h4 class="card-title">[[${item.itemNm}]]</h4>
                             <p class="card-text">[[${item.itemDetail}]]</p>
-                            <h3 class="card-title text-danger">[[${item.price}]]원</h3>
+                            <h3 class="card-title text-danger"><span th:text="${item.price}"></span>원
+                            </h3>
                         </div>
                     </a>
                 </div>
             </div>
         </th:block>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const priceElements = document.querySelectorAll('.card-title.text-danger span');
 
+            priceElements.forEach(function(element) {
+                const price = parseInt(element.textContent, 10);
+                element.textContent = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            });
+        });
+    </script>
     <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})" >
         <ul class="pagination justify-content-center">
 
