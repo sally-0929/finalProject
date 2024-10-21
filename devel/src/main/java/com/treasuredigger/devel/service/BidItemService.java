@@ -67,6 +67,7 @@ public class BidItemService {
             System.out.println("bidItemImg data +++++++++++++" +  bidItemImg);
             itemImgService.saveItemImg(bidItemImg, itemImgFileList.get(i), true);
         }
+        // bid table에도 저장하게끔
 
     }
 
