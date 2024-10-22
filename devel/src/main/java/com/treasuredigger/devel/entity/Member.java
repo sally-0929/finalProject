@@ -34,6 +34,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL) // MemberGrade와의 관계
+    private MemberGrade memberGrade;
+
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder){
         Member member = new Member();
         member.setName(memberFormDto.getName());
@@ -43,6 +46,10 @@ public class Member extends BaseEntity {
         String password = passwordEncoder.encode(memberFormDto.getPassword());
         member.setPassword(password);
         member.setRole(Role.ADMIN);
+
+        MemberGrade memberGrade = new MemberGrade(member);
+        member.setMemberGrade(memberGrade);
+
         return member;
     }
 

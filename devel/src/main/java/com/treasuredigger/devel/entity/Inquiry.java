@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "inquiry")
@@ -44,11 +45,11 @@ public class Inquiry {
     }
 
     // LocalDateTime을 Date로 변환하는 메서드
-    public java.util.Date getCreatedDateAsDate() {
+    public Date getCreatedDateAsDate() {
         return Timestamp.valueOf(createdDate);
     }
 
-    public java.util.Date getRespondedDateAsDate() {
+    public Date getRespondedDateAsDate() {
         if (respondedDate != null) {
             return Timestamp.valueOf(respondedDate);
         }
