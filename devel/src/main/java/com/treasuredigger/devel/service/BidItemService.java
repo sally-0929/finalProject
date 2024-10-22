@@ -3,10 +3,7 @@ package com.treasuredigger.devel.service;
 import com.treasuredigger.devel.comm.GeneratedKey;
 import com.treasuredigger.devel.dto.*;
 
-import com.treasuredigger.devel.entity.BidItem;
-import com.treasuredigger.devel.entity.BidItemImg;
-import com.treasuredigger.devel.entity.ItemCategory;
-import com.treasuredigger.devel.entity.ItemImg;
+import com.treasuredigger.devel.entity.*;
 import com.treasuredigger.devel.mapper.BidItemMapper;
 import com.treasuredigger.devel.repository.BidItemImgRepository;
 import com.treasuredigger.devel.repository.BidItemRepository;
@@ -33,6 +30,7 @@ public class BidItemService {
     private final BidItemImgService itemImgService;
     private final BidItemImgRepository itemImgRepository;
     private final CategoryRepository itemCategoryRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
     private GeneratedKey generatedKey;
@@ -46,11 +44,13 @@ public class BidItemService {
 
 
 //    @Transactional
-    public void saveItem(BidItemFormDto bidItemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
+    public void saveItem(BidItemFormDto bidItemFormDto, List<MultipartFile> itemImgFileList,String mid) throws Exception {
 
         ItemCategory itemCategory = itemCategoryRepository.findById(bidItemFormDto.getCid()).orElseThrow(EntityNotFoundException::new);
 
-        BidItem bidItem = bidItemFormDto.createBidItem(itemCategory);
+        Member member = memberRepository.findByMid(mid);
+
+        BidItem bidItem = bidItemFormDto.createBidItem(member, itemCategory);
         bidItem.setBidItemId(generatedKey.itemKey(bidItemFormDto.getCid()));
         bidItemRepository.save(bidItem);
 

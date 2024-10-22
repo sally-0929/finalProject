@@ -10,7 +10,7 @@ import lombok.Setter;
 @Table(name = "bids_tbl")
 @Getter
 @Setter
-public class Bid {
+public class Bid extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

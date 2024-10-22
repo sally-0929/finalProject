@@ -75,10 +75,12 @@
                             </p>
 
 
-                            <h4 class="card-title">[[${item.bidItemName}]]</h4>
+
+                            <h4 class="card-title">상품명 : [[${item.bidItemName}]]</h4>
                             <h3 class="card-title text-danger" th:attr="data-enddate=${item.bidEndDate}"></h3>
                             <p th:id="'remainingTime-' + ${item.bidItemId}">남은 시간 계산 중...</p>
 
+                            <h4 class="card-title">판매자 : [[${item.memberId}]]</h4>
                             <script>
                                 document.addEventListener("DOMContentLoaded", function() {
                                     const cardElements = document.querySelectorAll('.card');

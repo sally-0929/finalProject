@@ -1,6 +1,7 @@
 package com.treasuredigger.devel.dto;
 
 import com.treasuredigger.devel.constant.ItemStatus;
+import com.treasuredigger.devel.entity.BaseEntity;
 import com.treasuredigger.devel.entity.BidItem;
 import com.treasuredigger.devel.entity.ItemCategory;
 import com.treasuredigger.devel.entity.Member;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class BidItemFormDto {
+public class BidItemFormDto{
 
     private String bidItemId;
 
@@ -39,7 +40,7 @@ public class BidItemFormDto {
     @NotNull(message = "상품 상태는 필수 입력 값입니다.")
     private ItemStatus itemStatus;
 
-    private String mid;
+    private String memberId;
 
     @NotBlank(message = "카테고리 ID는 필수 입력 값입니다.")
     private String cid;
@@ -59,12 +60,12 @@ public class BidItemFormDto {
     }
 
 
-    public BidItem createBidItem( ItemCategory itemCategory) {
+    public BidItem createBidItem(Member member, ItemCategory itemCategory) {
         BidItem bidItem = modelMapper.map(this, BidItem.class);
-
+        bidItem.setMember(member);
         bidItem.setItemCategory(itemCategory);
         return bidItem;
-
     }
+
 
 }

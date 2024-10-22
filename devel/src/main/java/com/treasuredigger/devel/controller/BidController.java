@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,8 +52,11 @@ public class BidController {
 
     @PostMapping(value = "/register")
     public String itemNew(@Valid BidItemFormDto BiditemFormDto, BindingResult bindingResult,
-                          Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
+                          Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList,Principal principal){
 
+        String email = principal.getName();
+
+        System.out.println("email " + email);
         log.info("itemImgFileList + " + itemImgFileList);
         model.addAttribute("categories", categoryService.list());
 
@@ -66,7 +70,7 @@ public class BidController {
         }
 
         try {
-            bidItemService.saveItem(BiditemFormDto, itemImgFileList);
+            bidItemService.saveItem(BiditemFormDto, itemImgFileList, email);
         } catch (Exception e){
             e.printStackTrace();
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");

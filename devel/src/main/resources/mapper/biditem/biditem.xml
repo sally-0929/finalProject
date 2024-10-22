@@ -13,7 +13,7 @@
         btt.bid_start_date AS bidStartDate,
         btt.bid_end_date AS bidEndDate,
         btt.item_status AS itemStatus,
-        btt.mid AS memberId,
+        btt.created_by as memberId,
         btt.cid AS itemCategoryId,
         bii.bid_img_name as bidImgName,
         bii.bid_img_url as bidImgUrl,

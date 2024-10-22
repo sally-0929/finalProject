@@ -44,8 +44,10 @@ public class BidItem extends BaseEntity{
     private ItemStatus itemStatus;
 
     @ManyToOne
-    @JoinColumn(name = "mid", referencedColumnName = "mid")
+    @JoinColumn(name="member_id")
     private Member member;
+
+
 
     @ManyToOne
     @JoinColumn(name = "cid", referencedColumnName = "cid")
