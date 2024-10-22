@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.treasuredigger.devel.mapper.MemberMapper">
+
+    <resultMap id="MemberGradeDtoMap" type="com.treasuredigger.devel.dto.MemberGradeDto">
+        <result property="mgid" column="mgid"/>
+        <result property="memberGradeStatus" column="member_grade_status"/>
+        <result property="mgdesc" column="mgdesc"/>
+        <result property="memberId" column="member_id"/>
+    </resultMap>
+
+    <select id="getMemberGrade" resultMap="MemberGradeDtoMap">
+        SELECT
+        mg.mgid,
+        mg.member_grade_status,
+        mg.mgdesc,
+        m.member_id
+        FROM
+        member_grade_tbl mg
+        JOIN
+        member m ON mg.member_id = m.member_id
+        WHERE
+        m.member_id = #{memberId}
+    </select>
+
+</mapper>

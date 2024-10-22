@@ -9,6 +9,7 @@
 </head>
 <body>
 <div layout:fragment="content" style="padding-top:100px; padding-bottom:700px;">
+<div style="position: relative;" sec:authorize="isAuthenticated()">
     <table>
         <tr>
             <th>
@@ -18,50 +19,59 @@
         </tr>
     </table>
 
-    <div style="position: relative;" sec:authorize="isAuthenticated()">
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 50px; left: 150px;">
+    <div class="user" style="margin-top: 20px;">
+        <strong>회원 등급:</strong>
+        <span th:text="${memberGradeStatus}"></span>
+            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
+            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).SILVER}" th:src="@{/images/silver.png}" alt="silver" />
+            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).GOLD}" th:src="@{/images/gold.png}" alt="gold" />
+            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VIP}" th:src="@{/images/gold.png}" alt="vip" />
+            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VVIP}" th:src="@{/images/gold.png}" alt="vvip" />
+    </div>
+
+        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 150px;">
             <a href="/members/memberUpdate">
                 <img th:src="@{/images/memberupdate.png}" alt="memberupdate" style="width: 200px; padding-left:30px; padding-top:15px;">
             </a>
                 <p style="text-align: center; padding-top:20px;">회원정보수정</p>
         </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 50px; left: 500px;">
+        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 500px;">
             <a href="/cart">
                 <img th:src="@{/images/buy.png}" alt="buy" style="width: 180px; padding-left:20px; padding-top:35px;">
             </a>
                 <p style="text-align: center; padding-top:10px;">구매현황</p>
         </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 50px; left: 850px;">
+        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 850px;">
             <a href="#">
                 <img th:src="@{/images/sell.png}" alt="sell" style="width: 190px; padding-left:30px; padding-top:25px;">
             </a>
                 <p style="text-align: center; padding-top:20px;">판매현황</p>
         </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 50px; left: 1200px;">
+        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 1200px;">
             <a href="#">
                 <img th:src="@{/images/wishlist.png}" alt="wishlist" style="width: 180px; padding-left:20px; padding-top:25px;">
             </a>
                 <p style="text-align: center; padding-top:20px;">내가 찜한 물품</p>
         </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 350px; left: 150px;">
+        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 450px; left: 150px;">
             <a href="/members/memberUpdate">
                 <img th:src="@{/images/account.png}" alt="account" style="width: 170px; padding-left:30px; padding-top:30px;">
             </a>
             <p style="text-align: center; padding-top:43px;">계좌관리</p>
         </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 350px; left: 500px;">
+        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 450px; left: 500px;">
             <a href="/cart">
                 <img th:src="@{/images/cart.png}" alt="cart" style="width: 220px; padding-left:5px; padding-top:0px;">
             </a>
             <p style="text-align: center; padding-top:0px;">장바구니</p>
         </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 350px; left: 850px;">
+        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 450px; left: 850px;">
             <a href="/inquiries">
                 <img th:src="@{/images/notice.png}" alt="notice" style="width: 190px; padding-left:15px; padding-top:20px;">
             </a>
             <p style="text-align: center; padding-top:18px;">공지사항</p>
         </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 350px; left: 1200px;">
+        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 450px; left: 1200px;">
             <a href="#">
                 <img th:src="@{/images/review.png}" alt="review" style="width: 180px; padding-left:25px; padding-top:20px;">
             </a>
