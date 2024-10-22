@@ -73,4 +73,16 @@ public class MemberController {
         return "member/myPage";
     }
 
+    @GetMapping(value = "/memberUpdate")
+    public String memberUpdate(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String mid = authentication.getName(); // 현재 로그인한 사용자의 아이디
+
+        // 회원 정보를 가져오기
+        Member member = memberService.findMemberByMid(mid);
+        model.addAttribute("member", member);
+
+        return "member/memberUpdate";
+    }
+
 }

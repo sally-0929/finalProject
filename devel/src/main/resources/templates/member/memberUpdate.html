@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+<div>
+    <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%">
+        <!--        <input type="hidden" id="itemId" th:value="${item.id}">-->
+        <table>
+            <p> <img th:src="@{/images/person.png}" alt="blackLogo" class="img-fluid" style="width:50px;">
+                <span th:text="${member.name} + '님' "></span></p>
+            <p>이메일: <span th:text="${member.email}"></span></p>
+            <p>아이디: <span th:text="${member.mid}"></span></p>
+            <p>주소: <span th:text="${member.address}"></span></p>
+        </table>
+    </div>
+    <div>
+    </div>
+    <div>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    </div>
+</div>
+</body>
+</html>
