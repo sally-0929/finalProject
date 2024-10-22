@@ -23,6 +23,10 @@ public class SecurityConfig {
         return http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         .requestMatchers("/", "/members/**", "/item/**", "/images/**", "/biditem/list").permitAll()
+                        .requestMatchers("/inquiries").permitAll()
+                        .requestMatchers("/inquiries/new").authenticated()
+                        .requestMatchers("/inquiries/edit/**").authenticated()
+                        .requestMatchers("/inquiries/delete/**").hasAnyRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/members/mypage").authenticated()
                         .anyRequest()
@@ -33,18 +37,15 @@ public class SecurityConfig {
                         .usernameParameter("mid")
                         .failureUrl("/members/login/error")
                         .failureHandler(new CustomAuthenticationFailureHandler())
-                ).logout( logoutCustomizer -> logoutCustomizer
+                ).logout(logoutCustomizer -> logoutCustomizer
                         .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
                         .logoutSuccessUrl("/")
-
                 )
-                .build()
-        ;
+                .build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

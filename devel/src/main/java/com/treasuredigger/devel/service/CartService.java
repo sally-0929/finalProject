@@ -124,4 +124,19 @@ public class CartService {
         return orderId;
     }
 
+    //장바구니 총 개수 계산
+    @Transactional(readOnly = true)
+    public int getTotalCount(String mid) {
+        Member member = memberRepository.findByMid(mid);
+        Cart cart = cartRepository.findByMemberId(member.getId());
+        if (cart == null) {
+            return 0; // 장바구니가 없으면 0 반환
+        }
+
+        List<CartDetailDto> cartDetailList = cartItemRepository.findCartDetailDtoList(cart.getId());
+        return cartDetailList.stream()
+                .mapToInt(CartDetailDto::getCount) // 각 CartDetailDto에서 count를 가져옴
+                .sum(); // 총합 계산
+    }
+
 }
