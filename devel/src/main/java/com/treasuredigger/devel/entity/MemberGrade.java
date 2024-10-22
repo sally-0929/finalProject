@@ -20,7 +20,7 @@ public class MemberGrade {
     @Enumerated(EnumType.STRING)
     private MemberGradeStatus memberGradeStatus;
 
-    private String mgdesc;
+    private int mgdesc;
 
     @OneToOne
     @JoinColumn(name = "member_id")
@@ -29,5 +29,6 @@ public class MemberGrade {
     public MemberGrade(Member member) {
         this.member = member;
         this.memberGradeStatus = MemberGradeStatus.NORMAL; // 기본 등급 설정
+        this.mgdesc = 0;
     }
 }
