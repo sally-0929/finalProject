@@ -7,6 +7,9 @@ html {
 body {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    align-items: center;
     min-height: 100vh;
     margin: 0;
 
@@ -19,17 +22,14 @@ ul, li {
 }
 
 .header {
-    flex: 1;
-    margin-top:40px;
-    margin-left:100px;
-    margin-right:100px;
-    padding-bottom: 40px;
+    margin-top:20px;
+    width:80%;
 }
 
 .content {
-   flex: 1;
-    margin: 50px 200px 100px;
+    width:80%;
     padding-bottom: 50px;
+    flex: 1;
 }
 
 /* footer start **************************************************************/
@@ -38,6 +38,7 @@ ul, li {
     color: white;
     padding: 20px 0;
     text-align: left !important;
+    width: 100%; /* 너비 100%로 설정 */
 }
 
 .img-fluid {
