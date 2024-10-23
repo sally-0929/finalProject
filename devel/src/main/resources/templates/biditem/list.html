@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout2}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
@@ -29,6 +30,20 @@
         .center{
             text-align:center;
         }
+        .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+    .pagination .page-item .page-link {
+        color: #007bff;
+    }
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: #e9ecef;
+    }
     </style>
 </th:block>
 
@@ -124,4 +139,23 @@
             </div>
         </th:block>
     </div>
+
+
+    <!-- Pagination Controls -->
+    <div class="pagination justify-content-center mt-4">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/biditem/list(page=${currentPage > 0 ? currentPage - 1 : 0})}">&laquo; Previous</a>
+            </li>
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
+                th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/biditem/list(page=${pageNum})}" th:text="${pageNum + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == (totalPages != null ? totalPages - 1 : 0)} ? 'disabled'">
+                <a class="page-link" th:href="@{/biditem/list(page=${currentPage < (totalPages != null ? totalPages - 1 : 0) ? currentPage + 1 : currentPage})}">Next &raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+
 </div>

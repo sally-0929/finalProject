@@ -34,9 +34,20 @@ public class BidController {
     private final BidItemService bidItemService;
 
     @GetMapping("/list")
-    public void bidlist(Model model){
-            log.info("model value ++ " + bidItemService.getList());
-           model.addAttribute("bidItemList", bidItemService.getList());
+    public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page){
+            if(page <0 ) page = 0;
+
+            Pageable pageable = PageRequest.of(page, 6);
+            Page<BidItemDto> bidItemPage = bidItemService.getList(pageable);
+            log.info("model value ++ " + bidItemPage);
+
+
+           model.addAttribute("bidItemList", bidItemPage.getContent());
+           model.addAttribute("currentPage", bidItemPage.getNumber());
+           model.addAttribute("totalPages", bidItemPage.getTotalPages());
+
+           log.info("현재페이지 로그" + bidItemPage.getNumber());
+           log.info("토탈 로그" + bidItemPage.getTotalPages());
 
 
     }

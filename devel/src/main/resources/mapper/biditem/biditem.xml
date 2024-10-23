@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.treasuredigger.devel.mapper.BidItemMapper">
+
     <select id="selectBidList" resultType="com.treasuredigger.devel.dto.BidItemDto">
         SELECT
         btt.bid_item_id AS bidItemId,
@@ -13,13 +14,20 @@
         btt.bid_start_date AS bidStartDate,
         btt.bid_end_date AS bidEndDate,
         btt.item_status AS itemStatus,
-        btt.created_by as memberId,
+        btt.created_by AS memberId,
         btt.cid AS itemCategoryId,
-        bii.bid_img_name as bidImgName,
-        bii.bid_img_url as bidImgUrl,
-        bii.bid_ori_img_name as bidOriImgName
-        FROM bid_items_tbl btt join bid_item_img bii on btt.bid_item_id = bii.bid_item_id
-        where bii.bid_repimg_yn = 'Y'
+        bii.bid_img_name AS bidImgName,
+        bii.bid_img_url AS bidImgUrl,
+        bii.bid_ori_img_name AS bidOriImgName
+        FROM bid_items_tbl btt
+        JOIN bid_item_img bii ON btt.bid_item_id = bii.bid_item_id
+        WHERE bii.bid_repimg_yn = 'Y'
+        LIMIT #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <select id="countBidItems" resultType="int">
+        SELECT COUNT(*)
+        FROM bid_items_tbl
     </select>
 
 </mapper>
