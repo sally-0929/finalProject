@@ -34,11 +34,12 @@ public class BidController {
     private final BidItemService bidItemService;
 
     @GetMapping("/list")
-    public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page){
+    public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                        @RequestParam(value = "searchQuery", required = false) String searchQuery){
             if(page <0 ) page = 0;
 
             Pageable pageable = PageRequest.of(page, 6);
-            Page<BidItemDto> bidItemPage = bidItemService.getList(pageable);
+            Page<BidItemDto> bidItemPage = bidItemService.getList(searchQuery,pageable);
             log.info("model value ++ " + bidItemPage);
 
 
