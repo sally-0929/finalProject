@@ -34,16 +34,16 @@
         background-color: #007bff;
         border-color: #007bff;
         color: white;
-    }
-    .pagination .page-item .page-link {
-        color: #007bff;
-    }
-    .pagination .page-item.disabled .page-link {
-        color: #6c757d;
-    }
-    .pagination .page-item .page-link:hover {
-        background-color: #e9ecef;
-    }
+        }
+        .pagination .page-item .page-link {
+            color: #007bff;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+        }
+        .pagination .page-item .page-link:hover {
+            background-color: #e9ecef;
+        }
     </style>
 </th:block>
 
@@ -76,10 +76,10 @@
 
     <div class="row">
         <th:block th:each="item, status: ${bidItemList}">
-            <div class="col-md-4 margin">
+            <div class="col-md-3 margin">
                 <div class="card">
                     <a th:href="'/bid/' + ${item.bidItemId}" class="text-dark">
-                        <img th:src="${item.bidImgUrl}" class="card-img-top" height="400">
+                        <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 400px; width: 100%; object-fit: cover; object-position: center;">
                         <div class="card-body">
 
                             <p class="card-text">
