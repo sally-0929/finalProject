@@ -13,14 +13,21 @@
 
     <script th:inline="javascript">
 
-        $(document).ready(function(){
-            $("input[name=cartChkBox]").change( function(){
-                getOrderTotalPrice();
+        $(document).ready(function() {
+            $("input[name=cartChkBox]").prop("checked", true); // 모든 체크박스 체크
+            $("#checkall").prop("checked", true); // 전체 선택 체크박스 체크
+
+            $("input[name=cartChkBox]").change(function() {
+                getOrderTotalPrice(); // 체크박스 상태 변경 시 총 금액 업데이트
             });
+
+            getOrderTotalPrice(); // 초기 총 금액 업데이트
         });
 
         function getOrderTotalPrice(){
             var orderTotalPrice = 0;
+            var allChecked = true; // 모든 체크박스가 체크되어 있는지 확인하기 위한 변수
+
             $("input[name=cartChkBox]:checked").each(function() {
                 var cartItemId = $(this).val();
                 var price = $("#price_" + cartItemId).attr("data-price");
@@ -28,7 +35,15 @@
                 orderTotalPrice += price*count;
             });
 
-            $("#orderTotalPrice").html(orderTotalPrice+'원');
+            // 전체 선택 체크박스의 체크 상태 업데이트
+            $("input[name=cartChkBox]").each(function() {
+                if (!$(this).is(":checked")) {
+                    allChecked = false; // 하나라도 체크가 해제되면 false
+                }
+            });
+            $("#checkall").prop("checked", allChecked);
+
+            $("#orderTotalPrice").html(orderTotalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원');
         }
 
         function changeCount(obj){
@@ -41,14 +56,12 @@
             updateCartItemCount(cartItemId, count);
         }
 
-        function checkAll(){
-            if($("#checkall").prop("checked")){
-                $("input[name=cartChkBox]").prop("checked",true);
-            }else{
-                $("input[name=cartChkBox]").prop("checked",false);
-            }
-            getOrderTotalPrice();
+        function checkAll() {
+            var isChecked = $("#checkall").prop("checked");
+            $("input[name=cartChkBox]").prop("checked", isChecked);
+            getOrderTotalPrice(); // 총 금액 업데이트
         }
+
 
         function updateCartItemCount(cartItemId, count){
             var token = $("meta[name='_csrf']").attr("content");
@@ -168,11 +181,10 @@
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
-        .content-mg{
-            margin-left:25%;
-            margin-right:25%;
-            margin-top:2%;
-            margin-bottom:100px;
+        .content-mg {
+            width:50%;
+            padding-bottom: 50px;
+            flex: 1;
         }
         .repImgDiv{
             margin-right:15px;
@@ -209,7 +221,7 @@
             <thead>
             <tr class="text-center">
                 <td>
-                    <input type="checkbox" id="checkall" onclick="checkAll()"> 전체선택
+                    <input type="checkbox" id="checkall" onclick="checkAll()" checked> 전체선택
                 </td>
                 <td>상품정보</td>
                 <td>상품금액</td>
@@ -218,9 +230,9 @@
             <tbody>
             <tr th:each="cartItem : ${cartItems}">
                 <td class="text-center align-middle">
-                    <input type="checkbox" name="cartChkBox" th:value="${cartItem.cartItemId}">
+                    <input type="checkbox" name="cartChkBox" th:value="${cartItem.cartItemId}" checked>
                 </td>
-                <td class="d-flex">
+                <td class="d-flex justify-content-center">
                     <div class="repImgDiv align-self-center">
                         <img th:src="${cartItem.imgUrl}" class = "rounded repImg" th:alt="${cartItem.itemNm}">
                     </div>
@@ -230,7 +242,7 @@
                             <span class="input-group mt-2">
                                 <span th:id="'price_' + ${cartItem.cartItemId}"
                                       th:data-price="${cartItem.price}"
-                                      th:text="${cartItem.price} + '원'" class="align-self-center mr-2">
+                                      th:text="${#numbers.formatInteger(cartItem.price, 3, 'COMMA') + '원'}" class="align-self-center mr-2">
                                 </span>
                                 <input type="number" name="count" th:id="'count_' + ${cartItem.cartItemId}"
                                        th:value="${cartItem.count}" min="1"
@@ -244,7 +256,7 @@
                 </td>
                 <td class="text-center align-middle">
                     <span th:id="'totalPrice_' + ${cartItem.cartItemId}"
-                          name="totalPrice" th:text="${cartItem.price * cartItem.count} + '원'">
+                          name="totalPrice" th:text="${#numbers.formatInteger(cartItem.price * cartItem.count, 3, 'COMMA') + '원'}">
                     </span>
                 </td>
             </tr>
@@ -252,7 +264,7 @@
         </table>
 
         <h2 class="text-center">
-            총 주문 금액 : <span id="orderTotalPrice" class="text-danger">0원</span>
+            총 주문 금액 : <span id="orderTotalPrice" class="text-danger" th:text="${#numbers.formatInteger(0, 3, 'COMMA') + '원'}">0원</span>
         </h2>
 
         <div class="text-center mt-3">
