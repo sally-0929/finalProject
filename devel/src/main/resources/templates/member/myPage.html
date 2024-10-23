@@ -19,7 +19,7 @@
         </tr>
     </table>
 
-    <div class="user" style="border:2px solid black; padding-left:1000px;">
+    <div class="user" style="display: flex; justify-content: flex-end; border: 2px solid black; padding: 10px;">
         <strong>회원 등급:</strong>
         <span th:text="${memberGradeStatus}"></span>
             <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
