@@ -3,23 +3,25 @@ package com.treasuredigger.devel.controller;
 import com.treasuredigger.devel.constant.MemberGradeStatus;
 import com.treasuredigger.devel.dto.MemberFormDto;
 import com.treasuredigger.devel.dto.MemberGradeDto;
+import com.treasuredigger.devel.entity.Inquiry;
 import com.treasuredigger.devel.service.MemberGradeService;
 import com.treasuredigger.devel.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.treasuredigger.devel.entity.Member;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("/members")
 @Controller
@@ -94,10 +96,33 @@ public class MemberController {
         MemberGradeDto memberGradeDto = memberGradeService.getMemberGrade(member.getId());
         model.addAttribute("memberGradeStatus", memberGradeDto.getMemberGradeStatus().toString()); // 등급 상태를 문자열로 추가
 
-        System.out.println("회원: {}" + member);
-        System.out.println("회원 등급: {}" + memberGradeDto.getMemberGradeStatus());
+        if (model.containsAttribute("message")) {
+            model.addAttribute("message", model.asMap().get("message"));
+        }
 
         return "member/memberUpdate";
+    }
+
+    @PostMapping(value = "/{mid}")
+    public String updateMember(@PathVariable String mid, @Valid @ModelAttribute Member member, RedirectAttributes redirectAttributes) {
+        memberService.updateMember(mid, member);
+        redirectAttributes.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
+        return "redirect:/members/myPage";
+    }
+
+    @PostMapping(value = "/{mid}/delete")
+    public String deleteMember(@PathVariable String mid, HttpServletRequest request, HttpServletResponse response) {
+        // 회원 삭제
+        memberService.deleteMember(mid);
+
+        // 로그아웃 처리
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
+
+        // 삭제 후 메인 페이지로 리다이렉트
+        return "redirect:/";
     }
 
 }

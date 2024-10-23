@@ -51,4 +51,21 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByMid(mid);
     }
 
+    public Member updateMember(String mid, Member member) {
+        Member memberUpdate = findMemberByMid(mid);
+        memberUpdate.setName(member.getName());
+        memberUpdate.setEmail(member.getEmail());
+        memberUpdate.setAddress(member.getAddress());
+        return memberRepository.save(memberUpdate);
+    }
+
+    public void deleteMember(String mid) {
+        Member member = findMemberByMid(mid);
+        if (member == null) {
+            throw new IllegalStateException("존재하지 않는 회원입니다.");
+        }
+
+        memberRepository.delete(member);
+    }
+
 }

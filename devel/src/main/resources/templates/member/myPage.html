@@ -8,26 +8,41 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
+
+<script>
+    $(document).ready(function() {
+        var message = /*[[${message}]]*/ '';
+        if (message) {
+            $('#messageModal').modal('show');
+        }
+    });
+</script>
+
 <div layout:fragment="content" style="padding-top:100px; padding-bottom:700px;">
 <div style="position: relative;" sec:authorize="isAuthenticated()">
-    <table>
-        <tr>
-            <th>
-                <img th:src="@{/images/person.png}" alt="blackLogo" class="img-fluid" style="width:50px;">
-                    <span th:text="${member.name} + '님의 마이페이지' "></span>
-            </th>
-        </tr>
-    </table>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <table>
+            <tr>
+                <th>
+                    <img th:src="@{/images/person.png}" alt="blackLogo" class="img-fluid" style="width:50px;">
+                        <span th:text="${member.name} + '님의 마이페이지' "></span>
+                </th>
+            </tr>
+        </table>
 
-    <div class="user" style="display: flex; justify-content: flex-end; border: 2px solid black; padding: 10px;">
-        <strong>회원 등급:</strong>
-        <span th:text="${memberGradeStatus}"></span>
-            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
-            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).SILVER}" th:src="@{/images/silver.png}" alt="silver" />
-            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).GOLD}" th:src="@{/images/gold.png}" alt="gold" />
-            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VIP}" th:src="@{/images/gold.png}" alt="vip" />
-            <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VVIP}" th:src="@{/images/gold.png}" alt="vvip" />
+        <div class="user" style="display: flex; justify-content: flex-end; padding: 10px;">
+            <strong>회원 등급:</strong>
+            <span th:text="${memberGradeStatus}"></span>
+                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
+                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).SILVER}" th:src="@{/images/silver.png}" alt="silver" />
+                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).GOLD}" th:src="@{/images/gold.png}" alt="gold" />
+                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VIP}" th:src="@{/images/gold.png}" alt="vip" />
+                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VVIP}" th:src="@{/images/gold.png}" alt="vvip" />
+        </div>
     </div>
+    <form th:action="@{/members/{mid}/delete(mid=${member.mid})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+        <button type="submit" class="btn btn-danger btn-sm" sec:authorize="isAuthenticated()">회원 탈퇴</button>
+    </form>
 
         <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 150px;">
             <a href="/members/memberUpdate">
@@ -78,6 +93,27 @@
             <p style="text-align: center; padding-top:35px;">내가 쓴 리뷰</p>
         </div>
     </div>
+
+    <!--모달 ----------->
+    <div class="modal" id="messageModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">알림</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p th:text="${message}"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>
         <div>
