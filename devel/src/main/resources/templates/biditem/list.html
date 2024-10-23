@@ -79,7 +79,7 @@
             <div class="col-md-3 margin">
                 <div class="card">
                     <a th:href="'/bid/' + ${item.bidItemId}" class="text-dark">
-                        <img th:src="${item.bidImgUrl}" class="card-img-top" height="400">
+                        <img th:src="${item.bidImgUrl}" class="card-img-top" style="height: 400px; width: 100%; object-fit: cover; object-position: center;">
                         <div class="card-body">
 
                             <p class="card-text">
@@ -88,8 +88,6 @@
                                 <span th:if="${item.itemStatus eq 'END'}">경매종료</span>
                                 <span th:if="${item.itemStatus ne 'WAIT' and item.itemStatus ne 'ING' and item.itemStatus ne 'END'}">알 수 없음</span>
                             </p>
-
-
 
                             <h4 class="card-title">상품명 : [[${item.bidItemName}]]</h4>
                             <h3 class="card-title text-danger" th:attr="data-enddate=${item.bidEndDate}"></h3>

@@ -29,7 +29,6 @@ public class Inquiry {
     private LocalDateTime createdDate; // 작성일
     private LocalDateTime updatedDate; // 수정일
     private Boolean answered; // 답변 상태
-    private String responder; // 답변자
     private LocalDateTime respondedDate; // 답변일
 
     @PrePersist

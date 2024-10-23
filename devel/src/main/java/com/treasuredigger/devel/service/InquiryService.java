@@ -21,7 +21,6 @@ public class InquiryService {
 
     public Inquiry saveInquiry(Inquiry inquiry) {
         Inquiry savedInquiry = inquiryRepository.save(inquiry);
-        System.out.println("Saved Inquiry Created Date: " + savedInquiry.getCreatedDate());
         return savedInquiry;
     }
 

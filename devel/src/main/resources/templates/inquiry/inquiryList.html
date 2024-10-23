@@ -23,7 +23,7 @@
 <div layout:fragment="content" class="content container mt-4">
   <h2>상담 문의 목록</h2>
   <div class="mb-3">
-    <a th:href="@{/inquiries/new}" class="btn btn-primary">문의 작성하기</a>
+    <a th:href="@{/inquiries/register}" class="btn btn-primary">문의 작성하기</a>
   </div>
 
   <table class="table table-bordered">
@@ -32,8 +32,7 @@
       <th>작성자</th>
       <th>제목</th>
       <th>작성일</th>
-      <th>답변 상태</th>
-      <th>답변자</th>
+      <th>답변상태</th>
       <th>답변일</th>
       <th>작업</th>
     </tr>
@@ -47,11 +46,12 @@
       <td th:text="${inquiry.title}"></td>
       <td th:text="${#dates.format(inquiry.getCreatedDateAsDate(), 'yyyy-MM-dd HH:mm')}"></td>
       <td th:text="${inquiry.answered ? '답변 완료' : '미답변'}"></td>
-      <td th:text="${inquiry.responder != null ? inquiry.responder : '미답변'}"></td>
       <td th:text="${inquiry.respondedDate != null ? #dates.format(inquiry.getRespondedDateAsDate(), 'yyyy-MM-dd HH:mm') : ''}"></td>
       <td>
-        <a th:href="@{/inquiries/edit/{id}(id=${inquiry.id})}" class="btn btn-warning btn-sm" sec:authorize="isAuthenticated()">수정</a>
-        <a th:href="@{/inquiries/delete/{id}(id=${inquiry.id})}" class="btn btn-danger btn-sm" sec:authorize="isAuthenticated()">삭제</a>
+        <a th:href="@{/inquiries/{id}/modify(id=${inquiry.id})}" class="btn btn-warning btn-sm" sec:authorize="isAuthenticated()">수정</a>
+        <form th:action="@{/inquiries/{id}/delete(id=${inquiry.id})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+          <button type="submit" class="btn btn-danger btn-sm" sec:authorize="isAuthenticated()">삭제</button>
+        </form>
       </td>
     </tr>
     </tbody>

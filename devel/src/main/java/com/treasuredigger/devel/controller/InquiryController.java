@@ -27,9 +27,9 @@ public class InquiryController {
     }
 
     @GetMapping("/register")
-    public String newInquiryForm(Model model) {
+    public String registerInquiry(Model model) {
         model.addAttribute("inquiry", new Inquiry());
-        return "inquiry/inquiryForm"; // inquiryForm.html로 이동
+        return "inquiry/inquiryRegister"; // inquiryRegister.html로 이동
     }
 
     @PostMapping
@@ -42,10 +42,10 @@ public class InquiryController {
     }
 
     @GetMapping("/{id}/modify")
-    public String editInquiryForm(@PathVariable Long id, Model model) {
+    public String inquiryModify(@PathVariable Long id, Model model) {
         Inquiry inquiry = inquiryService.findInquiryById(id);
         model.addAttribute("inquiry", inquiry);
-        return "inquiry/inquiryModifyForm"; // inquiryEditForm.html로 이동
+        return "inquiry/inquiryModify"; // inquiryModify.html로 이동
     }
 
     @PostMapping("/{id}")
