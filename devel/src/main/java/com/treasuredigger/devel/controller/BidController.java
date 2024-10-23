@@ -92,7 +92,7 @@ public class BidController {
     @GetMapping(value = "/view/{bidItemId}")
     public String itemDtl(Model model, @PathVariable("bidItemId") String bidItemId){
 
-        model.addAttribute("biditem", bidItemService.getItemDtl(bidItemId));
+        model.addAttribute("biditem", bidItemService.viewDtl(bidItemId));
         return "biditem/view";
     }
 }

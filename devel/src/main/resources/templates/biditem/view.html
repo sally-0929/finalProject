@@ -149,43 +149,80 @@
 <!--            </span>-->
             <div class="h4" th:text="${biditem.bidItemName}"></div>
             <hr class="my-4">
-
-<!--            <div class="text-right">-->
-<!--                <div class="h4 text-danger text-left">-->
-<!--                    <input type="hidden" th:value="${item.price}" id="price" name="price">-->
-<!--                    <span id="priceDisplay"></span>-->
-<!--                </div>-->
-<!--                <div class="input-group w-50">-->
-<!--                    <div class="input-group-prepend">-->
-<!--                        <span class="input-group-text">수량</span>-->
-<!--                    </div>-->
-<!--                    <input type="number" name="count" id="count" class="form-control" value="1" min="1">-->
-<!--                </div>-->
-<!--            </div>-->
-            <hr class="my-4">
+            즉시 구매값 :<div class="h4" th:text="${biditem.maxPrice}"></div>
 
 
+            <h3 class="card-title text-danger" th:attr="data-enddate=${biditem.bidEndDate}"></h3>
+            남은시간 : <p th:id="'remainingTime-' + ${biditem.bidItemId}">남은 시간 계산 중...</p>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const endDateElement = document.querySelector('.card-title.text-danger');
+                    const endDateStr = endDateElement.getAttribute('data-enddate');
+                    const endDate = new Date(endDateStr);
+                    const remainingTimeElement = document.querySelector('p[id^="remainingTime-"]');
+
+                    function updateRemainingTime() {
+                        const now = new Date();
+                        const timeDiff = endDate - now;
+
+                        if (timeDiff <= 0) {
+                            remainingTimeElement.textContent = '경매 종료';
+                            return;
+                        }
+
+                        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+                        remainingTimeElement.textContent = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초 남음`;
+
+                        if (timeDiff <= 1000 * 60 * 60 * 24) {
+                            remainingTimeElement.style.color = 'red';
+                        }
+                    }
+
+                    updateRemainingTime();
+                    setInterval(updateRemainingTime, 1000);
+                });
+            </script>
+                        판매자 :<div class="h4" th:text="${biditem.memberId}"></div>
+                    </div>
+                </div>
 
 
-        </div>
+    <!-- 입찰 버튼 표시 조건 -->
+    <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
+        <button type="button" class="btn btn-light border border-primary btn-lg">입찰하기</button>
+        <button type="button" class="btn btn-primary btn-lg">즉시구매하기</button>
+    </div>
+    <!-- 경매 대기중 버튼 -->
+    <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">
+        <button type="button" class="btn btn-warning btn-lg">경매대기중</button>
+    </div>
+    <!-- 경매 종료 버튼 -->
+    <div th:if="${biditem.itemStatus != 'ING' and biditem.itemStatus != 'WAIT'}" class="text-right">
+        <button type="button" class="btn btn-danger btn-lg">경매종료</button>
     </div>
 
-    <div class="jumbotron jumbotron-fluid mgt-30">
-        <div class="container">
-            <h4 class="display-5">상품 상세 설명</h4>
-            <hr class="my-4">
-            <p class="lead" th:text="${biditem.bidItemDesc}"></p>
-        </div>
-    </div>
+    <button type="button" class="btn btn-primary btn-lg" th:onclick="'location.href=\'/biditem/list\''">목록으로</button>
 
-    <div th:if="${biditem.biditemImgDtoList != null and #lists.size(biditem.biditemImgDtoList) > 0}" class="text-center">
-        <div th:each="itemImg, iterStat : ${biditem.biditemImgDtoList}">
-            <div th:if="${iterStat.index < 5}">
-                <img th:if="${not #strings.isEmpty(itemImg.bidImgUrl)}" th:src="${itemImg.bidImgUrl}" class="rounded mgb-15" width="800">
+        <div class="jumbotron jumbotron-fluid mgt-30">
+                    <div class="container">
+                        <h4 class="display-5">상품 상세 설명</h4>
+                        <hr class="my-4">
+                        <p class="lead" th:text="${biditem.bidItemDesc}"></p>
+                    </div>
+                </div>
+
+                <div th:if="${biditem.biditemImgDtoList != null and #lists.size(biditem.biditemImgDtoList) > 0}" class="text-center">
+                    <div th:each="itemImg, iterStat : ${biditem.biditemImgDtoList}">
+                        <div th:if="${iterStat.index < 5}">
+                            <img th:if="${itemImg.imgUrl != null}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="800">
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
-    </div>
 
-</div>
-
-</html>
+            </html>

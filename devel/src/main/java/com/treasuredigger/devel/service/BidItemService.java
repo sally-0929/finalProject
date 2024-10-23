@@ -100,6 +100,8 @@ public class BidItemService {
 
         BidItemDto bidItemDto = bidItemMapper.selectBidItemById(bidItemId);
         bidItemDto.setBiditemImgDtoList(itemImgDtoList);
+
+        System.out.println("dto value " + bidItemDto);
         return bidItemDto;
     }
 
