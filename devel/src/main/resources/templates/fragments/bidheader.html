@@ -11,16 +11,16 @@
         </button>
 
         <a class="navbar-brand" href="/">
-            <img th:src="@{/images/blackLogo.png}" alt="blackLogo" class="img-fluid" style="width:170px;">
+            <img th:src="@{/images/Logo.png}" alt="Logo" class="img-fluid" style="width:200px;">
         </a>
 
         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="/inquiries">상담 문의</a>
+                    <a class="nav-link" href="/inquiries">상담문의</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                    <a class="nav-link" href="/biditem/register">경매 등록</a>
+                    <a class="nav-link" href="/biditem/register">경매등록</a>
                 </li>
 <!--                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">-->
 <!--                    <a class="nav-link" href="/biditem/register">상품 관리</a>-->

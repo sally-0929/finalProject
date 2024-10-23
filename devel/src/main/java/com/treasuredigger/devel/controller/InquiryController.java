@@ -37,7 +37,6 @@ public class InquiryController {
         Member member = memberService.findMemberByMid(authentication.getName());
         inquiry.setMember(member);
         Inquiry savedInquiry = inquiryService.saveInquiry(inquiry);
-        System.out.println("Inquiry Created Date: " + savedInquiry.getCreatedDate());
         return "redirect:/inquiries";
     }
 
