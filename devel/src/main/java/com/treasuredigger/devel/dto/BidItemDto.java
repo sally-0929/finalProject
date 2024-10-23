@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter@Setter
 @ToString
@@ -24,6 +26,8 @@ public class BidItemDto {
     private String bidImgName;
     private String bidImgUrl;
     private String bidOriImgName;
+
+    private List<BIdItemImgDto> biditemImgDtoList = new ArrayList<>();
 
 
 

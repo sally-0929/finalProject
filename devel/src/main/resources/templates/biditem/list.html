@@ -78,7 +78,7 @@
         <th:block th:each="item, status: ${bidItemList}">
             <div class="col-md-3 margin">
                 <div class="card">
-                    <a th:href="'/bid/' + ${item.bidItemId}" class="text-dark">
+                    <a th:href="'/biditem/view/' + ${item.bidItemId}" class="text-dark">
                         <img th:src="${item.bidImgUrl}" class="card-img-top" height="400">
                         <div class="card-body">
 
