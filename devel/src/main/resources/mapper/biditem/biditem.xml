@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.treasuredigger.devel.mapper.BidItemMapper">
 
-    <select id="selectBidList" resultType="com.treasuredigger.devel.dto.BidItemDto">
+    <!-- 공통 쿼리 설정 -->
+    <sql id="BaseBidItemQuery">
         SELECT
         btt.bid_item_id AS bidItemId,
         btt.bid_item_name AS bidItemName,
@@ -22,13 +22,35 @@
         FROM bid_items_tbl btt
         JOIN bid_item_img bii ON btt.bid_item_id = bii.bid_item_id
         WHERE bii.bid_repimg_yn = 'Y'
-        order by btt.bid_end_date
+    </sql>
+
+    <!-- 검색 기능 쿼리 -->
+    <select id="selectBidList" resultType="com.treasuredigger.devel.dto.BidItemDto">
+        <include refid="BaseBidItemQuery" />
+        <if test="searchQuery != null and searchQuery != ''">
+            AND (btt.bid_item_name LIKE CONCAT('%', #{searchQuery}, '%')
+            OR btt.bid_item_desc LIKE CONCAT('%', #{searchQuery}, '%'))
+        </if>
+        ORDER BY btt.bid_end_date
         LIMIT #{pageable.offset}, #{pageable.pageSize}
     </select>
 
+    <!-- 검색 조건을 포함한 총 항목 수를 구하는 쿼리 -->
     <select id="countBidItems" resultType="int">
         SELECT COUNT(*)
-        FROM bid_items_tbl
+        FROM bid_items_tbl btt
+        JOIN bid_item_img bii ON btt.bid_item_id = bii.bid_item_id
+        WHERE bii.bid_repimg_yn = 'Y'
+        <if test="searchQuery != null and searchQuery != ''">
+            AND (btt.bid_item_name LIKE CONCAT('%', #{searchQuery}, '%')
+            OR btt.bid_item_desc LIKE CONCAT('%', #{searchQuery}, '%'))
+        </if>
+    </select>
+
+    <!-- 상세보기 기능 쿼리 -->
+    <select id="selectBidItemById" resultType="com.treasuredigger.devel.dto.BidItemDto">
+        <include refid="BaseBidItemQuery" />
+        AND btt.bid_item_id = #{bidItemId}
     </select>
 
 </mapper>
