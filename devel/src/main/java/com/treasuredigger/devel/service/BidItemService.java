@@ -90,6 +90,19 @@ public class BidItemService {
         return itemFormDto;
     }
 
+    public BidItemDto viewDtl(String bidItemId) {
+        List<BidItemImg> itemImgList = itemImgRepository.findByBidItem_BidItemIdOrderByIdAsc(bidItemId);
+        List<BIdItemImgDto> itemImgDtoList = new ArrayList<>();
+        for (BidItemImg itemImg : itemImgList) {
+            BIdItemImgDto itemImgDto = BIdItemImgDto.of(itemImg);
+            itemImgDtoList.add(itemImgDto);
+        }
+
+        BidItemDto bidItemDto = bidItemMapper.selectBidItemById(bidItemId);
+        bidItemDto.setBiditemImgDtoList(itemImgDtoList);
+        return bidItemDto;
+    }
+
 //    public void updateItem(BidItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
 //        BidItem item = bidItemRepository.findById(itemFormDto.getBidItemId()).orElseThrow(EntityNotFoundException::new);
 //
