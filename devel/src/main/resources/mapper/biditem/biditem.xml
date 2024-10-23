@@ -22,6 +22,7 @@
         FROM bid_items_tbl btt
         JOIN bid_item_img bii ON btt.bid_item_id = bii.bid_item_id
         WHERE bii.bid_repimg_yn = 'Y'
+        order by btt.bid_end_date
         LIMIT #{pageable.offset}, #{pageable.pageSize}
     </select>
 
