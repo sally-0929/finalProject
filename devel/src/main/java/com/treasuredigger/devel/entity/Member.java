@@ -4,7 +4,6 @@ import com.treasuredigger.devel.constant.Role;
 import com.treasuredigger.devel.dto.MemberFormDto;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.persistence.*;
@@ -30,16 +29,21 @@ public class Member extends BaseEntity {
 
     private String address;
 
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL) // MemberGrade와의 관계
     private MemberGrade memberGrade;
 
+    public Member() {
+
+    }
+
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder){
         Member member = new Member();
         member.setName(memberFormDto.getName());
-        member.setEmail(memberFormDto.getEmail());
         member.setAddress(memberFormDto.getAddress());
         member.setMid(memberFormDto.getMid());
         String password = passwordEncoder.encode(memberFormDto.getPassword());
@@ -55,6 +59,7 @@ public class Member extends BaseEntity {
     public void updateMember(MemberFormDto memberFormDto) {
         this.name = memberFormDto.getName();
         this.email = memberFormDto.getEmail();
+        this.phone = memberFormDto.getPhone();
         this.address = memberFormDto.getAddress();
     }
 

@@ -56,6 +56,7 @@ public class MemberService implements UserDetailsService {
         memberUpdate.setName(member.getName());
         memberUpdate.setEmail(member.getEmail());
         memberUpdate.setAddress(member.getAddress());
+        memberUpdate.setPhone(member.getPhone());
         return memberRepository.save(memberUpdate);
     }
 
@@ -66,6 +67,10 @@ public class MemberService implements UserDetailsService {
         }
 
         memberRepository.delete(member);
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
 }
