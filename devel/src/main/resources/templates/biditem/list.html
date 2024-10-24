@@ -8,13 +8,13 @@
 <th:block layout:fragment="css">
     <style>
         .carousel-inner > .carousel-item {
-            height: 350px;
+            height: 280px;
         }
         .margin{
             margin-bottom:30px;
         }
         .banner{
-            height: 300px;
+            height: 250px;
             position: absolute; top:0; left: 0;
             width: 100%;
             object-fit: cover; /* 비율 유지 */
@@ -79,7 +79,7 @@
             <div class="col-md-3 margin">
                 <div class="card">
                     <a th:href="'/biditem/view/' + ${item.bidItemId}" class="text-dark">
-                        <img th:src="${item.bidImgUrl}" class="card-img-top" style="height: 400px; width: 100%; object-fit: cover; object-position: center;">
+                        <img th:src="${item.bidImgUrl}" class="card-img-top" style="height: 300px; width: 100%; object-fit: cover; object-position: center;">
                         <div class="card-body">
 
                             <p class="card-text">
@@ -143,14 +143,14 @@
     <div class="pagination justify-content-center mt-4">
         <ul class="pagination">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/biditem/list(page=${currentPage > 0 ? currentPage - 1 : 0})}">&laquo; Previous</a>
+                <a class="page-link" th:href="@{/biditem/list(page=${currentPage > 0 ? currentPage - 1 : 0})}"> << </a>
             </li>
             <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
                 th:classappend="${pageNum == currentPage} ? 'active'">
                 <a class="page-link" th:href="@{/biditem/list(page=${pageNum})}" th:text="${pageNum + 1}">1</a>
             </li>
             <li class="page-item" th:classappend="${currentPage == (totalPages != null ? totalPages - 1 : 0)} ? 'disabled'">
-                <a class="page-link" th:href="@{/biditem/list(page=${currentPage < (totalPages != null ? totalPages - 1 : 0) ? currentPage + 1 : currentPage})}">Next &raquo;</a>
+                <a class="page-link" th:href="@{/biditem/list(page=${currentPage < (totalPages != null ? totalPages - 1 : 0) ? currentPage + 1 : currentPage})}"> >> </a>
             </li>
         </ul>
     </div>
