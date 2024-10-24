@@ -21,14 +21,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-                        .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**","/inquiries").permitAll()
                         .requestMatchers("/", "/members/**", "/item/**", "/images/**", "/biditem/list").permitAll()
-                        .requestMatchers("/inquiries").permitAll()
-                        .requestMatchers("/inquiries/new").authenticated()
-                        .requestMatchers("/inquiries/edit/**").authenticated()
+                        .requestMatchers("/members/mypage", "/inquiries/register", "/inquiries/edit/**").authenticated()
                         .requestMatchers("/inquiries/delete/**").hasAnyRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/members/mypage").authenticated()
                         .anyRequest()
                         .authenticated()
                 ).formLogin(formLoginCustomizer -> formLoginCustomizer

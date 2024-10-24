@@ -5,12 +5,14 @@ import com.treasuredigger.devel.service.InquiryService;
 import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.service.MemberService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -60,19 +62,31 @@ public class InquiryController {
     }
 
     @GetMapping("/{id}")
-    public String inquiryDetail(@PathVariable Long id, Model model, Authentication authentication) {
+    public String inquiryDetail(@PathVariable Long id, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
         Inquiry inquiry = inquiryService.findInquiryById(id);
         Member member = memberService.findMemberByMid(authentication.getName());
 
-        // 작성자가 아니거나 admin이 아닐 경우 목록 페이지로 리다이렉트
+        // 작성자가 아니거나 admin이 아닐 경우 에러 메시지 추가
         if (!inquiry.getMember().equals(member) &&
                 authentication.getAuthorities().stream()
                         .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
-            model.addAttribute("alertMessage", "작성자 본인만 열람할 수 있습니다.");
+            redirectAttributes.addFlashAttribute("errorMessage", "본인만 열람 가능합니다.");
             return "redirect:/inquiries"; // 목록 페이지로 리다이렉트
         }
 
         model.addAttribute("inquiry", inquiry);
         return "inquiry/inquiryDetail"; // inquiryDetail.html로 이동
     }
+
+    @PostMapping("/{id}/respond")
+    @Secured("ROLE_ADMIN") // 관리자만 접근 가능
+    public String respondToInquiry(@PathVariable Long id, @RequestParam String responseContent) {
+        Inquiry inquiry = inquiryService.findInquiryById(id);
+        inquiry.setResponse(responseContent); // 답변 내용 설정
+        inquiryService.updateInquiry(id, inquiry); // 업데이트
+        return "redirect:/inquiries"; // 목록으로 리다이렉트
+    }
+
+
+
 }
