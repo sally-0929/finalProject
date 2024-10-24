@@ -112,7 +112,6 @@ public class MemberController {
 
     @PostMapping(value = "/{mid}/delete")
     public String deleteMember(@PathVariable String mid, HttpServletRequest request, HttpServletResponse response) {
-        // 회원 삭제
         memberService.deleteMember(mid);
 
         // 로그아웃 처리
@@ -121,7 +120,6 @@ public class MemberController {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
 
-        // 삭제 후 메인 페이지로 리다이렉트
         return "redirect:/";
     }
 
