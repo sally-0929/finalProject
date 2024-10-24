@@ -26,7 +26,7 @@ public class Bid extends BaseEntity{
     private BidItem bidItem;
 
     @ManyToOne
-    @JoinColumn(name = "mid", referencedColumnName = "mid", insertable = false, updatable = false)
+    @JoinColumn(name="member_id")
     private Member member;
 
 }

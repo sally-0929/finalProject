@@ -62,10 +62,7 @@
         <input type="hidden" th:field="*{id}">
 
         <div class="form-group">
-            <select th:field="*{itemSellStatus}" class="custom-select">
-                <option value="SELL">판매중</option>
-                <option value="SOLD_OUT">품절</option>
-            </select>
+            <input type="hidden" th:field="*{itemSellStatus}" value="SELL">
         </div>
 
         <div class="input-group">

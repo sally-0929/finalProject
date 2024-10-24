@@ -26,6 +26,11 @@ public class BidItemDto {
     private String bidImgName;
     private String bidImgUrl;
     private String bidOriImgName;
+    private String bidNowPrice;
+    private String bidCount;
+    private String mgId;
+    private String mgst;
+    private String mid;
 
     private List<BIdItemImgDto> biditemImgDtoList = new ArrayList<>();
 
