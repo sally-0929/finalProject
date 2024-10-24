@@ -35,6 +35,7 @@ public class BidController {
                         @RequestParam(value = "searchQuery", required = false) String searchQuery){
             if(page <0 ) page = 0;
 
+            bidItemService.updateItemStatuses();
             Pageable pageable = PageRequest.of(page, 8);
             Page<BidItemDto> bidItemPage = bidItemService.getList(searchQuery,pageable);
             log.info("model value ++ " + bidItemPage);
