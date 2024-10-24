@@ -149,11 +149,19 @@
 <!--            </span>-->
             <div class="h4" th:text="${biditem.bidItemName}"></div>
             <hr class="my-4">
+            입찰횟수 :<div class="h4" th:text="${biditem.bidCount}"></div>
+            <hr class="my-4">
+            현재 입찰가 :
+            <input type="number" class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" min="${biditem.bidNowPrice + 1}" max="${biditem.maxPrice}" required>
+            <hr class="my-4">
             즉시 구매값 :<div class="h4" th:text="${biditem.maxPrice}"></div>
 
 
             <h3 class="card-title text-danger" th:attr="data-enddate=${biditem.bidEndDate}"></h3>
             남은시간 : <p th:id="'remainingTime-' + ${biditem.bidItemId}">남은 시간 계산 중...</p>
+
+
+
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
                     const endDateElement = document.querySelector('.card-title.text-danger');
@@ -186,7 +194,28 @@
                     setInterval(updateRemainingTime, 1000);
                 });
             </script>
-                        판매자 :<div class="h4" th:text="${biditem.memberId}"></div>
+
+           
+            마감기한:
+            <div id="formattedEndDate" class="h4" th:text="${biditem.bidEndDate}"></div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const bidEndDateStr = "[[${biditem.bidEndDate}]]";
+                    const bidEndDate = new Date(bidEndDateStr);
+
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+                    const formattedEndDate = new Intl.DateTimeFormat('ko-KR', options).format(bidEndDate);
+
+                    document.getElementById('formattedEndDate').textContent = formattedEndDate;
+                });
+            </script>
+            판매자 :<div class="h4" th:text="${biditem.memberId}"></div>
+            <img style="width:35px;" th:if="${biditem.mgst != null and biditem.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
+            <img style="width:35px;" th:if="${biditem.mgst != null and biditem.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
+            <img style="width:35px;" th:if="${biditem.mgst != null and biditem.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
+            <img style="width:35px;" th:if="${biditem.mgst != null and biditem.mgst == 'VIP'}" th:src="@{/images/vip.png}" alt="vip" />
+            <img style="width:35px;" th:if="${biditem.mgst != null and biditem.mgst == 'VVIP'}" th:src="@{/images/vvip.png}" alt="vvip" />
                     </div>
                 </div>
 
