@@ -1,6 +1,7 @@
 package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.comm.GeneratedKey;
+import com.treasuredigger.devel.constant.ItemStatus;
 import com.treasuredigger.devel.dto.*;
 
 import com.treasuredigger.devel.entity.*;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,29 @@ public class BidItemService {
     @Autowired
     private BidItemMapper bidItemMapper;
 
-    public Page<BidItemDto> getList(String searchQuery,Pageable pageable){
+
+//    @Transactional
+    public void updateItemStatuses() {
+        System.out.print("updateStatus 메서드 실행");
+        LocalDateTime now = LocalDateTime.now();
+        List<BidItem> bidItems = bidItemRepository.findAll();
+
+        for (BidItem bidItem : bidItems) {
+            if (bidItem.getBidStartDate().isBefore(now) && bidItem.getBidEndDate().isAfter(now)) {
+                bidItem.setItemStatus(ItemStatus.ING);
+            } else if (bidItem.getBidEndDate().isBefore(now)) {
+                bidItem.setItemStatus(ItemStatus.END);
+            } else if (bidItem.getBidStartDate().isAfter(now)) {
+                bidItem.setItemStatus(ItemStatus.WAIT);
+            }
+            bidItemRepository.save(bidItem);
+        }
+    }
+
+
+
+
+        public Page<BidItemDto> getList(String searchQuery,Pageable pageable){
         List<BidItemDto> items = bidItemMapper.selectBidList(searchQuery,pageable);
         int total = bidItemMapper.countBidItems(searchQuery);
         return new PageImpl<>(items, pageable, total);
