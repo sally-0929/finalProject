@@ -43,7 +43,9 @@
         <span th:text="${inquiry.member.name.substring(0, inquiry.member.name.length() - 1)}"></span>
         <span>*</span>
       </td>
-      <td th:text="${inquiry.title}"></td>
+      <td>
+        <a th:href="@{/inquiries/{id}(id=${inquiry.id})}" th:text="${inquiry.title}"></a>
+      </td>
       <td th:text="${#dates.format(inquiry.getCreatedDateAsDate(), 'yyyy-MM-dd HH:mm')}"></td>
       <td th:text="${inquiry.answered ? '답변 완료' : '미답변'}"></td>
       <td th:text="${inquiry.respondedDate != null ? #dates.format(inquiry.getRespondedDateAsDate(), 'yyyy-MM-dd HH:mm') : ''}"></td>

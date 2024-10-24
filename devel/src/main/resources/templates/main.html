@@ -7,13 +7,13 @@
 <th:block layout:fragment="css">
     <style>
         .carousel-inner > .carousel-item {
-            height: 350px;
+            height: 280px;
         }
         .margin{
             margin-bottom:30px;
         }
         .banner{
-            height: 300px;
+            height: 250px;
             position: absolute; top:0; left: 0;
             width: 100%;
             object-fit: cover; /* 비율 유지 */
@@ -85,7 +85,7 @@
 
             <li class="page-item" th:classappend="${items.number eq 0}?'disabled':''">
                 <a th:href="@{'/' + '?searchQuery=' + ${itemSearchDto.searchQuery} + '&page=' + ${items.number-1}}" aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'>Previous</span>
+                    <span aria-hidden='true'> << </span>
                 </a>
             </li>
 
@@ -95,7 +95,7 @@
 
             <li class="page-item" th:classappend="${items.number+1 ge items.totalPages}?'disabled':''">
                 <a th:href="@{'/' +'?searchQuery=' + ${itemSearchDto.searchQuery} + '&page=' + ${items.number+1}}" aria-label='Next' class="page-link">
-                    <span aria-hidden='true'>Next</span>
+                    <span aria-hidden='true'> >> </span>
                 </a>
             </li>
 

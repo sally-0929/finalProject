@@ -58,4 +58,21 @@ public class InquiryController {
         inquiryService.deleteInquiry(id);
         return "redirect:/inquiries"; // 목록으로 리다이렉트
     }
+
+    @GetMapping("/{id}")
+    public String inquiryDetail(@PathVariable Long id, Model model, Authentication authentication) {
+        Inquiry inquiry = inquiryService.findInquiryById(id);
+        Member member = memberService.findMemberByMid(authentication.getName());
+
+        // 작성자가 아니거나 admin이 아닐 경우 목록 페이지로 리다이렉트
+        if (!inquiry.getMember().equals(member) &&
+                authentication.getAuthorities().stream()
+                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+            model.addAttribute("alertMessage", "작성자 본인만 열람할 수 있습니다.");
+            return "redirect:/inquiries"; // 목록 페이지로 리다이렉트
+        }
+
+        model.addAttribute("inquiry", inquiry);
+        return "inquiry/inquiryDetail"; // inquiryDetail.html로 이동
+    }
 }
