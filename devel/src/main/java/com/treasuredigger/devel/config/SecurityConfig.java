@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/inquiries/delete/**").hasAnyRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/members/mypage").authenticated()
+                        .requestMatchers("/email/sendAuth").permitAll()
                         .anyRequest()
                         .authenticated()
                 ).formLogin(formLoginCustomizer -> formLoginCustomizer
