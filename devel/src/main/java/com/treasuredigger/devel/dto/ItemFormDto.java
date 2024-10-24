@@ -28,7 +28,8 @@ public class ItemFormDto {
     @NotNull(message = "재고는 필수 입력 값입니다.")
     private Integer stockNumber;
 
-    private ItemSellStatus itemSellStatus;
+    private ItemSellStatus itemSellStatus = ItemSellStatus.SELL;
+    //private ItemSellStatus itemSellStatus;
 
     private List<ItemImgDto> itemImgDtoList = new ArrayList<>();
 
