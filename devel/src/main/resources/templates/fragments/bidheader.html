@@ -19,10 +19,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/inquiries">상담문의</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')">
                     <a class="nav-link" href="/biditem/register">경매등록</a>
                 </li>
-<!--                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">-->
+
+                <!--                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">-->
 <!--                    <a class="nav-link" href="/biditem/register">상품 관리</a>-->
 <!--                </li>-->
                 <li class="nav-item" sec:authorize="isAnonymous()">
