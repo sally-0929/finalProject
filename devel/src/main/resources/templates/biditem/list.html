@@ -90,10 +90,19 @@
                             </p>
 
                             <h4 class="card-title">상품명 : [[${item.bidItemName}]]</h4>
+                            <h4 class="card-title">현재입찰가 : [[${item.bidNowPrice}]]</h4>
+                            <h4 class="card-title">입찰횟수 : [[${item.bidCount}]]</h4>
                             <h3 class="card-title text-danger" th:attr="data-enddate=${item.bidEndDate}"></h3>
                             <p th:id="'remainingTime-' + ${item.bidItemId}">남은 시간 계산 중...</p>
 
-                            <h4 class="card-title">판매자 : [[${item.memberId}]]</h4>
+                            <h4 class="card-title">판매자 : [[${item.memberId}]]
+
+                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
+                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
+                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
+                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'VIP'}" th:src="@{/images/vip.png}" alt="vip" />
+                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'VVIP'}" th:src="@{/images/vvip.png}" alt="vvip" />
+                            </h4>
                             <script>
                                 document.addEventListener("DOMContentLoaded", function() {
                                     const cardElements = document.querySelectorAll('.card');
@@ -108,7 +117,7 @@
                                             const timeDiff = endDate - now;
 
                                             if (timeDiff <= 0) {
-                                                remainingTimeElement.textContent = '경매 종료';
+                                                remainingTimeElement.textContent = '';
                                                 return;
                                             }
 

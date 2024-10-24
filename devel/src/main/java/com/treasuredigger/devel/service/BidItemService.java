@@ -34,6 +34,7 @@ public class BidItemService {
     private final BidItemImgRepository itemImgRepository;
     private final CategoryRepository itemCategoryRepository;
     private final MemberRepository memberRepository;
+    private final BidService bidService;
 
     @Autowired
     private GeneratedKey generatedKey;
@@ -97,6 +98,9 @@ public class BidItemService {
         }
         // bid table에도 저장하게끔
 
+        BidDto bidDto = new BidDto();
+
+        bidService.saveBid(bidItem.getBidItemId(), member.getId(), bidItemFormDto.getStartPrice());
     }
 
     @Transactional(readOnly = true)
