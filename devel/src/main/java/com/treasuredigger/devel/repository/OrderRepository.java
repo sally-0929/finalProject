@@ -12,13 +12,13 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("select o from Order o " +
-            "where o.member.email = :email " +
+            "where o.createdBy = :createBy " +
             "order by o.orderDate desc"
     )
-    List<Order> findOrders(@Param("email") String email, Pageable pageable);
+    List<Order> findOrders(@Param("createBy") String createdBy, Pageable pageable);
 
     @Query("select count(o) from Order o " +
-            "where o.member.email = :email"
+            "where o.createdBy = :createBy"
     )
-    Long countOrder(@Param("email") String email);
+    Long countOrder(@Param("createBy") String createBy);
 }
