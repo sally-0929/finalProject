@@ -21,7 +21,7 @@ public class SmsController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<?> SendSMS(@RequestBody @Valid MemberFormDto memberFormDto){
+    public ResponseEntity<?> SendSms(@RequestBody @Valid MemberFormDto memberFormDto){
         smsService.sendSms(memberFormDto);
         return ResponseEntity.ok("문자를 전송했습니다.");
     }

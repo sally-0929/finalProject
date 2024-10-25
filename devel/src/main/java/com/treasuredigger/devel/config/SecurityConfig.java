@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/customer-service/inquiries/edit/**").authenticated()
                         .requestMatchers("/customer-service/inquiries/delete/**").hasAnyRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/members/mypage").authenticated()
+                        .requestMatchers("/members/myPage").authenticated()
                         .requestMatchers("/email/sendAuth").permitAll()
                         .requestMatchers("/sms/send").permitAll()
                         .anyRequest()

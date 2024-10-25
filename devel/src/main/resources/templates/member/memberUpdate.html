@@ -138,7 +138,7 @@ function sendSms() {
         type: 'post',
         url: '/sms/send', // 휴대폰 인증 코드 발송 API URL
         contentType: 'application/json', // JSON 형식으로 보내기
-        data: JSON.stringify({ phone: phone, '_csrf': csrfToken }), // JSON 형식으로 데이터 전송
+        data: JSON.stringify({ phoneNum: phone, '_csrf': csrfToken }), // JSON 형식으로 데이터 전송
         success: function(data) {
             alert("휴대폰으로 인증 코드가 발송되었습니다.");
             $('#smsLabel').show();
@@ -152,33 +152,33 @@ function sendSms() {
     });
 }
 
-// 휴대폰 인증 코드 확인
-function smsAuthCheck() {
-    let smsCheck = $("#smsCheck").val();
-    let csrfToken = $("input[name='_csrf']").val();
-    $.ajax({
-        type: 'post',
-        url: '/sms/verify', // 휴대폰 인증 확인 API URL
-        contentType: 'application/json', // JSON 형식으로 보내기
-        data: JSON.stringify({ code: smsCheck, '_csrf': csrfToken }), // JSON 형식으로 데이터 전송
-        success: function(data) {
-            if (data === '인증 성공') {
-                $('#messageSms').text('인증되었습니다');
-                $('#smsCheck').hide();
-                $('#smsLabel').hide();
-                $('#smsAuth').hide();
-                $('#smsCheckBtn').hide();
-                $('#phone').prop('readonly', true);
-            } else {
-                $('#messageSms').text('인증 실패하였습니다.');
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log('error', textStatus, errorThrown);
-            alert("인증 확인에 실패했습니다. 다시 시도해주세요.");
-        }
-    });
-}
+<!--// 휴대폰 인증 코드 확인-->
+<!--function smsAuthCheck() {-->
+<!--    let smsCheck = $("#smsCheck").val();-->
+<!--    let csrfToken = $("input[name='_csrf']").val();-->
+<!--    $.ajax({-->
+<!--        type: 'post',-->
+<!--        url: '/sms/verify', // 휴대폰 인증 확인 API URL-->
+<!--        contentType: 'application/json', // JSON 형식으로 보내기-->
+<!--        data: JSON.stringify({ code: smsCheck, '_csrf': csrfToken }), // JSON 형식으로 데이터 전송-->
+<!--        success: function(data) {-->
+<!--            if (data === '인증 성공') {-->
+<!--                $('#messageSms').text('인증되었습니다');-->
+<!--                $('#smsCheck').hide();-->
+<!--                $('#smsLabel').hide();-->
+<!--                $('#smsAuth').hide();-->
+<!--                $('#smsCheckBtn').hide();-->
+<!--                $('#phone').prop('readonly', true);-->
+<!--            } else {-->
+<!--                $('#messageSms').text('인증 실패하였습니다.');-->
+<!--            }-->
+<!--        },-->
+<!--        error: function(jqXHR, textStatus, errorThrown) {-->
+<!--            console.log('error', textStatus, errorThrown);-->
+<!--            alert("인증 확인에 실패했습니다. 다시 시도해주세요.");-->
+<!--        }-->
+<!--    });-->
+<!--}-->
     </script>
 </th:block>
     <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%">
