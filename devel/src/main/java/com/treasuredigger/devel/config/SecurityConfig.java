@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/members/mypage").authenticated()
                         .requestMatchers("/email/sendAuth").permitAll()
+                        .requestMatchers("/sms/send").permitAll()
                         .anyRequest()
                         .authenticated()
                 ).formLogin(formLoginCustomizer -> formLoginCustomizer

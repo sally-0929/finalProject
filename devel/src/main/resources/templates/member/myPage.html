@@ -6,6 +6,60 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <style>
+        .my-card-container { /* 카드 컨테이너 이름 변경 */
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4개 열로 나누기 */
+            grid-template-rows: repeat(2, 1fr); /* 2개 행으로 나누기 */
+            gap: 70px;
+            justify-items: center; /* 카드 중앙 정렬 */
+            padding: 20px;
+        }
+        .my-card {
+            width: 200px;
+            height: 220px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center; /* 수직 중앙 정렬 */
+            justify-content: center; /* 수평 중앙 정렬 */
+            position: relative; /* 절대 위치 설정을 위한 기준 */
+        }
+
+        .my-card img {
+            position: absolute; /* 절대 위치 설정 */
+            top: 50%; /* 수직 중앙 */
+            left: 50%; /* 수평 중앙 */
+            transform: translate(-50%, -50%); /* 중앙으로 이동 */
+        }
+
+        .my-card p {
+            position: absolute; /* 절대 위치 설정 */
+            top: 100%; /* 카드 아래쪽으로 위치 */
+            left: 50%; /* 수평 중앙 */
+            font-size: 15px;
+            transform: translateX(-50%); /* 중앙으로 이동 */
+            text-align: center; /* 텍스트 중앙 정렬 */
+            margin-top: 10px; /* 원과 텍스트 사이의 간격 조정 */
+        }
+        .move-right {
+            transform: translateX(5px); /* 오른쪽으로 10px 이동 */
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 0; /* 위아래 패딩 추가 */
+            text-align: center; /* 텍스트 중앙 정렬 */
+        }
+        @media (max-width: 768px) {
+            .my-card {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -19,82 +73,85 @@
 </script>
 
 <div layout:fragment="content" style="padding-top:180px; padding-bottom:700px;">
-<div style="position: relative;" sec:authorize="isAuthenticated()">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <table>
-            <tr>
-                <th>
-                    <img th:src="@{/images/person.png}" alt="blackLogo" class="img-fluid" style="width:50px;">
+    <div style="position: relative;" sec:authorize="isAuthenticated()">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <table>
+                <tr>
+                    <th>
+                        <img th:src="@{/images/person.png}" alt="blackLogo" class="img-fluid" style="width:50px;">
                         <span th:text="${member.name} + '님의 마이페이지' "></span>
-                </th>
-            </tr>
-        </table>
+                    </th>
+                </tr>
+            </table>
 
-        <div class="user" style="display: flex; justify-content: flex-end; padding: 10px;">
-            <strong>회원 등급:</strong>
-            <span th:text="${memberGradeStatus}"></span>
+            <div class="user" style="display: flex; justify-content: flex-end; padding: 10px;">
+                <strong>회원 등급:</strong>
+                <span th:text="${memberGradeStatus}"></span>
                 <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
                 <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).SILVER}" th:src="@{/images/silver.png}" alt="silver" />
                 <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).GOLD}" th:src="@{/images/gold.png}" alt="gold" />
                 <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VIP}" th:src="@{/images/gold.png}" alt="vip" />
                 <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VVIP}" th:src="@{/images/gold.png}" alt="vvip" />
+            </div>
+        </div>
+
+        <form th:action="@{/members/{mid}/delete(mid=${member.mid})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <button type="submit" class="btn btn-danger btn-sm" sec:authorize="isAuthenticated()">회원 탈퇴</button>
+        </form>
+
+        <div class="my-card-container"> <!-- 이름 변경 -->
+            <div class="my-card">
+                <a href="/members/memberUpdate" class="move-right">
+                    <img th:src="@{/images/memberupdate.png}" alt="회원정보수정" style="width: 80px;">
+                </a>
+                <p>회원정보수정</p>
+            </div>
+            <div class="my-card">
+                <a href="/orders">
+                    <img th:src="@{/images/buy.png}" alt="구매현황" style="width: 80px;">
+                </a>
+                <p>구매현황</p>
+            </div>
+            <div class="my-card">
+                <a href="#">
+                    <img th:src="@{/images/sell.png}" alt="판매현황" style="width: 80px;">
+                </a>
+                <p>판매현황</p>
+            </div>
+            <div class="my-card">
+                <a href="#">
+                    <img th:src="@{/images/wishlist.png}" alt="내가 찜한 물품" style="width: 80px;">
+                </a>
+                <p>내가 찜한 물품</p>
+            </div>
+            <div class="my-card">
+                <a href="/members/memberUpdate">
+                    <img th:src="@{/images/account.png}" alt="계좌관리" style="width: 80px;">
+                </a>
+                <p>계좌관리</p>
+            </div>
+            <div class="my-card">
+                <a href="/cart" class="move-right">
+                    <img th:src="@{/images/cart.png}" alt="장바구니" style="width: 80px;">
+                </a>
+                <p>장바구니</p>
+            </div>
+            <div class="my-card">
+                <a href="/inquiries">
+                    <img th:src="@{/images/notice.png}" alt="공지사항" style="width: 80px;">
+                </a>
+                <p>공지사항</p>
+            </div>
+            <div class="my-card">
+                <a href="#">
+                    <img th:src="@{/images/review.png}" alt="내가 쓴 리뷰" style="width: 80px;">
+                </a>
+                <p>내가 쓴 리뷰</p>
+            </div>
         </div>
     </div>
-    <form th:action="@{/members/{mid}/delete(mid=${member.mid})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-        <button type="submit" class="btn btn-danger btn-sm" sec:authorize="isAuthenticated()">회원 탈퇴</button>
-    </form>
 
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 150px;">
-            <a href="/members/memberUpdate">
-                <img th:src="@{/images/memberupdate.png}" alt="memberupdate" style="width: 200px; padding-left:30px; padding-top:15px;">
-            </a>
-                <p style="text-align: center; padding-top:20px;">회원정보수정</p>
-        </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 500px;">
-            <a href="/orders">
-                <img th:src="@{/images/buy.png}" alt="buy" style="width: 180px; padding-left:20px; padding-top:35px;">
-            </a>
-                <p style="text-align: center; padding-top:10px;">구매현황</p>
-        </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 850px;">
-            <a href="#">
-                <img th:src="@{/images/sell.png}" alt="sell" style="width: 190px; padding-left:30px; padding-top:25px;">
-            </a>
-                <p style="text-align: center; padding-top:20px;">판매현황</p>
-        </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 150px; left: 1200px;">
-            <a href="#">
-                <img th:src="@{/images/wishlist.png}" alt="wishlist" style="width: 180px; padding-left:20px; padding-top:25px;">
-            </a>
-                <p style="text-align: center; padding-top:20px;">내가 찜한 물품</p>
-        </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 450px; left: 150px;">
-            <a href="/members/memberUpdate">
-                <img th:src="@{/images/account.png}" alt="account" style="width: 170px; padding-left:30px; padding-top:30px;">
-            </a>
-            <p style="text-align: center; padding-top:43px;">계좌관리</p>
-        </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 450px; left: 500px;">
-            <a href="/cart">
-                <img th:src="@{/images/cart.png}" alt="cart" style="width: 220px; padding-left:5px; padding-top:0px;">
-            </a>
-            <p style="text-align: center; padding-top:0px;">장바구니</p>
-        </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 450px; left: 850px;">
-            <a href="/customer-service/notices">
-                <img th:src="@{/images/notice.png}" alt="notice" style="width: 190px; padding-left:15px; padding-top:20px;">
-            </a>
-            <p style="text-align: center; padding-top:18px;">공지사항</p>
-        </div>
-        <div style="position: absolute; width: 200px; height: 200px; background-color: rgba(0, 0, 0, 0.2); border-radius: 50%; top: 450px; left: 1200px;">
-            <a href="#">
-                <img th:src="@{/images/review.png}" alt="review" style="width: 180px; padding-left:25px; padding-top:20px;">
-            </a>
-            <p style="text-align: center; padding-top:35px;">내가 쓴 리뷰</p>
-        </div>
-    </div>
-
-    <!--모달 ----------->
+    <!-- 모달 -->
     <div class="modal" id="messageModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -114,10 +171,8 @@
         </div>
     </div>
 
-
-</div>
-        <div>
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        </div>
+    <div>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    </div>
 </body>
 </html>
