@@ -47,10 +47,9 @@ public class Inquiry {
     public void setResponse(String responseContent) {
         this.responseContent = responseContent;
         this.respondedDate = LocalDateTime.now();
-        this.answered = true; // 답변 완료로 설정
+        this.answered = true;
     }
 
-    // LocalDateTime을 Date로 변환하는 메서드
     public Date getCreatedDateAsDate() {
         return Timestamp.valueOf(createdDate);
     }
