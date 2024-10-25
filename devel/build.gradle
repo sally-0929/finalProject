@@ -71,6 +71,8 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	implementation 'net.nurigo:sdk:4.3.0'
 }
 
 tasks.named('test') {
