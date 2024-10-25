@@ -138,7 +138,7 @@ function sendSms() {
         type: 'post',
         url: '/sms/send', // 휴대폰 인증 코드 발송 API URL
         contentType: 'application/json', // JSON 형식으로 보내기
-        data: JSON.stringify({ phoneNum: phone, '_csrf': csrfToken }), // JSON 형식으로 데이터 전송
+        data: JSON.stringify({ phone: phone, '_csrf': csrfToken }), // JSON 형식으로 데이터 전송
         success: function(data) {
             alert("휴대폰으로 인증 코드가 발송되었습니다.");
             $('#smsLabel').show();
@@ -211,7 +211,8 @@ function smsAuthCheck() {
                 <label id="smsLabel" for="smsCheck" class="form-label mb-1" style="display: none;">인증 코드</label>
                 <input type="text" class="form-control mt-0" id="smsCheck" required style="display: none;">
                 <button type="button" class="my-1 btn btn-info" id="smsCheckBtn" onclick="smsAuthCheck();" style="display: none;">인증 확인</button>
-                <div id="messageSms"></div></div>
+                <div id="messageSms"></div>
+            </div>
             <div class="form-group">
                 <label th:for="address">주소</label>
                 <div class="form-group">
