@@ -44,152 +44,91 @@
         }// end: find_addr()
     </script>
 
-<!--    <script>-->
-<!--        //checkuUseremail-->
-<!--        function checkUserEmail(){-->
-<!--            $('#emailAuth').hide();-->
-<!--            $('#emailLabel').hide();-->
-<!--            $('#emailCheck').hide();-->
-<!--            $('#checkBtn').hide();-->
-<!--            let email = $("#email").val();-->
-<!--            $.ajax({-->
-<!--                       type:'post',-->
-<!--                       async:false,-->
-<!--                       url:'http://localhost:8383/checkEmail.do',-->
-<!--                       dataType:'text',-->
-<!--                       data:{email:email},-->
-<!--                       success: function(data, textStatus) {-->
-<!--                        console.log(data);-->
-<!--                           if(	$('#email').val()==''){-->
-<!--                                $('#messageEmail').empty();-->
-<!--                           }else{-->
-<!--                                if(data === 'useable') {-->
-<!--                                $('#messageEmail').text('사용 가능한 이메일입니다.');-->
-<!--                                $('#emailAuth').text('email코드 발송')-->
-<!--                                $('#emailAuth').show();-->
-<!--                               } else {-->
-<!--                                $('#messageEmail').text('이미 사용 중인 이메일입니다.');-->
-<!--                                alert('이미 사용중인 이메일입니다. 다시 작성해주세요');-->
-<!--                               }-->
-<!--                           }-->
-<!--                       },-->
-<!--                       error:function (data, textStatus) {-->
-<!--                           console.log('error');-->
-<!--                       }-->
-<!--                   })    //ajax-->
-<!--        } //checkUserEmail end-->
+    <script>
+        // 이메일 체크
+        function checkUserEmail() {
+            let email = $("#email").val();
+            let csrfToken = $("input[name='_csrf']").val(); // CSRF 토큰 가져오기
+            $.ajax({
+                type: 'post',
+                url: '/email/check',
+                data: {
+                    email: email,
+                    '_csrf': csrfToken // CSRF 토큰 추가
+                },
+                success: function(data) {
+                    if ($('#email').val() == '') {
+                        $('#messageEmail').empty();
+                    } else {
+                        if (data === 'useable') {
+                            $('#messageEmail').text('사용 가능한 이메일입니다.');
+                            $('#emailAuth').text('email코드 발송');
+                        } else {
+                            $('#messageEmail').text('이미 사용 중인 이메일입니다.');
+                            alert('이미 사용중인 이메일입니다. 다시 작성해주세요');
+                        }
+                    }
+                },
+                error: function() {
+                    console.log('error');
+                }
+            });
+        }
 
-<!--        //sendEmail-->
-<!--        function sendEmail(){-->
-<!--            let email = $("#email").val();-->
-<!--            $.ajax({-->
-<!--                           type:'post',-->
-<!--                           async:false,-->
-<!--                           url:'http://localhost:8383/SendEmailAuth.do',-->
-<!--                           dataType:'text',-->
-<!--                           data:{email:email},-->
-<!--                           success: function(data, textStatus) {-->
-<!--                                alert("해당 이메일로 발송되었습니다 확인해주세요");-->
-<!--                                //emailAuthCheck(data);-->
-<!--                                $('#emailAuth').text('email코드 재발송')-->
-<!--                                $('#emailLabel').show();-->
-<!--                                $('#emailCheck').show();-->
-<!--                                $('#checkBtn').show();-->
-<!--                           },-->
-<!--                           error:function (data, textStatus) {-->
-<!--                               console.log('error');-->
-<!--                           }-->
-<!--                       })    //ajax-->
-<!--        }//sendEmail end-->
+        // 이메일 인증 코드 발송
+        function sendEmail() {
+            let email = $("#email").val();
+            let csrfToken = $("input[name='_csrf']").val();
 
+            $.ajax({
+                type: 'post',
+                url: '/email/sendAuth',
+                data: {
+                    email: email,
+                    '_csrf': csrfToken // CSRF 토큰 추가
+                },
+                success: function(data) {
+                    alert("해당 이메일로 발송되었습니다. 확인해주세요");
+                    $('#emailLabel').show();
+                    $('#emailCheck').show();
+                    $('#checkBtn').show();
+                },
+                error: function() {
+                    console.log('error');
+                    alert("이메일 발송에 실패했습니다. 다시 시도해주세요.");
+                }
+            });
+        }
 
-<!--        function emailAuthCheck(){-->
-<!--            let emailCheck = $("#emailCheck").val();-->
-<!--            $.ajax({-->
-<!--                           type:'post',-->
-<!--                           async:false,-->
-<!--                           url:'http://localhost:8383/checkCode.do',-->
-<!--                           dataType:'text',-->
-<!--                           data:{emailCheck:emailCheck-->
-<!--                           },-->
-<!--                           success: function(data, textStatus) {-->
-<!--                            if(data === 'access') {-->
-<!--                                $('#messageEmail').text('인증되었습니다');-->
-<!--                                $('#emailCheck').hide();-->
-<!--                                $('#emailLabel').hide();-->
-<!--                                $('#emailAuth').hide();-->
-<!--                                $('#checkBtn').hide();-->
-<!--                                $('#email').prop('readonly', true);-->
-
-<!--                            } else {-->
-<!--                                $('#messageEmail').text('인증실패하였습니다.');-->
-
-
-<!--                               }-->
-<!--                           },-->
-<!--                           error:function (data, textStatus) {-->
-<!--                               console.log('error');-->
-<!--                           }-->
-<!--                       })    //ajax-->
-<!--        }//emailAuthCheck end-->
-<!--    </script>-->
-
-<!--    <script>-->
-<!--        // 이메일 체크-->
-<!--        function checkUserEmail() {-->
-<!--            let email = $("#email").val();-->
-<!--            let csrfToken = $("input[name='_csrf']").val(); // CSRF 토큰 가져오기-->
-<!--            $.ajax({-->
-<!--                type: 'post',-->
-<!--                url: '/email/check',-->
-<!--                data: {-->
-<!--                    email: email,-->
-<!--                    '_csrf': csrfToken // CSRF 토큰 추가-->
-<!--                },-->
-<!--                success: function(data) {-->
-<!--                    if ($('#email').val() == '') {-->
-<!--                        $('#messageEmail').empty();-->
-<!--                    } else {-->
-<!--                        if (data === 'useable') {-->
-<!--                            $('#messageEmail').text('사용 가능한 이메일입니다.');-->
-<!--                            $('#emailAuth').text('email코드 발송');-->
-<!--                        } else {-->
-<!--                            $('#messageEmail').text('이미 사용 중인 이메일입니다.');-->
-<!--                            alert('이미 사용중인 이메일입니다. 다시 작성해주세요');-->
-<!--                        }-->
-<!--                    }-->
-<!--                },-->
-<!--                error: function() {-->
-<!--                    console.log('error');-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-
-<!--        // 이메일 인증 코드 발송-->
-<!--        function sendEmail() {-->
-<!--            let email = $("#email").val();-->
-<!--            let csrfToken = $('input[name="${_csrf.parameterName}"]').val(); // CSRF 토큰 가져오기-->
-
-<!--            $.ajax({-->
-<!--                type: 'post',-->
-<!--                url: '/email/sendAuth',-->
-<!--                data: {-->
-<!--                    email: email,-->
-<!--                    [csrfToken]: csrfToken // CSRF 토큰 추가-->
-<!--                },-->
-<!--                success: function(data) {-->
-<!--                    alert("해당 이메일로 발송되었습니다. 확인해주세요");-->
-<!--                    $('#emailLabel').show();-->
-<!--                    $('#emailCheck').show();-->
-<!--                    $('#checkBtn').show();-->
-<!--                },-->
-<!--                error: function() {-->
-<!--                    console.log('error');-->
-<!--                    alert("이메일 발송에 실패했습니다. 다시 시도해주세요.");-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-<!--    </script>-->
+    function emailAuthCheck() {
+            let emailCheck = $("#emailCheck").val();
+            let csrfToken = $("input[name='_csrf']").val();
+            $.ajax({
+                type: 'post',
+                url: '/email/successAuth',
+                dataType: 'text',
+                data: {
+                    code: emailCheck, // 인증 코드
+                    '_csrf': csrfToken // CSRF 토큰 추가
+                },
+                success: function(data) {
+                    if (data === '인증 성공') {
+                        $('#messageEmail').text('인증되었습니다');
+                        $('#emailCheck').hide();
+                        $('#emailLabel').hide();
+                        $('#emailAuth').hide();
+                        $('#checkBtn').hide();
+                        $('#email').prop('readonly', true);
+                    } else {
+                        $('#messageEmail').text('인증 실패하였습니다.');
+                    }
+                },
+                error: function() {
+                    console.log('error');
+                }
+            });
+        }
+    </script>
 </th:block>
     <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%">
     <form th:action="@{/members/{mid}(mid=${member.mid})}" th:object="${member}" method="post">
@@ -204,15 +143,15 @@
                 <div class="invalid-feedback">이메일을 입력하세요.</div>
                 <div id="messageEmail"></div>
 
-<!--                &lt;!&ndash; 이메일 인증 버튼 &ndash;&gt;-->
-<!--                <button type="button" id="emailAuth" class="my-1 mb-3 btn btn-info" onclick="sendEmail();">이메일 인증 코드 발송</button>-->
+                <!-- 이메일 인증 버튼 -->
+                <button type="button" id="emailAuth" class="my-1 mb-3 btn btn-info" onclick="sendEmail();">이메일 인증 코드 발송</button>
 
-<!--                &lt;!&ndash; 이메일 코드 입력 필드 &ndash;&gt;-->
-<!--                <label id="emailLabel" for="emailCheck" class="form-label mb-1" style="display: none;">이메일 코드</label>-->
-<!--                <input type="text" class="form-control mt-0" id="emailCheck" name="emailCheck" required style="display: none;">-->
+                <!-- 이메일 코드 입력 필드 -->
+                <label id="emailLabel" for="emailCheck" class="form-label mb-1" style="display: none;">이메일 코드</label>
+                <input type="text" class="form-control mt-0" id="emailCheck" name="emailCheck" required style="display: none;">
 
-<!--                &lt;!&ndash; 인증 확인 버튼 &ndash;&gt;-->
-<!--                <button type="button" class="my-1 btn btn-info" id="checkBtn" onclick="emailAuthCheck();" style="display: none;">인증 확인</button>-->
+                <!-- 인증 확인 버튼 -->
+                <button type="button" class="my-1 btn btn-info" id="checkBtn" onclick="emailAuthCheck();" style="display: none;">인증 확인</button>
             </div>
             <div class="form-group">
                 <label for="phone">핸드폰 번호</label>

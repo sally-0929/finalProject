@@ -20,8 +20,6 @@ public class EmailController {
 
     @PostMapping("/check")
     public ResponseEntity<String> checkEmail(@RequestParam String email) {
-        // 이메일 중복 체크 로직
-        // 예: memberService.findByEmail(email);
         boolean emailExists = memberService.findMemberByEmail(email) != null;
 
         if (emailExists) {
@@ -37,6 +35,18 @@ public class EmailController {
 
         session.setAttribute("codeAuth", codeAuth);
         return ResponseEntity.ok("success");
+    }
+
+    @PostMapping("/successAuth")
+    public ResponseEntity<String> verifyAuthCode(@RequestParam String code, HttpSession session) {
+        String storedCode = (String) session.getAttribute("codeAuth");
+
+        if (storedCode != null && storedCode.equals(code)) {
+            session.removeAttribute("codeAuth"); // 인증 후 세션에서 코드 제거
+            return ResponseEntity.ok("인증 성공");
+        }
+
+        return ResponseEntity.badRequest().body("인증 코드가 유효하지 않거나 만료되었습니다.");
     }
 
     private String generateAuthCode() {
