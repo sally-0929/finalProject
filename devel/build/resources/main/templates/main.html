@@ -56,14 +56,14 @@
 
     <div class="row">
         <th:block th:each="item, status: ${items.getContent()}">
-            <div class="col-md-3 margin">
+            <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
                 <div class="card">
                     <a th:href="'/item/' +${item.id}" class="text-dark">
-                        <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 300px; width: 100%; object-fit: cover; object-position: center;">
+                        <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 250px; width: 100%; object-fit: contain; object-position: center;">
                         <div class="card-body">
-                            <h4 class="card-title">[[${item.itemNm}]]</h4>
-                            <h3 class="card-title text-danger"><span th:text="${item.price}"></span>원
-                            </h3>
+                            <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.itemNm}]]</span><br>
+                            <span class="card-title text-danger" style="font-size:16px"><span th:text="${item.price}"></span>원
+                            </span>
                         </div>
                     </a>
                 </div>
