@@ -22,8 +22,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                        .requestMatchers("/", "/members/**", "/item/**", "/images/**", "/biditem/list").permitAll()
-                        .requestMatchers("/customer-service/inquiries", "/customer-service","/customer-service/faqs" ).permitAll()
+                        .requestMatchers("/", "/members/**", "/item/**", "/images/**", "/biditem/list", "biditem/view/**").permitAll()
+                        .requestMatchers("/customer-service/inquiries", "/customer-service","/customer-service/faqs","/customer-service/notices" ).permitAll()
                         .requestMatchers("/customer-service/inquiries/register/**").authenticated()
                         .requestMatchers("/customer-service/inquiries/edit/**").authenticated()
                         .requestMatchers("/customer-service/inquiries/delete/**").hasAnyRole("ADMIN")

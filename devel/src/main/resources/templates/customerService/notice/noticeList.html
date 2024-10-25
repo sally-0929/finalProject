@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+    <script>
+        $(document).ready(function() {
+            $(".notice-title").click(function() {
+                $(this).next(".notice-content").slideToggle(300); // 300ms 동안 스무스하게 토글
+            });
+        });
+    </script>
+</th:block>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        .notice-content {
+            display: none; /* 기본적으로 답변 숨김 */
+            transition: max-height 0.3s ease; /* 부드러운 전환을 위한 설정 */
+        }
+        .notice-title {
+            cursor: pointer; /* 커서 모양 변경 */
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content" class="content-mg" style="margin-top:200px">
+  <h2>공지사항</h2>
+  <div class="notice-list">
+    <div th:each="notice : ${notices}">
+      <div class="notice-title">
+        <h5 th:text="${notice.title}"></h5>
+      </div>
+      <div class="notice-content">
+        <p th:text="${notice.content}"></p>
+        <!-- 관리자만 수정 및 삭제 버튼 표시 -->
+        <span sec:authorize="hasRole('ADMIN')">
+                    <form th:action="@{/customer-service/notices/{id}/delete(id=${notice.id})}" method="post" style="display:inline;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                        <a th:href="@{/customer-service/notices/{id}/modify(id=${notice.id})}" class="btn btn-warning btn-sm">수정</a>
+                        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                    </form>
+                </span>
+      </div>
+    </div>
+    <span sec:authorize="hasRole('ADMIN')">
+            <a href="/customer-service/notices/register" class="btn btn-primary btn-sm">공지 추가</a>
+        </span>
+  </div>
+</div>
+
+</html>
