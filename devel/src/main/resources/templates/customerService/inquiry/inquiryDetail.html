@@ -44,7 +44,7 @@
   <div sec:authorize="hasRole('ADMIN')">
     <div th:if="${!inquiry.answered}">
       <h3>답변하기</h3>
-      <form th:action="@{/inquiries/{id}/respond(id=${inquiry.id})}" method="post">
+      <form th:action="@{/customer-service/inquiries/{id}/respond(id=${inquiry.id})}" method="post">
         <div class="form-group">
           <textarea name="responseContent" class="form-control" required placeholder="답변 내용을 입력하세요."></textarea>
         </div>
@@ -53,15 +53,15 @@
     </div>
 
     <span sec:authorize="hasRole('ADMIN') or #authentication.principal.username == inquiry.member.mid">
-      <form th:action="@{/inquiries/{id}/delete(id=${inquiry.id})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+      <form th:action="@{/customer-service/inquiries/{id}/delete(id=${inquiry.id})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
         <button type="submit" class="btn btn-danger">삭제</button>
       </form>
     </span>
   </div>
   <span th:if="${#authentication.principal.username == inquiry.member.mid && !inquiry.answered}">
-    <a th:href="@{/inquiries/{id}/modify(id=${inquiry.id})}" class="btn btn-warning">수정</a>
+    <a th:href="@{/customer-service/inquiries/{id}/modify(id=${inquiry.id})}" class="btn btn-warning">수정</a>
   </span>
-  <a th:href="@{/inquiries}" class="btn btn-secondary">목록</a>
+  <a th:href="@{/customer-service/inquiries}" class="btn btn-secondary">목록</a>
 </div>
 <p th:text="${#authentication.principal.username}"></p>
 <p th:text="${inquiry.member.mid}"></p>

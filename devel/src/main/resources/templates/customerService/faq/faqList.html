@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+    <script>
+        $(document).ready(function() {
+            $(".faq-question").click(function() {
+                $(this).next(".faq-answer").slideToggle(300); // 300ms 동안 스무스하게 토글
+            });
+        });
+    </script>
+</th:block>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        .faq-answer {
+            display: none; /* 기본적으로 답변 숨김 */
+            transition: max-height 0.3s ease; /* 부드러운 전환을 위한 설정 */
+        }
+        .faq-question {
+            cursor: pointer; /* 커서 모양 변경 */
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content" class="content-mg" style="margin-top:200px">
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq-list">
+        <div th:each="faq : ${faqs}">
+            <div class="faq-question">
+                <h5 th:text="${faq.question}"></h5>
+            </div>
+            <div class="faq-answer">
+                <p th:text="${faq.answer}"></p>
+                <!-- 관리자만 수정 및 삭제 버튼 표시 -->
+                <span sec:authorize="hasRole('ADMIN')">
+                    <form th:action="@{/customer-service/faqs/{id}/delete(id=${faq.id})}" method="post" style="display:inline;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                        <a th:href="@{/customer-service/faqs/{id}/modify(id=${faq.id})}" class="btn btn-warning btn-sm">수정</a>
+                        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                    </form>
+                </span>
+            </div>
+            <span sec:authorize="hasRole('ADMIN')">
+                <a href="/customer-service/faqs/register" class="btn btn-primary btn-sm">FAQ 추가</a>
+            </span>
+        </div>
+    </div>
+</div>
+
+</html>

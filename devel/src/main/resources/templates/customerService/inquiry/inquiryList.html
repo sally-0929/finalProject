@@ -43,7 +43,7 @@
         <span>*</span>
       </td>
       <td>
-        <a th:href="@{/inquiries/{id}(id=${inquiry.id})}" th:text="${inquiry.title}"></a>
+        <a th:href="@{/customer-service/inquiries/{id}(id=${inquiry.id})}" th:text="${inquiry.title}"></a>
       </td>
       <td th:text="${#dates.format(inquiry.getCreatedDateAsDate(), 'yyyy-MM-dd HH:mm')}"></td>
       <td th:text="${inquiry.answered ? '답변 완료' : '미답변'}"></td>
@@ -54,7 +54,7 @@
 </div>
 
 <div class="mb-3">
-  <a th:href="@{/inquiries/register}" class="btn btn-primary">문의하기</a>
+  <a th:href="@{/customer-service/inquiries/register}" class="btn btn-primary">문의하기</a>
 </div>
 
 <div th:replace="~{fragments/footer::footer}"></div>

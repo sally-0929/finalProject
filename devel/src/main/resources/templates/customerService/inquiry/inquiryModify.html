@@ -25,7 +25,7 @@
 
 <div layout:fragment="content" class="content container">
     <h1>문의 수정</h1>
-    <form th:action="@{/inquiries/{id}(id=${inquiry.id})}" th:object="${inquiry}" method="post">
+    <form th:action="@{/customer-service/inquiries/{id}(id=${inquiry.id})}" th:object="${inquiry}" method="post">
         <div class="form-group">
             <label for="title">제목:</label>
             <input type="text" id="title" th:field="*{title}" class="form-control" required/>
@@ -38,7 +38,7 @@
 
         <button type="submit" class="btn btn-primary">수정</button>
     </form>
-    <a th:href="@{/inquiries}" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+    <a th:href="@{/customer-service/inquiries}" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
 </div>
 
 <div th:replace="~{fragments/footer::footer}"></div>

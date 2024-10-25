@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/inquiries")
+@RequestMapping("/customer-service/inquiries")
 public class InquiryController {
 
     private final InquiryService inquiryService;
@@ -25,13 +25,13 @@ public class InquiryController {
     @GetMapping
     public String listInquiries(Model model) {
         model.addAttribute("inquiries", inquiryService.getAllInquiries());
-        return "inquiry/inquiryList"; // inquiryList.html로 이동
+        return "customerService/inquiry/inquiryList"; // inquiryList.html로 이동
     }
 
     @GetMapping("/register")
     public String registerInquiry(Model model) {
         model.addAttribute("inquiry", new Inquiry());
-        return "inquiry/inquiryRegister"; // inquiryRegister.html로 이동
+        return "customerService/inquiry/inquiryRegister"; // inquiryRegister.html로 이동
     }
 
     @PostMapping
@@ -39,26 +39,26 @@ public class InquiryController {
         Member member = memberService.findMemberByMid(authentication.getName());
         inquiry.setMember(member);
         Inquiry savedInquiry = inquiryService.saveInquiry(inquiry);
-        return "redirect:/inquiries";
+        return "redirect:/customer-service/inquiries";
     }
 
     @GetMapping("/{id}/modify")
     public String inquiryModify(@PathVariable Long id, Model model) {
         Inquiry inquiry = inquiryService.findInquiryById(id);
         model.addAttribute("inquiry", inquiry);
-        return "inquiry/inquiryModify"; // inquiryModify.html로 이동
+        return "customerService/inquiry/inquiryModify"; // inquiryModify.html로 이동
     }
 
     @PostMapping("/{id}")
     public String updateInquiry(@PathVariable Long id, @Valid @ModelAttribute Inquiry inquiry) {
         inquiryService.updateInquiry(id, inquiry);
-        return "redirect:/inquiries"; // 목록으로 리다이렉트
+        return "redirect:/customer-service/inquiries"; // 목록으로 리다이렉트
     }
 
     @PostMapping("/{id}/delete")
     public String deleteInquiry(@PathVariable Long id) {
         inquiryService.deleteInquiry(id);
-        return "redirect:/inquiries"; // 목록으로 리다이렉트
+        return "redirect:/customer-service/inquiries"; // 목록으로 리다이렉트
     }
 
     @GetMapping("/{id}")
@@ -71,11 +71,11 @@ public class InquiryController {
                 authentication.getAuthorities().stream()
                         .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
             redirectAttributes.addFlashAttribute("errorMessage", "본인만 열람 가능합니다.");
-            return "redirect:/inquiries"; // 목록 페이지로 리다이렉트
+            return "redirect:/customer-service/inquiries"; // 목록 페이지로 리다이렉트
         }
 
         model.addAttribute("inquiry", inquiry);
-        return "inquiry/inquiryDetail"; // inquiryDetail.html로 이동
+        return "customerService/inquiry/inquiryDetail"; // inquiryDetail.html로 이동
     }
 
     @PostMapping("/{id}/respond")
@@ -84,7 +84,7 @@ public class InquiryController {
         Inquiry inquiry = inquiryService.findInquiryById(id);
         inquiry.setResponse(responseContent); // 답변 내용 설정
         inquiryService.updateInquiry(id, inquiry); // 업데이트
-        return "redirect:/inquiries"; // 목록으로 리다이렉트
+        return "redirect:/customer-service/inquiries"; // 목록으로 리다이렉트
     }
 
 

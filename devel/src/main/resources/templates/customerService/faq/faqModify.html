@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script"></th:block>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css"></th:block>
+
+<div layout:fragment="content" class="content-mg" style="margin-top:200px">
+
+  <h2>FAQ 수정</h2>
+
+  <form th:action="@{/customer-service/faqs/{id}(id=${faq.id})}" method="post" th:object="${faq}">
+    <div class="form-group">
+      <label for="question">질문</label>
+      <input type="text" id="question" class="form-control" th:field="*{question}" required>
+      <div class="text-danger" th:if="${#fields.hasErrors('question')}" th:errors="*{question}"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="answer">답변</label>
+      <textarea id="answer" class="form-control" th:field="*{answer}" required></textarea>
+      <div class="text-danger" th:if="${#fields.hasErrors('answer')}" th:errors="*{answer}"></div>
+    </div>
+
+    <button type="submit" class="btn btn-success">수정</button>
+    <a href="/customer-service/faqs" class="btn btn-secondary">취소</a>
+  </form>
+</div>
+
+</html>
