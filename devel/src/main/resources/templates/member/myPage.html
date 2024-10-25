@@ -33,11 +33,11 @@
         <div class="user" style="display: flex; justify-content: flex-end; padding: 10px;">
             <strong>회원 등급:</strong>
             <span th:text="${memberGradeStatus}"></span>
-                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
-                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).SILVER}" th:src="@{/images/silver.png}" alt="silver" />
-                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).GOLD}" th:src="@{/images/gold.png}" alt="gold" />
-                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VIP}" th:src="@{/images/gold.png}" alt="vip" />
-                <img style="width:35px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VVIP}" th:src="@{/images/gold.png}" alt="vvip" />
+                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
+                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).SILVER}" th:src="@{/images/silver.png}" alt="silver" />
+                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).GOLD}" th:src="@{/images/gold.png}" alt="gold" />
+                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VIP}" th:src="@{/images/gold.png}" alt="vip" />
+                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VVIP}" th:src="@{/images/gold.png}" alt="vvip" />
         </div>
     </div>
     <form th:action="@{/members/{mid}/delete(mid=${member.mid})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">

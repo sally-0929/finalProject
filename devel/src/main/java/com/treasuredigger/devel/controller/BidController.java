@@ -36,7 +36,7 @@ public class BidController {
             if(page <0 ) page = 0;
 
             bidItemService.updateItemStatuses();
-            Pageable pageable = PageRequest.of(page, 8);
+            Pageable pageable = PageRequest.of(page, 15);
             Page<BidItemDto> bidItemPage = bidItemService.getList(searchQuery,pageable);
             log.info("model value ++ " + bidItemPage);
 

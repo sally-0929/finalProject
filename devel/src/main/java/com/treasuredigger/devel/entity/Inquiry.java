@@ -30,6 +30,7 @@ public class Inquiry {
     private LocalDateTime updatedDate; // 수정일
     private Boolean answered; // 답변 상태
     private LocalDateTime respondedDate; // 답변일
+    private String responseContent;
 
     @PrePersist
     public void prePersist() {
@@ -41,6 +42,12 @@ public class Inquiry {
     @PreUpdate
     public void preUpdate() {
         this.updatedDate = LocalDateTime.now();
+    }
+
+    public void setResponse(String responseContent) {
+        this.responseContent = responseContent;
+        this.respondedDate = LocalDateTime.now();
+        this.answered = true; // 답변 완료로 설정
     }
 
     // LocalDateTime을 Date로 변환하는 메서드

@@ -58,12 +58,12 @@
             </div>
             <div class="carousel-item">
                 <a class="nav-link" href="/">
-                    <img class="d-block w-100 banner" src="/images/banner4.png" alt="Second slide">
+                    <img class="d-block w-100 banner" src="/images/banner5.png" alt="Second slide">
                 </a>
             </div>
             <div class="carousel-item">
                 <a class="nav-link" href="/">
-                    <img class="d-block w-100 banner" src="/images/banner4.png" alt="Third slide">
+                    <img class="d-block w-100 banner" src="/images/banner6.png" alt="Third slide">
                 </a>
             </div>
         </div>
@@ -76,33 +76,33 @@
 
     <div class="row">
         <th:block th:each="item, status: ${bidItemList}">
-            <div class="col-md-3 margin">
+            <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
                 <div class="card">
                     <a th:href="'/biditem/view/' + ${item.bidItemId}" class="text-dark">
-                        <img th:src="${item.bidImgUrl}" class="card-img-top" style="height: 300px; width: 100%; object-fit: cover; object-position: center;">
+                        <img th:src="${item.bidImgUrl}" class="card-img-top" style="height: 250px; width: 100%; object-fit: contain; object-position: center;">
                         <div class="card-body">
 
-                            <p class="card-text">
+                            <p class="card-text;" style="font-size:12px">
                                 <span th:if="${item.itemStatus eq 'WAIT'}">경매대기중</span>
                                 <span th:if="${item.itemStatus eq 'ING'}">경매중</span>
                                 <span th:if="${item.itemStatus eq 'END'}">경매종료</span>
                                 <span th:if="${item.itemStatus ne 'WAIT' and item.itemStatus ne 'ING' and item.itemStatus ne 'END'}">알 수 없음</span>
                             </p>
 
-                            <h4 class="card-title">상품명 : [[${item.bidItemName}]]</h4>
-                            <h4 class="card-title">현재입찰가 : [[${item.bidNowPrice}]]</h4>
-                            <h4 class="card-title">입찰횟수 : [[${item.bidCount}]]</h4>
-                            <h3 class="card-title text-danger" th:attr="data-enddate=${item.bidEndDate}"></h3>
-                            <p th:id="'remainingTime-' + ${item.bidItemId}">남은 시간 계산 중...</p>
+                            <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.bidItemName}]]</span><br>
+                            <span class="card-title" style="font-size:16px">현재가 : [[${item.bidNowPrice}]]</span><br>
+                            <span class="card-title" style="font-size:16px">입찰횟수 : [[${item.bidCount}]]</span><br>
+                            <span class="card-title text-danger" style="font-size:10px" th:attr="data-enddate=${item.bidEndDate}"></span>
+                            <p style="font-size:16px" th:id="'remainingTime-' + ${item.bidItemId}">남은 시간 계산 중...</p>
 
-                            <h4 class="card-title">판매자 : [[${item.memberId}]]
+                            <span class="card-title" style="font-size:14px">판매자 : [[${item.memberId}]]
 
-                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
-                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
-                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
-                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'VIP'}" th:src="@{/images/vip.png}" alt="vip" />
-                            <img style="width:35px;" th:if="${item.mgst != null and item.mgst == 'VVIP'}" th:src="@{/images/vvip.png}" alt="vvip" />
-                            </h4>
+                            <img style="width:17px;" th:if="${item.mgst != null and item.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
+                            <img style="width:17px;" th:if="${item.mgst != null and item.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
+                            <img style="width:17px;" th:if="${item.mgst != null and item.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
+                            <img style="width:17px;" th:if="${item.mgst != null and item.mgst == 'VIP'}" th:src="@{/images/vip.png}" alt="vip" />
+                            <img style="width:17px;" th:if="${item.mgst != null and item.mgst == 'VVIP'}" th:src="@{/images/vvip.png}" alt="vvip" />
+                            </span>
                             <script>
                                 document.addEventListener("DOMContentLoaded", function() {
                                     const cardElements = document.querySelectorAll('.card');
