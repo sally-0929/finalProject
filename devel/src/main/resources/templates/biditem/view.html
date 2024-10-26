@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/layout2}">
 
 <head>
@@ -154,7 +155,8 @@
             입찰횟수 :<div class="h4" th:text="${biditem.bidCount-1}"></div>
             <hr class="my-4">
             현재 입찰가 :
-            <input type="number" class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" min="${biditem.bidNowPrice + 1}" max="${biditem.maxPrice}" required>
+            <input type="number" class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" th:min="${minPrice}" max="${biditem.maxPrice}" required>
+            <input type="hidden" id="minPrice" th:value="${minPrice}">
             <hr class="my-4">
             즉시 구매값 :<div class="h4" th:text="${biditem.maxPrice}"></div>
 
@@ -222,11 +224,60 @@
                 </div>
 
 
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- 입찰 버튼 표시 조건 -->
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
-        <button type="button" class="btn btn-light border border-primary btn-lg">입찰하기</button>
-        <button type="button" class="btn btn-primary btn-lg">즉시구매하기</button>
+        <button type="button" class="btn btn-light border border-primary btn-lg" id="bidButton" sec:authorize="isAuthenticated()">입찰하기</button>
+        <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">즉시구매하기</button>
     </div>
+
+    <script>
+
+        $(document).ready(function() {
+            var csrfToken = $('meta[name="_csrf"]').attr('content');
+            var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+            $('#bidButton').click(function() {
+                var bidNowPrice = parseInt($('#bidNowPrice').val(), 10);
+                var minPrice = parseFloat($('#minPrice').val());
+                var currentPrice = minPrice - 1;
+                var bidItemId = $('#biditemId').val();
+
+                console.log('bidNowPrice: ' + bidNowPrice + ', minPrice: ' + minPrice + ', currentPrice: ' + currentPrice + ', bidItemId: ' + bidItemId);
+
+                if (bidNowPrice > currentPrice) {
+                    $.ajax({
+                        url: '/biditem/placeBid',
+                        type: 'POST',
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                        dataType: 'text',
+                        data: {
+                            bidNowPrice: bidNowPrice,
+                            bidItemId: bidItemId
+                        },
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader(csrfHeader, csrfToken);
+                        },
+                        success: function(response) {
+                            var responseText = JSON.stringify(response);
+                            console.log('response: ' + responseText);
+                            alert('입찰 성공: ' + responseText);
+                        },
+                        error: function(error) {
+                            console.log('error: ' + JSON.stringify(error));
+                            alert('입찰 실패');
+                        }
+                    });
+                } else {
+                    alert('새로운 입찰가는 현재 입찰가보다 커야 합니다.');
+                }
+            });
+        });
+
+
+    </script>
+
     <!-- 경매 대기중 버튼 -->
     <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">
         <button type="button" class="btn btn-warning btn-lg">경매대기중</button>

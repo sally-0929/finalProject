@@ -1,15 +1,15 @@
 package com.treasuredigger.devel.controller;
 
 import com.treasuredigger.devel.dto.*;
-import com.treasuredigger.devel.service.BidItemService;
-import com.treasuredigger.devel.service.CategoryService;
-import com.treasuredigger.devel.service.ItemService;
+import com.treasuredigger.devel.entity.Member;
+import com.treasuredigger.devel.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +29,10 @@ public class BidController {
     private final CategoryService categoryService;
 
     private final BidItemService bidItemService;
+
+    private final BidService bidService;
+
+    private final MemberService memberService;
 
     @GetMapping("/list")
     public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -92,8 +96,22 @@ public class BidController {
 
     @GetMapping(value = "/view/{bidItemId}")
     public String itemDtl(Model model, @PathVariable("bidItemId") String bidItemId){
-
-        model.addAttribute("biditem", bidItemService.viewDtl(bidItemId));
+        BidItemDto bidItemDto =  bidItemService.viewDtl(bidItemId);
+        model.addAttribute("biditem", bidItemDto);
+        model.addAttribute("minPrice", bidItemDto.getBidNowPrice() + 1);
+        log.info("minPrice " + bidItemDto.getBidNowPrice() + 1);
         return "biditem/view";
     }
+
+    @PostMapping("/placeBid")
+    public ResponseEntity<String> placeBid(@RequestParam("bidNowPrice") int bidNowPrice, @RequestParam("bidItemId") String bidItemId, Principal principal) {
+
+        Member member =  memberService.findMemberByMid(principal.getName());
+        Long mid = member.getId();
+        log.info("mid " + mid);
+        bidService.saveBid(bidItemId,mid,bidNowPrice);
+
+        return ResponseEntity.ok("Success");
+    }
+
 }
