@@ -151,7 +151,7 @@
 <!--            </span>-->
             <div class="h4" th:text="${biditem.bidItemName}"></div>
             <hr class="my-4">
-            입찰횟수 :<div class="h4" th:text="${biditem.bidCount}"></div>
+            입찰횟수 :<div class="h4" th:text="${biditem.bidCount-1}"></div>
             <hr class="my-4">
             현재 입찰가 :
             <input type="number" class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" min="${biditem.bidNowPrice + 1}" max="${biditem.maxPrice}" required>

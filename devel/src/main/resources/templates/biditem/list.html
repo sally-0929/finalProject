@@ -91,7 +91,7 @@
 
                             <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.bidItemName}]]</span><br>
                             <span class="card-title" style="font-size:16px">현재가 : [[${item.bidNowPrice}]]</span><br>
-                            <span class="card-title" style="font-size:16px">입찰횟수 : [[${item.bidCount}]]</span><br>
+                            <span class="card-title" style="font-size:16px">입찰횟수 : [[${item.bidCount-1}]]</span><br>
                             <span class="card-title text-danger" style="font-size:10px" th:attr="data-enddate=${item.bidEndDate}"></span>
                             <p style="font-size:16px" th:id="'remainingTime-' + ${item.bidItemId}">남은 시간 계산 중...</p>
 
