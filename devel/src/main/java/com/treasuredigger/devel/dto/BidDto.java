@@ -5,6 +5,8 @@ import com.treasuredigger.devel.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter@Setter
 public class BidDto {
 
@@ -16,5 +18,21 @@ public class BidDto {
 
     private BidItem bidItem;
 
+    private String createdBy;
+
+    private LocalDateTime regtime;
+
+    private String bidItemId;
+
+    private long rownum;
+
+
     private Member member;
+
+    public BidDto(){}
+
+    public BidDto(String createdBy, long bidRegPrice) {
+        this.createdBy = createdBy;
+        this.bidRegPrice = bidRegPrice;
+    }
 }

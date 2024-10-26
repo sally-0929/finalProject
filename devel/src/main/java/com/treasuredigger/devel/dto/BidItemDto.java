@@ -31,6 +31,11 @@ public class BidItemDto {
     private String mgId;
     private String mgst;
     private String mid;
+    private String bino;
+
+    private LocalDateTime regTime;
+    private String createBy;
+    private long bidRegPrice;
 
     private List<BIdItemImgDto> biditemImgDtoList = new ArrayList<>();
 

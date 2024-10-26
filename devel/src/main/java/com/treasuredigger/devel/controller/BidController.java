@@ -114,4 +114,16 @@ public class BidController {
         return ResponseEntity.ok("Success");
     }
 
+
+    @GetMapping("/getBidList")
+    public @ResponseBody List<BidDto> getBidList(@RequestParam("bidItemId") String bidItemId) {
+        log.info("getBidList 메서드 호출됨. bidItemId: " + bidItemId);
+        List<BidDto> bidList = bidService.getBidList(bidItemId);
+        log.info("bidList 결과값 : {}", bidList);
+        return bidList;
+    }
+
+
+
+
 }
