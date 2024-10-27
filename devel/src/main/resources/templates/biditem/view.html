@@ -386,10 +386,13 @@
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
         <button type="button" class="btn btn-light border border-primary btn-lg" id="bidButton" sec:authorize="isAuthenticated()">입찰하기</button>
         <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">즉시구매하기</button>
+        <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">경매 내역 수정하기</button>
+
     </div>
+    <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()" id="cancelAuctionButton">경매 취소하기</button>
+
 
     <script>
-
         $(document).ready(function() {
             var csrfToken = $('meta[name="_csrf"]').attr('content');
             var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
@@ -430,10 +433,36 @@
                     alert('새로운 입찰가는 현재 입찰가보다 커야 합니다.');
                 }
             });
+
+            $('#cancelAuctionButton').click(function() {
+                var bidItemId = $('#biditemId').val();
+                console.log('Cancel Auction: Bid Item ID:', bidItemId);
+
+                $.ajax({
+                    url: '/biditem/cancel',
+                    type: 'POST',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: { bidItemId: bidItemId },
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader(csrfHeader, csrfToken);
+                    },
+                    success: function(response) {
+                        console.log('response: ' + response);
+                        alert('경매가 취소되었습니다.');
+                        window.location.href = '/biditem/list';
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Status:', status);
+                        console.log('Error:', error);
+                        console.log('ResponseText:', xhr.responseText);
+                        alert('로그인 후 이용가능합니다.');
+                        window.location.href = '/members/login';
+                    }
+                });
+            });
         });
-
-
     </script>
+
 
     <!-- 경매 대기중 버튼 -->
     <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">

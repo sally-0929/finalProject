@@ -59,6 +59,9 @@ public class BidItem extends BaseEntity{
     @OneToMany(mappedBy = "bidItem", cascade = CascadeType.ALL)
     private List<Bid> bids;
 
+    @OneToMany(mappedBy = "bidItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BidItemImg> bidItemImg;
+
     public void updateItem(BidItemFormDto itemFormDto){
         this.bidItemName = itemFormDto.getBidItemName();
         this.bidStartDate = itemFormDto.getBidStartDate();

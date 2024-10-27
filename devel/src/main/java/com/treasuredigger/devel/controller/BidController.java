@@ -123,6 +123,13 @@ public class BidController {
         return bidList;
     }
 
+    @PostMapping("/cancel")
+    public ResponseEntity<String> cancelBidItem(@RequestParam("bidItemId") String bidItemId) {
+        log.info("biditem value +++++" + bidItemId);
+        bidItemService.deleteBidItem(bidItemId);
+        return ResponseEntity.ok("Auction canceled");
+    }
+
 
 
 

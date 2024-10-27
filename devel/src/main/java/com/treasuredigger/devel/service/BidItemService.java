@@ -133,6 +133,11 @@ public class BidItemService {
         return bidItemDto;
     }
 
+
+    public void deleteBidItem(String bidItemId) {
+        bidItemRepository.deleteById(bidItemId);
+    }
+
 //    public void updateItem(BidItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
 //        BidItem item = bidItemRepository.findById(itemFormDto.getBidItemId()).orElseThrow(EntityNotFoundException::new);
 //
