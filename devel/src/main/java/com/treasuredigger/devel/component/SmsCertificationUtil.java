@@ -11,20 +11,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmsCertificationUtil {
 
-    @Value("${coolsms.api.key}") // coolsms의 API 키 주입
+    @Value("${sms.api.key}") // coolsms의 API 키 주입
     private String apiKey;
 
-    @Value("${coolsms.api.secret}") // coolsms의 API 비밀키 주입
+    @Value("${sms.api.secret}") // coolsms의 API 비밀키 주입
     private String apiSecret;
 
-    @Value("${coolsms.api.number}") // 발신자 번호 주입
+    @Value("${sms.api.domain}")
+    private String doMain;
+
+    @Value("${sms.api.number}") // 발신자 번호 주입
     private String fromNumber;
 
     DefaultMessageService messageService; // 메시지 서비스를 위한 객체
 
     @PostConstruct // 의존성 주입이 완료된 후 초기화를 수행하는 메서드
     public void init(){
-        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr"); // 메시지 서비스 초기화
+        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, doMain); // 메시지 서비스 초기화
     }
 
     // 단일 메시지 발송

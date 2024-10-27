@@ -2,23 +2,35 @@ package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.component.SmsCertificationUtil;
 import com.treasuredigger.devel.dto.MemberFormDto;
+import com.treasuredigger.devel.dto.SmsVerificationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class SmsServiceImpl implements SmsService {
 
     private final SmsCertificationUtil smsCertificationUtil;
+    private final Map<String, String> verificationCodes = new HashMap<>();
 
     //의존성 주입
     public SmsServiceImpl(@Autowired SmsCertificationUtil smsCertificationUtil) {
         this.smsCertificationUtil = smsCertificationUtil;
     }
 
-    @Override // SmsService 인터페이스 메서드 구현
-    public void sendSms(MemberFormDto memberFormDto) {
-        String phoneNum = memberFormDto.getPhone();
-        String certificationCode = Integer.toString((int)(Math.random() * (999999 - 100000 + 1)) + 100000); // 6자리 인증 코드를 랜덤으로 생성
-        smsCertificationUtil.sendSMS(phoneNum, certificationCode); // SMS 인증 유틸리티를 사용하여 SMS 발송
+    @Override
+    public void sendSms(SmsVerificationDto smsVerificationDto) {
+        String phoneNum = smsVerificationDto.getPhone();
+        String certificationCode = Integer.toString((int)(Math.random() * (999999 - 100000 + 1)) + 100000);
+        verificationCodes.put(phoneNum, certificationCode);
+        smsCertificationUtil.sendSMS(phoneNum, certificationCode);
+    }
+
+    @Override
+    public boolean verifySms(String phoneNum, String code) {
+        String storedCode = verificationCodes.get(phoneNum);
+        return storedCode != null && storedCode.equals(code);
     }
 }
