@@ -274,6 +274,44 @@
             <hr class="my-4">
             현재 입찰가 :
             <input type="number"   class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" th:min="${minPrice}" max="${biditem.maxPrice}" required>
+            <div id="priceButtons">
+                <button type="button" class="btn btn-secondary" onclick="addBidPrice(1000)">1000원</button>
+                <button type="button" class="btn btn-secondary" onclick="addBidPrice(5000)">5000원</button>
+                <button type="button" class="btn btn-secondary" onclick="addBidPrice(10000)">10000원</button>
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var bidNowPrice = parseInt(document.getElementById("bidNowPrice").value, 10);
+
+                    if (bidNowPrice >= 100000) {
+                        var priceButtonsDiv = document.getElementById("priceButtons");
+
+                        var btn50000 = document.createElement("button");
+                        btn50000.type = "button";
+                        btn50000.className = "btn btn-secondary";
+                        btn50000.onclick = function() { addBidPrice(50000); };
+                        btn50000.textContent = "50000원";
+                        priceButtonsDiv.appendChild(btn50000);
+
+                        var btn100000 = document.createElement("button");
+                        btn100000.type = "button";
+                        btn100000.className = "btn btn-secondary";
+                        btn100000.onclick = function() { addBidPrice(100000); };
+                        btn100000.textContent = "100000원";
+                        priceButtonsDiv.appendChild(btn100000);
+                    }
+                });
+
+                function addBidPrice(price) {
+                    var bidNowPriceInput = document.getElementById("bidNowPrice");
+                    var currentPrice = parseInt(bidNowPriceInput.value, 10);
+                    bidNowPriceInput.value = currentPrice + price;
+                }
+            </script>
+
+
+
+
             <input type="hidden" id="minPrice" th:value="${minPrice}">
             <hr class="my-4">
             즉시 구매값 :<div class="h4" th:text="${biditem.maxPrice}"></div>
