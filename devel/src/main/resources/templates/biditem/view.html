@@ -391,10 +391,23 @@
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
         <button type="button" class="btn btn-light border border-primary btn-lg" id="bidButton" sec:authorize="isAuthenticated()">입찰하기</button>
         <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">즉시구매하기</button>
-        <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">경매 내역 수정하기</button>
+        <button type="button" class="btn btn-primary btn-lg"
+                th:if="${#authentication.getPrincipal().username} == ${biditem.memberId}">경매 수정하기</button>
 
     </div>
-    <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()" id="cancelAuctionButton">경매 취소하기</button>
+    <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">
+        <button type="button" class="btn btn-primary btn-lg"
+                th:if="${#authentication.getPrincipal().username} == ${biditem.memberId}"
+                id="cancelAuctionButton">경매 취소하기</button>
+    </div>
+
+
+
+
+
+
+
+
 
 
     <script>
