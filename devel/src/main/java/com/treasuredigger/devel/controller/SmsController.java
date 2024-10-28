@@ -1,6 +1,6 @@
 package com.treasuredigger.devel.controller;
 
-import com.treasuredigger.devel.dto.SmsVerificationDto;
+import com.treasuredigger.devel.dto.MemberFormDto;
 import com.treasuredigger.devel.service.SmsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +22,14 @@ public class SmsController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<?> sendSms(@RequestBody @Valid SmsVerificationDto smsVerificationDto) {
-        smsService.sendSms(smsVerificationDto);
+    public ResponseEntity<?> sendSms(@RequestBody MemberFormDto memberFormDto) {
+        smsService.sendSms(memberFormDto);
         return ResponseEntity.ok("문자를 전송했습니다.");
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifySms(@RequestBody @Valid SmsVerificationDto smsVerificationDto) {
-        boolean isVerified = smsService.verifySms(smsVerificationDto.getPhone(), smsVerificationDto.getVerificationCode());
+    public ResponseEntity<?> verifySms(@RequestBody MemberFormDto memberFormDto) {
+        boolean isVerified = smsService.verifySms(memberFormDto.getPhone(), memberFormDto.getVerificationCode());
         if (isVerified) {
             return ResponseEntity.ok("인증 성공");
         } else {

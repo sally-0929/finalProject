@@ -140,19 +140,26 @@
             });
         }
 
-    function sendSms() {
+    // SMS 전송을 위한 AJAX 요청
+function sendSms() {
     let phone = $("#phone").val();
     let csrfToken = $("meta[name='_csrf']").attr("content");
 
-    let smsData = {
-        phone: phone
-    };
+    // 전화번호 형식 검증
+    const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
+    if (!phoneRegex.test(phone)) {
+        alert("전화번호 형식이 올바르지 않습니다. 예: 010-1234-5678");
+        return;
+    }
 
     $.ajax({
         type: 'post',
         url: '/sms/send',
         contentType: 'application/json',
-        data: JSON.stringify(smsData),
+        data: JSON.stringify({
+            phone: phone,              // 전화번호
+            verificationCode: null     // 인증 코드가 필요하지 않으므로 null
+        }),
         beforeSend: function(xhr) {
             xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), csrfToken);
         },
@@ -163,7 +170,8 @@
             $('#smsCheckBtn').show();
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log('error', textStatus, errorThrown);
+            console.log('Error:', textStatus, errorThrown);
+            console.log('Response:', jqXHR.responseText); // 응답 내용 로그
             alert("휴대폰 발송에 실패했습니다. 다시 시도해주세요.");
         }
     });
@@ -186,6 +194,7 @@ function smsAuthCheck() {
             if (data === '인증 성공') {
                 $('#messageSms').text('인증되었습니다');
                 $('#smsCheck').hide();
+                $('#smsCode').hide();
                 $('#smsLabel').hide();
                 $('#smsCheckBtn').hide();
                 $('#phone').prop('readonly', true);
@@ -194,7 +203,6 @@ function smsAuthCheck() {
             }
         },
         error: function() {
-            console.log('error');
             alert("인증 확인에 실패했습니다. 다시 시도해주세요.");
         }
     });
@@ -227,7 +235,7 @@ function smsAuthCheck() {
             <div class="form-group">
                 <label for="phone">핸드폰 번호</label>
                 <input type="text" style="width:250px;" class="form-control" id="phone" th:field="*{phone}" placeholder="핸드폰 입력" required/>
-                <button type="button" class="my-1 mb-3 btn btn-info" onclick="sendSms();">휴대폰 인증 코드 발송</button>
+                <button id="smsCode" type="button" class="my-1 mb-3 btn btn-info" onclick="sendSms();">휴대폰 인증 코드 발송</button>
                 <label id="smsLabel" for="smsCheck" class="form-label mb-1" style="display: none;">인증 코드</label>
                 <input type="text" class="form-control mt-0" id="smsCheck" required style="display: none;">
                 <button type="button" class="my-1 btn btn-info" id="smsCheckBtn" onclick="smsAuthCheck();" style="display: none;">인증 확인</button>

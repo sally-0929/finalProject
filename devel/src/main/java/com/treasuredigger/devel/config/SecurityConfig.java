@@ -35,7 +35,6 @@ public class SecurityConfig {
                         .requestMatchers("/members/memberUpdate").authenticated()
                         .requestMatchers("/email/sendAuth").permitAll()
                         .requestMatchers("/sms/send").permitAll()
-                        .requestMatchers("/sms/verify").permitAll()
                         .anyRequest()
                         .authenticated()
                 ).formLogin(formLoginCustomizer -> formLoginCustomizer

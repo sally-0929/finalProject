@@ -2,7 +2,6 @@ package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.component.SmsCertificationUtil;
 import com.treasuredigger.devel.dto.MemberFormDto;
-import com.treasuredigger.devel.dto.SmsVerificationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +20,11 @@ public class SmsServiceImpl implements SmsService {
     }
 
     @Override
-    public void sendSms(SmsVerificationDto smsVerificationDto) {
-        String phoneNum = smsVerificationDto.getPhone();
+    public void sendSms(MemberFormDto memberFormDto) {
+        String phone = memberFormDto.getPhone();
         String certificationCode = Integer.toString((int)(Math.random() * (999999 - 100000 + 1)) + 100000);
-        verificationCodes.put(phoneNum, certificationCode);
-        smsCertificationUtil.sendSMS(phoneNum, certificationCode);
+        verificationCodes.put(phone, certificationCode);
+        smsCertificationUtil.sendSMS(phone, certificationCode);
     }
 
     @Override
