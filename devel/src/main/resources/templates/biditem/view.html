@@ -400,6 +400,7 @@
     <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">
         <div sec:authorize="isAuthenticated()">
             <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">
+                <button type="button" class="btn btn-primary btn-lg">경매 수정하기</button>
                 <button type="button" class="btn btn-primary btn-lg" id="cancelAuctionButton">경매 취소하기</button>
             </div>
         </div>
