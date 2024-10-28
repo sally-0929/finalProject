@@ -1,8 +1,8 @@
 package com.treasuredigger.devel.service;
 
-import com.treasuredigger.devel.dto.SmsVerificationDto;
+import com.treasuredigger.devel.dto.MemberFormDto;
 
 public interface SmsService {
-    void sendSms(SmsVerificationDto smsVerificationDto);
-    boolean verifySms(String phoneNum, String code);
+    void sendSms(MemberFormDto memberFormDto);
+    boolean verifySms(String phone, String code);
 }
