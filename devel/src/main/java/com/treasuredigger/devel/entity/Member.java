@@ -34,6 +34,10 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private boolean emailVerified = false;
+
+    private boolean phoneVerified = false;
+
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL) // MemberGrade와의 관계
     private MemberGrade memberGrade;
 

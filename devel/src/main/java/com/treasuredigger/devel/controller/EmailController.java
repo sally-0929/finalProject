@@ -38,11 +38,15 @@ public class EmailController {
     }
 
     @PostMapping("/successAuth")
-    public ResponseEntity<String> verifyAuthCode(@RequestParam String code, HttpSession session) {
+    public ResponseEntity<String> verifyAuthCode(@RequestParam String code, @RequestParam String mid, HttpSession session) {
         String storedCode = (String) session.getAttribute("codeAuth");
 
         if (storedCode != null && storedCode.equals(code)) {
             session.removeAttribute("codeAuth"); // 인증 후 세션에서 코드 제거
+            memberService.verifyEmail(mid);
+            session.setAttribute("emailVerified", true);
+
+            checkAndUpdateRole(mid, session);
             return ResponseEntity.ok("인증 성공");
         }
 
@@ -52,5 +56,17 @@ public class EmailController {
     private String generateAuthCode() {
         // 간단한 랜덤 코드 생성 로직
         return String.valueOf((int) (Math.random() * 999999));
+    }
+
+    private void checkAndUpdateRole(String mid, HttpSession session) {
+        Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
+        Boolean smsVerified = (Boolean) session.getAttribute("smsVerified");
+
+        if (Boolean.TRUE.equals(emailVerified) && Boolean.TRUE.equals(smsVerified)) {
+            memberService.updateMemberRole(mid); // 두 인증이 완료되면 역할 변경
+            // 인증 상태 초기화
+            session.removeAttribute("emailVerified");
+            session.removeAttribute("smsVerified");
+        }
     }
 }
