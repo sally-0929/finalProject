@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -16,7 +17,9 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
 
     public List<Notice> getAllNotices() {
-        return noticeRepository.findAll();
+        List<Notice> notices = noticeRepository.findAll();
+        notices.sort(Comparator.comparing(Notice::getId).reversed()); // ID 기준으로 정렬
+        return notices;
     }
 
     public Notice saveNotice(Notice notice) {

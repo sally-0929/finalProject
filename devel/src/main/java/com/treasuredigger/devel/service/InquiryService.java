@@ -3,9 +3,13 @@ package com.treasuredigger.devel.service;
 import com.treasuredigger.devel.entity.Inquiry;
 import com.treasuredigger.devel.repository.InquiryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -16,7 +20,9 @@ public class InquiryService {
     private final InquiryRepository inquiryRepository;
 
     public List<Inquiry> getAllInquiries() {
-        return inquiryRepository.findAll();
+        List<Inquiry> inquiries = inquiryRepository.findAll();
+        inquiries.sort(Comparator.comparing(Inquiry::getCreatedDate).reversed());
+        return inquiries;
     }
 
     public Inquiry saveInquiry(Inquiry inquiry) {
@@ -40,5 +46,10 @@ public class InquiryService {
     public void deleteInquiry(Long id) {
         Inquiry inquiry = findInquiryById(id);
         inquiryRepository.delete(inquiry);
+    }
+
+    public Page<Inquiry> getInquiriesWithPagination(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inquiryRepository.findAll(pageable);
     }
 }

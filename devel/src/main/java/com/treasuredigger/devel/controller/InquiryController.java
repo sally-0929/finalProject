@@ -5,6 +5,7 @@ import com.treasuredigger.devel.service.InquiryService;
 import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.service.MemberService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -23,8 +24,12 @@ public class InquiryController {
     private final MemberService memberService;
 
     @GetMapping
-    public String listInquiries(Model model) {
-        model.addAttribute("inquiries", inquiryService.getAllInquiries());
+    public String listInquiries(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Inquiry> inquiryPage = inquiryService.getInquiriesWithPagination(page, 10);
+        model.addAttribute("inquiries", inquiryPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", inquiryPage.getTotalPages());
+        model.addAttribute("hasPrevious", page > 0);
         return "customerService/inquiry/inquiryList"; // inquiryList.html로 이동
     }
 

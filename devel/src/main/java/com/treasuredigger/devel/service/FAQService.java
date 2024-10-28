@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -16,7 +17,9 @@ public class FAQService {
     private final FAQRepository faqRepository;
 
     public List<FAQ> getAllFAQs() {
-        return faqRepository.findAll();
+        List<FAQ> faqs = faqRepository.findAll();
+        faqs.sort(Comparator.comparing(FAQ::getId).reversed()); // ID 기준으로 정렬
+        return faqs;
     }
 
     public FAQ saveFAQ(FAQ faq) {
