@@ -1,5 +1,6 @@
 package com.treasuredigger.devel.service;
 
+import com.treasuredigger.devel.constant.Role;
 import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,26 @@ public class MemberService implements UserDetailsService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
+    }
+
+    public void verifyEmail(String mid){
+        Member member = memberRepository.findByMid(mid);
+        member.setEmailVerified(true);
+        memberRepository.save(member);
+    }
+
+    public void verifyPhone(String mid){
+        Member member = memberRepository.findByMid(mid);
+        member.setPhoneVerified(true);
+        memberRepository.save(member);
+    }
+
+    public void updateMemberRole(String mid){
+        Member member = memberRepository.findByMid(mid);
+        if(member != null){
+            member.setRole(Role.MEMBER);
+            memberRepository.save(member);
+        }
     }
 
 }

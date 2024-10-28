@@ -114,12 +114,14 @@
     function emailAuthCheck() {
             let emailCheck = $("#emailCheck").val();
             let csrfToken = $("input[name='_csrf']").val();
+            let mid = $("#memberId").val();
             $.ajax({
                 type: 'post',
                 url: '/email/successAuth',
                 dataType: 'text',
                 data: {
                     code: emailCheck, // 인증 코드
+                    mid: mid,
                     '_csrf': csrfToken // CSRF 토큰 추가
                 },
                 success: function(data) {
@@ -181,12 +183,13 @@ function smsAuthCheck() {
     let smsCheck = $("#smsCheck").val();
     let phone = $("#phone").val();
     let csrfToken = $("meta[name='_csrf']").attr("content");
+    let mid = $("#memberId").val();
 
     $.ajax({
         type: 'post',
         url: '/sms/verify',
         contentType: 'application/json',
-        data: JSON.stringify({ phone: phone, verificationCode: smsCheck }), // DTO에 맞춰서 필드 이름 수정
+        data: JSON.stringify({ phone: phone, verificationCode: smsCheck, mid: mid }), // DTO에 맞춰서 필드 이름 수정
         beforeSend: function(xhr) {
             xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), csrfToken);
         },
@@ -211,6 +214,7 @@ function smsAuthCheck() {
 </th:block>
     <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%">
     <form th:action="@{/members/{mid}(mid=${member.mid})}" th:object="${member}" method="post">
+        <input type="hidden" id="memberId" th:value="${member.mid}"/>
         <table>
             <div class="form-group">
                 <label for="name">이름</label>
