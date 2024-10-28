@@ -83,7 +83,7 @@
         FROM bids_tbl bt
         WHERE bt.bid_item_id = #{bidItemId}
         ) subquery
-        WHERE subquery.rownum > 1
+        WHERE subquery.rownum > 0
 
     </select>
 
