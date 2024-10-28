@@ -8,15 +8,91 @@
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 
-<!-- 사용자 스크립트 추가 -->
-<th:block layout:fragment="script"></th:block>
-
 <!-- 사용자 CSS 추가 -->
-<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="css">
+  <style>
+    .faq-answer {
+        display: none; /* 기본적으로 답변 숨김 */
+        transition: max-height 0.3s ease; /* 부드러운 전환을 위한 설정 */
+    }
+    .faq-question {
+        cursor: pointer; /* 커서 모양 변경 */
+    }
 
-<div layout:fragment="content" class="content-mg" style="margin-top:200px">
+    .content{
+        max-width:60%;
+        min-width:1000px;
+    }
+    .tab-container a {
+        text-decoration: none;
+        color: black;
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+    .tab-container a:hover {
+        text-decoration: none;
+        color: white;
+    }
 
-  <h2>FAQ 등록</h2>
+    .tab-container {
+        display: flex;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 20px 0;
+    }
+
+    .tab1 {
+        flex: 1;
+        padding: 15px;
+        text-align: center;
+        background-color: black;
+        transition: background-color 0.3s, color 0.3s;;
+        position: relative;
+    }
+
+    .tab1 a{
+        color: white
+    }
+
+    .tab {
+        flex: 1;
+        padding: 15px;
+        text-align: center;
+        background-color: #ccc;
+        transition: background-color 0.3s, color 0.3s;;
+        position: relative;
+    }
+
+    .tab:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 10%;
+        width: 1px;
+        height: 80%;
+        background-color: #ccc;
+    }
+
+    .tab:hover {
+        background-color: black;
+    }
+
+    .tab:hover a {
+        color: white;
+    }
+  </style>
+</th:block>
+
+<div layout:fragment="content" class="content container">
+  <h2>고객센터</h2>
+  <div class="tab-container">
+    <div class="tab"><a th:href="@{/customer-service/inquiries}">1:1 상담문의</a></div>
+    <div class="tab1"><a th:href="@{/customer-service/faqs}">자주 묻는 질문</a></div>
+    <div class="tab"><a th:href="@{/customer-service/notices}">공지사항</a></div>
+  </div>
+  <h4 style="margin-bottom:20px;">등록하기</h4>
 
   <form th:action="@{/customer-service/faqs}" method="post" th:object="${faq}">
     <div class="form-group">
@@ -27,12 +103,14 @@
 
     <div class="form-group">
       <label for="answer">답변</label>
-      <textarea id="answer" class="form-control" th:field="*{answer}" required></textarea>
+      <textarea style="min-height: 200px" id="answer" class="form-control" th:field="*{answer}" required></textarea>
       <div class="text-danger" th:if="${#fields.hasErrors('answer')}" th:errors="*{answer}"></div>
     </div>
 
-    <button type="submit" class="btn btn-success">등록</button>
-    <a href="/customer-service/faqs" class="btn btn-secondary">취소</a>
+    <div class="text-center">
+      <button type="submit" class="btn btn-success">등록</button>
+      <a href="/customer-service/faqs" class="btn btn-secondary">취소</a>
+    </div>
   </form>
 </div>
 

@@ -7,10 +7,94 @@
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
+<th:block layout:fragment="css">
+    <style>
+        .notice-content {
+            display: none;
+            transition: max-height 0.3s ease;
+        }
 
-<div layout:fragment="content" class="content-mg" style="margin-top:200px">
-    <h2>공지 수정</h2>
+        #content{
+            min-height: 200px;
+        }
 
+        .notice-title {
+            cursor: pointer;
+        }
+
+        .content{
+            max-width:60%;
+            min-width:1000px;
+        }
+        .tab-container a {
+            text-decoration: none;
+            color: black;
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+        .tab-container a:hover {
+            text-decoration: none;
+            color: white;
+        }
+
+        .tab-container {
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background-color: #ccc;
+            transition: background-color 0.3s, color 0.3s;;
+            position: relative;
+        }
+
+        .tab1 {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background-color: black;
+            transition: background-color 0.3s, color 0.3s;;
+            position: relative;
+        }
+
+        .tab1 a{
+            color: white
+        }
+
+        .tab:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 10%;
+            width: 1px;
+            height: 80%;
+            background-color: #ccc;
+        }
+
+        .tab:hover {
+            background-color: black;
+        }
+
+        .tab:hover a {
+            color: white;
+        }
+    </style>
+</th:block>
+<div layout:fragment="content" class="content container">
+    <h2>고객센터</h2>
+    <div class="tab-container">
+        <div class="tab"><a th:href="@{/customer-service/inquiries}">1:1 상담문의</a></div>
+        <div class="tab"><a th:href="@{/customer-service/faqs}">자주 묻는 질문</a></div>
+        <div class="tab1"><a th:href="@{/customer-service/notices}">공지사항</a></div>
+    </div>
+    <h4 style="margin-bottom:20px;">수정하기</h4>
     <form th:action="@{/customer-service/notices/{id}(id=${notice.id})}" method="post" th:object="${notice}">
         <div class="form-group">
             <label for="title">제목</label>
@@ -23,9 +107,10 @@
             <textarea id="content" class="form-control" th:field="*{content}" required></textarea>
             <div class="text-danger" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
         </div>
-
-        <button type="submit" class="btn btn-success">수정</button>
-        <a href="/customer-service/notices" class="btn btn-secondary">취소</a>
+        <div class="text-center">
+            <button type="submit" class="btn btn-warning">수정</button>
+            <a href="/customer-service/notices" class="btn btn-secondary">취소</a>
+        </div>
     </form>
 </div>
 
