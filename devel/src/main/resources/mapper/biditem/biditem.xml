@@ -71,6 +71,8 @@
     </select>
 
     <select id="getBidList" resultType="com.treasuredigger.devel.dto.BidDto">
+        SELECT *
+        FROM (
         SELECT
         ROW_NUMBER() OVER (ORDER BY bt.reg_time desc) AS rownum,
         bt.bino AS bino,
@@ -78,10 +80,11 @@
         bt.bid_reg_price AS bidregprice,
         bt.created_by AS createdBy,
         bt.bid_item_id AS biditemid
-        FROM
-        bids_tbl bt
-        WHERE
-        bt.bid_item_id = #{bidItemId}
+        FROM bids_tbl bt
+        WHERE bt.bid_item_id = #{bidItemId}
+        ) subquery
+        WHERE subquery.rownum > 1
+
     </select>
 
 </mapper>

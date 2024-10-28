@@ -253,9 +253,13 @@
                                 var formatter = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' });
 
                                 $.each(data, function(index, bid) {
+
+                                    if(index === 0 ) {
+                                        return true;
+                                    }
                                     bidTableBody.append(
                                         '<tr>' +
-                                        '<td>' + bid.rownum + '</td>' +
+                                        '<td>' + (bid.rownum-1) + '</td>' +
                                         '<td>' + bid.bidRegPrice.toLocaleString('ko-KR') + '원</td>' +
                                         '<td>' + bid.createdBy + '</td>' +
                                         '<td>' + moment(bid.regtime).format('YYYY-MM-DD HH:mm:ss') + '</td>' +
