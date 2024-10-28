@@ -44,6 +44,30 @@
         .pagination .page-item .page-link:hover {
             background-color: #e9ecef;
         }
+
+        .pagination .page-item.active .page-link:hover {
+            background-color: #007bff; /* 현재 페이지 호버 시 배경색 */
+            color: white; /* 현재 페이지 호버 시 글자색 */
+        }
+
+        .category-btn {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 18px;
+            background-color: #fafafa;
+            color: black;
+            border: 3px solid #ebebeb;
+            transition: background 0.5s, border 0.5s;
+        }
+
+        .category-btn:hover {
+            background-color: white;
+            border: 3px solid black;
+        }
     </style>
 </th:block>
 
@@ -73,6 +97,27 @@
     <!--    <div th:if="${not #strings.isEmpty(itemSearchDto.searchQuery)}" class="center">-->
     <!--        <p class="h3 font-weight-bold" th:text="${itemSearchDto.searchQuery} + '검색 결과'"></p>-->
     <!--    </div>-->
+
+    <div class="container">
+        <h2 class="text-center" style="margin-top:50px">카테고리</h2>
+        <div class="row justify-content-center flex-nowrap" style="margin:80px 0">
+            <div class="col-auto">
+                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
+            </div>
+            <div class="col-auto">
+                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
+            </div>
+            <div class="col-auto">
+                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
+            </div>
+            <div class="col-auto">
+                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
+            </div>
+            <div class="col-auto">
+                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <th:block th:each="item, status: ${bidItemList}">

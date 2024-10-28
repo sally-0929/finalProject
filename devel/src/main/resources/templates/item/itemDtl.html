@@ -131,6 +131,11 @@
             height: auto;
             width: 50%;
         }
+
+        .itemDesc-container {
+            margin-top: 70px;
+            white-space: pre-wrap;
+        }
     </style>
 </th:block>
 
@@ -181,16 +186,16 @@
         </div>
     </div>
 
-    <div class="jumbotron jumbotron-fluid mgt-30">
-        <div class="container">
-            <h4 class="display-5">상품 상세 설명</h4>
-            <hr class="my-4">
+    <div>
+        <hr class="my-4">
+        <div class="itemDesc-container">
+            <h4>상품 상세 설명</h4>
             <p class="lead" th:text="${item.itemDetail}"></p>
         </div>
     </div>
 
     <div th:each="itemImg : ${item.itemImgDtoList}" class="text-center">
-        <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="800">
+        <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="600">
     </div>
 
 </div>

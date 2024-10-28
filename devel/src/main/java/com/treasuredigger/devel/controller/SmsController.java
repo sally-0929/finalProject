@@ -31,25 +31,28 @@ public class SmsController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifySms(@RequestBody MemberFormDto memberFormDto) {
+    public ResponseEntity<?> verifySms(@RequestBody MemberFormDto memberFormDto, HttpSession session) {
         boolean isVerified = smsService.verifySms(memberFormDto.getPhone(), memberFormDto.getVerificationCode());
         if (isVerified) {
             memberService.verifyPhone(memberFormDto.getMid());
+            session.setAttribute("smsVerified", true);
+
+            checkAndUpdateRole(memberFormDto.getMid(), session);
             return ResponseEntity.ok("인증 성공");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
         }
     }
 
-//    private void checkAndUpdateRole(String mid, HttpSession session) {
-//        Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
-//        Boolean smsVerified = (Boolean) session.getAttribute("smsVerified");
-//
-//        if (Boolean.TRUE.equals(emailVerified) && Boolean.TRUE.equals(smsVerified)) {
-//            memberService.updateMemberRole(mid); // 두 인증이 완료되면 역할 변경
-//            // 인증 상태 초기화
-//            session.removeAttribute("emailVerified");
-//            session.removeAttribute("smsVerified");
-//        }
-//    }
+    private void checkAndUpdateRole(String mid, HttpSession session) {
+        Boolean emailVerified = (Boolean) session.getAttribute("emailVerified");
+        Boolean smsVerified = (Boolean) session.getAttribute("smsVerified");
+
+        if (Boolean.TRUE.equals(emailVerified) && Boolean.TRUE.equals(smsVerified)) {
+            memberService.updateMemberRole(mid); // 두 인증이 완료되면 역할 변경
+            // 인증 상태 초기화
+            session.removeAttribute("emailVerified");
+            session.removeAttribute("smsVerified");
+        }
+    }
 }
