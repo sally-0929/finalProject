@@ -136,50 +136,45 @@
             width: 50%;
         }
        .modal {
-          display: none;
-          position: fixed;
-          z-index: 1050;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          overflow: auto;
-          background-color: rgb(0,0,0);
-          background-color: rgba(0,0,0,0.4);
-        }
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
 
-        .modal-content {
-          background-color: #fefefe;
-          margin: 15% auto;
-          padding: 20px;
-          border: 1px solid #888;
-          width: 800px;
-          height: 800px;
-          position: absolute;
-          z-index:1200px;
-          top: 500px;
-          left: 50%;
-          transform: translate(-50%, -50%);
-        }
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 800px;
+  height: 800px;
+  position: absolute;
+  z-index:1200px;
+  top: 500px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-        .close {
-          color: #aaa;
-          float: right;
-          font-size: 28px;
-          font-weight: bold;
-        }
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
 
-        .close:hover,
-        .close:focus {
-          color: black;
-          text-decoration: none;
-          cursor: pointer;
-        }
-
-        .itemDesc-container {
-            margin-top: 70px;
-            white-space: pre-wrap;
-        }
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
     </style>
 </th:block>
 
@@ -396,15 +391,21 @@
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
         <button type="button" class="btn btn-light border border-primary btn-lg" id="bidButton" sec:authorize="isAuthenticated()">입찰하기</button>
         <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">즉시구매하기</button>
-        <button type="button" class="btn btn-primary btn-lg"
-                th:if="${#authentication.getPrincipal().username} == ${biditem.memberId}">경매 수정하기</button>
-
+        <div sec:authorize="isAuthenticated()">
+            <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">
+                <button type="button" class="btn btn-primary btn-lg">경매 수정하기</button>
+            </div>
+        </div>
     </div>
     <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">
-        <button type="button" class="btn btn-primary btn-lg"
-                th:if="${#authentication.getPrincipal().username} == ${biditem.memberId}"
-                id="cancelAuctionButton">경매 취소하기</button>
+        <div sec:authorize="isAuthenticated()">
+            <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">
+                <button type="button" class="btn btn-primary btn-lg" id="cancelAuctionButton">경매 취소하기</button>
+            </div>
+        </div>
     </div>
+
+
 
 
 
@@ -498,13 +499,13 @@
 
     <button type="button" class="btn btn-primary btn-lg" th:onclick="'location.href=\'/biditem/list\''">목록으로</button>
 
-        <div>
-            <hr class="my-4">
-            <div class="itemDesc-container">
-                <h4>상품 상세 설명</h4>
-                <p class="lead" th:text="${biditem.bidItemDesc}"></p>
-            </div>
-        </div>
+        <div class="jumbotron jumbotron-fluid mgt-30">
+                    <div class="container">
+                        <h4 class="display-5">상품 상세 설명</h4>
+                        <hr class="my-4">
+                        <p class="lead" th:text="${biditem.bidItemDesc}"></p>
+                    </div>
+                </div>
 
                 <div th:if="${biditem.biditemImgDtoList != null and #lists.size(biditem.biditemImgDtoList) > 0}" class="text-center">
                     <div th:each="itemImg, iterStat : ${biditem.biditemImgDtoList}">
