@@ -30,6 +30,11 @@ public class MainController {
         model.addAttribute("itemSearchDto", itemSearchDto);
         model.addAttribute("maxPage", 5);
 
+        // 각 아이템의 판매 상태를 추가
+        for (MainItemDto item : items) {
+            item.setItemSellStatus(itemService.getItemSellStatus(item.getId())); // 판매 상태 추가
+        }
+
         return "main";
     }
 

@@ -117,6 +117,7 @@ public class ItemController {
     public String itemDtl(Model model, @PathVariable("itemId") Long itemId){
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         model.addAttribute("item", itemFormDto);
+        model.addAttribute("itemSellStatus", itemService.getItemSellStatus(itemId)); // 판매 상태 추가
         return "item/itemDtl";
     }
 

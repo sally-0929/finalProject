@@ -17,6 +17,14 @@
             calculateTotalPrice();
 
             $("#count").change(function(){
+                var stock = parseInt($("#stockDisplay").text(), 10); // 재고 수량 가져오기
+                var count = parseInt($("#count").val(), 10); // 현재 입력된 수량
+
+                if (count > stock) {
+                    alert("재고 수량을 초과했습니다. 남은 재고 : " + stock + "개");
+                    count = Math.max(1, count - 1); // 카운트를 1과 (count - 1) 중 큰 값으로 설정
+                    $("#count").val(count); // 수량 업데이트
+                }
                 calculateTotalPrice();
             });
         });
@@ -94,7 +102,7 @@
 
                         alert('로그인 후 이용해주세요');
                         location.href = '/members/login';
-             
+
                 }
             });
         }
@@ -167,6 +175,7 @@
                 </div>
             </div>
             <hr class="my-4">
+            남은 수량 : <span id="stockDisplay" th:text="${item.stockNumber}"></span>개
 
             <div class="text-right mgt-50">
                 <h5>결제 금액</h5>
