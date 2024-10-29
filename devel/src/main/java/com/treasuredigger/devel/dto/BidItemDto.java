@@ -33,6 +33,8 @@ public class BidItemDto {
     private String mid;
     private String bino;
 
+    private String cname;
+
     private LocalDateTime regTime;
     private String createBy;
     private long bidRegPrice;
