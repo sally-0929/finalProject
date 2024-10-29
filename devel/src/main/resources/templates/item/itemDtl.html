@@ -55,12 +55,11 @@
                     location.href = '/';
                 },
                 error: function(jqXHR, status, error){
-                    if(jqXHR.status == '401'){
+
                         alert('로그인 후 이용해주세요');
                         location.href = '/members/login';
-                    } else {
-                        alert(jqXHR.responseText);
-                    }
+
+
                 }
             });
         }
@@ -92,12 +91,10 @@
                     location.href = '/';
                 },
                 error: function(jqXHR, status, error){
-                    if(jqXHR.status == '401'){
+
                         alert('로그인 후 이용해주세요');
                         location.href = '/members/login';
-                    } else {
-                        alert(jqXHR.responseText);
-                    }
+             
                 }
             });
         }
@@ -177,7 +174,7 @@
             </div>
 
             <div th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
-                <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()">장바구니 담기</button>
+                <button type="button" class="btn btn-light border border-primary btn-lg"  onclick="addCart()">장바구니 담기</button>
                 <button type="button" class="btn btn-primary btn-lg" onclick="order()">주문하기</button>
             </div>
             <div th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
