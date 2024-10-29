@@ -10,9 +10,9 @@ import java.util.List;
 @Mapper
 public interface BidItemMapper {
 
-    List<BidItemDto> selectBidList(@Param("searchQuery") String searchQuery, @Param("pageable") Pageable pageable);
+    List<BidItemDto> selectBidList(@Param("searchQuery") String searchQuery, @Param("pageable") Pageable pageable, @Param("cid") String cid);
     BidItemDto selectBidItemById(@Param("bidItemId") String bidItemId);
-    int countBidItems(@Param("searchQuery") String searchQuery);
+    int countBidItems(@Param("searchQuery") String searchQuery,  @Param("cid") String cid);
 
     List<BidDto> getBidList(@Param("bidItemId")String bidItemId);
 

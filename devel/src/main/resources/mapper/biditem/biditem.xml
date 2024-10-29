@@ -16,6 +16,7 @@
         btt.item_status AS itemStatus,
         btt.created_by AS memberId,
         btt.cid AS itemCategoryId,
+        ct.cname as cname,
         bii.bid_img_name AS bidImgName,
         bii.bid_img_url AS bidImgUrl,
         bii.bid_ori_img_name AS bidOriImgName,
@@ -30,8 +31,8 @@
         FROM bid_items_tbl btt
         JOIN bid_item_img bii ON btt.bid_item_id = bii.bid_item_id
         LEFT JOIN member_grade_tbl mg ON btt.member_id = mg.member_id
+        join category_tbl ct on btt.cid = ct.cid
         WHERE bii.bid_repimg_yn = 'Y'
-
 
 
 
@@ -44,6 +45,9 @@
     <select id="selectBidList" resultType="com.treasuredigger.devel.dto.BidItemDto">
         <include refid="BaseBidItemQuery" />
         and btt.bid_end_date > now()
+        <if test="cid != null and cid != ''">
+            AND btt.cid = #{cid}
+        </if>
         <if test="searchQuery != null and searchQuery != ''">
             AND (btt.bid_item_name LIKE CONCAT('%', #{searchQuery}, '%')
             OR btt.bid_item_desc LIKE CONCAT('%', #{searchQuery}, '%'))
@@ -58,6 +62,9 @@
         FROM bid_items_tbl btt
         JOIN bid_item_img bii ON btt.bid_item_id = bii.bid_item_id
         WHERE bii.bid_repimg_yn = 'Y'
+        <if test="cid != null and cid != ''">
+            AND btt.cid = #{cid}
+        </if>
         <if test="searchQuery != null and searchQuery != ''">
             AND (btt.bid_item_name LIKE CONCAT('%', #{searchQuery}, '%')
             OR btt.bid_item_desc LIKE CONCAT('%', #{searchQuery}, '%'))

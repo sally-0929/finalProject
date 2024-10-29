@@ -64,9 +64,9 @@ public class BidItemService {
 
 
 
-        public Page<BidItemDto> getList(String searchQuery,Pageable pageable){
-        List<BidItemDto> items = bidItemMapper.selectBidList(searchQuery,pageable);
-        int total = bidItemMapper.countBidItems(searchQuery);
+        public Page<BidItemDto> getList(String searchQuery,Pageable pageable, String cid){
+        List<BidItemDto> items = bidItemMapper.selectBidList(searchQuery,pageable, cid);
+        int total = bidItemMapper.countBidItems(searchQuery, cid);
         return new PageImpl<>(items, pageable, total);
         //return bidItemMapper.selectBidList();
     }
