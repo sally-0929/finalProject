@@ -35,6 +35,8 @@ public class BidController {
 
     private final MemberService memberService;
 
+    private final MemberGradeService memberGradeService;
+
     @GetMapping("/list")
     public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                         @RequestParam(value = "searchQuery", required = false) String searchQuery,
@@ -89,6 +91,8 @@ public class BidController {
 
         try {
             bidItemService.saveItem(BiditemFormDto, itemImgFileList, email);
+            Member member = memberService.findMemberByMid(email);
+            memberGradeService.incrementMgdesc(member);
         } catch (Exception e){
             e.printStackTrace();
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");

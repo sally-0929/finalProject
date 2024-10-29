@@ -41,4 +41,13 @@ public class MemberGradeService {
     public MemberGradeDto getMemberGrade(Long memberId) {
         return memberMapper.getMemberGrade(memberId);
     }
+
+    public void incrementMgdesc(Member member) {
+        MemberGrade memberGrade = memberGradeRepository.findByMember(member);
+        if (memberGrade != null) {
+            memberGrade.setMgdesc(memberGrade.getMgdesc() + 1);
+            checkAndUpdateGradeStatus(memberGrade);
+            memberGradeRepository.save(memberGrade); // 변경된 멤버 등급 저장
+        }
+    }
 }
