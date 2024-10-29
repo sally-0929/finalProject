@@ -1,6 +1,7 @@
 package com.treasuredigger.devel.controller;
 
 import com.treasuredigger.devel.dto.*;
+import com.treasuredigger.devel.entity.BidItem;
 import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.service.*;
 import jakarta.validation.Valid;
@@ -125,6 +126,28 @@ public class BidController {
         log.info("bidList 결과값 : {}", bidList);
         return bidList;
     }
+
+    @GetMapping("/edit/{bidItemId}")
+    public String editBidItemForm(@PathVariable String bidItemId, Model model) {
+        log.info("edit 컨트롤러 실행");
+        try {
+            BidItemDto bidItemDto = bidItemService.viewDtl(bidItemId);
+            model.addAttribute("biditem", bidItemDto);
+            return "biditem/edit";
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외 출력
+            return "error"; // 오류 페이지로 리다이렉트
+        }
+    }
+
+//    @PostMapping("/biditem/edit")
+//    public String editBidItem(@RequestParam String bidItemId, @RequestParam String name,
+//                              @RequestParam String description, @RequestParam("image") MultipartFile image,
+//                              @RequestParam String endDate) {
+//        bidItemService.updateBidItem(bidItemId, name, description, image, endDate);
+//        return "redirect:/biditem/view/" + bidItemId;
+//    }
+
 
     @PostMapping("/cancel")
     public ResponseEntity<String> cancelBidItem(@RequestParam("bidItemId") String bidItemId) {
