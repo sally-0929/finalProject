@@ -22,7 +22,7 @@
 
                 if (count > stock) {
                     alert("재고 수량을 초과했습니다. 남은 재고 : " + stock + "개");
-                    count = Math.max(1, count - 1); // 카운트를 1과 (count - 1) 중 큰 값으로 설정
+                    count = stock; // 재고 수량으로 설정
                     $("#count").val(count); // 수량 업데이트
                 }
                 calculateTotalPrice();
