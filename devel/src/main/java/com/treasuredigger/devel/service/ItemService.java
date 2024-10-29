@@ -3,6 +3,7 @@ package com.treasuredigger.devel.service;
 import com.treasuredigger.devel.dto.ItemFormDto;
 import com.treasuredigger.devel.entity.Item;
 import com.treasuredigger.devel.entity.ItemImg;
+import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.repository.ItemImgRepository;
 import com.treasuredigger.devel.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;

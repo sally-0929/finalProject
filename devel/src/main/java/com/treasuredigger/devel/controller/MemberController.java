@@ -126,4 +126,9 @@ public class MemberController {
         return "redirect:/";
     }
 
+    @GetMapping("/passwordCheck")
+    public String passwordCheck() {
+        return "passwordCheck"; // 해당 뷰 이름
+    }
+
 }
