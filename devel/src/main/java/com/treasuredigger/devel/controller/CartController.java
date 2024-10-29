@@ -32,30 +32,34 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping(value = "/cart")
-    public @ResponseBody ResponseEntity order(@RequestBody @Valid CartItemDto cartItemDto, BindingResult bindingResult, Principal principal){
+    public @ResponseBody ResponseEntity<?> order(@RequestBody @Valid CartItemDto cartItemDto, BindingResult bindingResult, Principal principal) {
+        System.out.println("cart 호출?" + cartItemDto);
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
             for (FieldError fieldError : fieldErrors) {
                 sb.append(fieldError.getDefaultMessage());
             }
-
             return new ResponseEntity<String>(sb.toString(), HttpStatus.BAD_REQUEST);
+        }
+
+        if (principal == null) {
+            return new ResponseEntity<String>("로그인 후 이용해주세요", HttpStatus.UNAUTHORIZED);
         }
 
         String email = principal.getName();
         Long cartItemId;
-
         try {
             cartItemId = cartService.addCart(cartItemDto, email);
-        } catch(Exception e){
+            System.out.print(cartItemId);
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
         return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
     }
+
 
     @GetMapping(value = "/cart")
     public String orderHist(Principal principal, Model model){
@@ -65,7 +69,7 @@ public class CartController {
     }
 
     @PatchMapping(value = "/cartItem/{cartItemId}")
-    public @ResponseBody ResponseEntity updateCartItem(@PathVariable("cartItemId") Long cartItemId, int count, Principal principal){
+    public @ResponseBody ResponseEntity<?> updateCartItem(@PathVariable("cartItemId") Long cartItemId, int count, Principal principal){
 
         if(count <= 0){
             return new ResponseEntity<String>("최소 1개 이상 담아주세요", HttpStatus.BAD_REQUEST);
@@ -78,7 +82,7 @@ public class CartController {
     }
 
     @DeleteMapping(value = "/cartItem/{cartItemId}")
-    public @ResponseBody ResponseEntity deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal){
+    public @ResponseBody ResponseEntity<?> deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal){
 
         if(!cartService.validateCartItem(cartItemId, principal.getName())){
             return new ResponseEntity<String>("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
@@ -90,7 +94,7 @@ public class CartController {
     }
 
     @PostMapping(value = "/cart/orders")
-    public @ResponseBody ResponseEntity orderCartItem(@RequestBody CartOrderDto cartOrderDto, Principal principal){
+    public @ResponseBody ResponseEntity<?> orderCartItem(@RequestBody CartOrderDto cartOrderDto, Principal principal){
 
         List<CartOrderDto> cartOrderDtoList = cartOrderDto.getCartOrderDtoList();
 
