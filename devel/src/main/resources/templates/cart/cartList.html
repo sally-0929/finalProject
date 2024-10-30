@@ -22,7 +22,22 @@
             });
 
             getOrderTotalPrice(); // 초기 총 금액 업데이트
+
+            // 장바구니 상품 재고 체크
+            checkCartItemsStock();
         });
+
+        function checkCartItemsStock() {
+            $("input[name=cartChkBox]").each(function() {
+                var cartItemId = $(this).val();
+                var stockNumber = $("#stock_" + cartItemId).data("stock");
+
+                if (stockNumber <= 0) {
+                    alert($("#price_" + cartItemId).data("item-name") + " 상품이 품절되었습니다.");
+                    deleteCartItem(cartItemId); // cartItemId를 인자로 전달
+                }
+            });
+        }
 
         function getOrderTotalPrice(){
             var orderTotalPrice = 0;
@@ -103,34 +118,31 @@
             });
         }
 
-        function deleteCartItem(obj){
-            var cartItemId = obj.dataset.id;
+        function deleteCartItem(cartItemId) {
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
             var url = "/cartItem/" + cartItemId;
 
             $.ajax({
-                url      : url,
-                type     : "DELETE",
-                beforeSend : function(xhr){
-                    /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
+                url: url,
+                type: "DELETE",
+                beforeSend: function(xhr) {
                     xhr.setRequestHeader(header, token);
                 },
-                dataType : "json",
-                cache   : false,
-                success  : function(result, status){
-                    location.href='/cart';
+                dataType: "json",
+                cache: false,
+                success: function(result, status) {
+                    // 삭제가 성공했을 때, 페이지를 새로고침하여 삭제된 항목을 반영
+                    location.href = '/cart';
                 },
-                error : function(jqXHR, status, error){
-
-                    if(jqXHR.status == '401'){
+                error: function(jqXHR, status, error) {
+                    if (jqXHR.status == '401') {
                         alert('로그인 후 이용해주세요');
-                        location.href='/members/login';
-                    } else{
+                        location.href = '/members/login';
+                    } else {
                         alert(jqXHR.responseJSON.message);
                     }
-
                 }
             });
         }
@@ -251,6 +263,7 @@
                             <span class="input-group mt-2">
                                 <span th:id="'price_' + ${cartItem.cartItemId}"
                                       th:data-price="${cartItem.price}"
+                                      th:data-item-name="${cartItem.itemNm}"
                                       th:text="${#numbers.formatInteger(cartItem.price, 3, 'COMMA') + '원'}" class="align-self-center mr-2">
                                 </span>
                                 <input type="number" name="count" th:id="'count_' + ${cartItem.cartItemId}"
