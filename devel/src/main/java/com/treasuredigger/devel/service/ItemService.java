@@ -1,5 +1,6 @@
 package com.treasuredigger.devel.service;
 
+import com.treasuredigger.devel.constant.ItemSellStatus;
 import com.treasuredigger.devel.dto.ItemFormDto;
 import com.treasuredigger.devel.entity.Item;
 import com.treasuredigger.devel.entity.ItemImg;
@@ -96,6 +97,12 @@ public class ItemService {
     @Transactional(readOnly = true)
     public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
         return itemRepository.getMainItemPage(itemSearchDto, pageable);
+    }
+
+    public ItemSellStatus getItemSellStatus(Long itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(EntityNotFoundException::new);
+        return item.getItemSellStatus();
     }
 
 }

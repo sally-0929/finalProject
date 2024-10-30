@@ -46,12 +46,21 @@
             $("#orderTotalPrice").html(orderTotalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원');
         }
 
-        function changeCount(obj){
-            var count = obj.value;
+        function changeCount(obj) {
+            var count = $(obj).val(); // jQuery로 값 가져오기
             var cartItemId = obj.id.split('_')[1];
             var price = $("#price_" + cartItemId).data("price");
-            var totalPrice = count*price;
-            $("#totalPrice_" + cartItemId).html(totalPrice+"원");
+            var stockNumber = $("#stock_" + cartItemId).data("stock"); // 재고 수량 가져오기
+
+            // 수량이 재고 수량을 초과할 경우 재고 수량으로 설정
+            if (count > stockNumber) {
+                alert("수량이 재고 수량을 초과했습니다.");
+                count = stockNumber; // 수량을 재고 수량으로 변경
+                $(obj).val(count); // jQuery로 입력 필드에 반영
+            }
+
+            var totalPrice = count * price;
+            $("#totalPrice_" + cartItemId).html(totalPrice + "원");
             getOrderTotalPrice();
             updateCartItemCount(cartItemId, count);
         }
@@ -250,6 +259,7 @@
                                 <button type="button" class="close" aria-label="Close">
                                     <span aria-hidden="true" th:data-id="${cartItem.cartItemId}" onclick="deleteCartItem(this)">&times;</span>
                                 </button>
+                                <span th:id="'stock_' + ${cartItem.cartItemId}" th:data-stock="${cartItem.stockNumber}"></span> <!-- 재고 수량을 위한 hidden span -->
                             </span>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 package com.treasuredigger.devel.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.treasuredigger.devel.constant.ItemSellStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,4 +27,5 @@ public class MainItemDto {
         this.price = price;
     }
 
+    private ItemSellStatus itemSellStatus; // 판매 상태 추가
 }
