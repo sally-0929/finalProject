@@ -393,14 +393,14 @@
         <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">즉시구매하기</button>
         <div sec:authorize="isAuthenticated()">
             <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">
-                <button type="button" class="btn btn-primary btn-lg">경매 수정하기</button>
+                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>
             </div>
         </div>
     </div>
     <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">
         <div sec:authorize="isAuthenticated()">
             <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">
-                <button type="button" class="btn btn-primary btn-lg">경매 수정하기</button>
+                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>
                 <button type="button" class="btn btn-primary btn-lg" id="cancelAuctionButton">경매 취소하기</button>
             </div>
         </div>
