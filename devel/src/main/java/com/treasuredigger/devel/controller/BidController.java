@@ -135,7 +135,9 @@ public class BidController {
     public String editBidItemForm(@PathVariable String bidItemId, Model model) {
         log.info("edit 컨트롤러 실행");
         try {
+            model.addAttribute("bidItemFormDto", new BidItemFormDto());
             BidItemDto bidItemDto = bidItemService.viewDtl(bidItemId);
+            model.addAttribute("categories", categoryService.list());
             model.addAttribute("biditem", bidItemDto);
             return "biditem/edit";
         } catch (Exception e) {

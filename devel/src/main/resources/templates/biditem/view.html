@@ -391,16 +391,16 @@
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
         <button type="button" class="btn btn-light border border-primary btn-lg" id="bidButton" sec:authorize="isAuthenticated()">입찰하기</button>
         <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">즉시구매하기</button>
-        <div sec:authorize="isAuthenticated()">
-            <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">
-                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>
-            </div>
-        </div>
+<!--        <div sec:authorize="isAuthenticated()">-->
+<!--            <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">-->
+<!--                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
     <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">
         <div sec:authorize="isAuthenticated()">
             <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">
-                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>
+<!--                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>-->
                 <button type="button" class="btn btn-primary btn-lg" id="cancelAuctionButton">경매 취소하기</button>
             </div>
         </div>
