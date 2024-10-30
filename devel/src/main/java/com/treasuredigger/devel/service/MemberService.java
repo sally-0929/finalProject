@@ -71,6 +71,12 @@ public class MemberService implements UserDetailsService {
 
     public void verifyEmail(String mid) {
         Member member = memberRepository.findByMid(mid);
+        if (member == null) {
+            throw new IllegalStateException("존재하지 않는 회원입니다.");
+        }
+        if (member.isEmailVerified()) {
+            throw new IllegalStateException("이미 인증된 이메일입니다.");
+        }
         member.setEmailVerified(true);
         memberRepository.save(member);
     }

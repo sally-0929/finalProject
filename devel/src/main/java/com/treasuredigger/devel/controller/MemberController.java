@@ -126,9 +126,23 @@ public class MemberController {
         return "redirect:/";
     }
 
-    @GetMapping("/passwordCheck")
+    @GetMapping(value = "/passwordCheck")
     public String passwordCheck() {
-        return "passwordCheck"; // 해당 뷰 이름
+        return "member/passwordCheck"; // 비밀번호 확인 뷰
+    }
+
+    @PostMapping(value = "/passwordCheck")
+    public ResponseEntity<String> verifyPassword(@RequestParam String password) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String mid = authentication.getName(); // 현재 로그인한 사용자의 아이디
+        Member member = memberService.findMemberByMid(mid);
+
+        // 비밀번호 확인
+        if (passwordEncoder.matches(password, member.getPassword())) {
+            return ResponseEntity.ok("비밀번호가 확인되었습니다."); // 성공 메시지
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 틀립니다."); // 실패 메시지
+        }
     }
 
 }
