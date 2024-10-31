@@ -128,6 +128,7 @@ public class CartService {
     @Transactional(readOnly = true)
     public int getTotalCount(String mid) {
         Member member = memberRepository.findByMid(mid);
+        System.out.println(member);
         Cart cart = cartRepository.findByMemberId(member.getId());
         if (cart == null) {
             return 0; // 장바구니가 없으면 0 반환

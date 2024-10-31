@@ -61,10 +61,19 @@
             let email = $("#email").val();
             let csrfToken = $("input[name='_csrf']").val(); // CSRF 토큰 가져오기
 
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
             if (email === '') {
                 alert('이메일을 작성해 주십시오.');
                 $('#messageEmail').empty(); // 메시지 영역 비우기
                 return; // 이메일이 비어있으면 더 이상 진행하지 않음
+            }
+
+            // 이메일 형식이 올바른지 확인
+            if (!emailRegex.test(email)) {
+                alert('유효하지 않은 이메일 형식입니다. 다시 입력해 주세요.');
+                $('#messageEmail').empty(); // 메시지 영역 비우기
+                return;
             }
 
             $.ajax({
@@ -81,6 +90,8 @@
                         if (data === 'useable') {
                             $('#messageEmail').text('사용 가능한 이메일입니다.');
                             $('#emailAuth').text('email코드 발송');
+                        } else if (data === 'already_verified') {
+                            $('#messageEmail').text('이미 인증된 이메일입니다.');
                         } else {
                             $('#messageEmail').text('이미 사용 중인 이메일입니다.');
                             alert('이미 사용중인 이메일입니다. 다시 작성해주세요');
@@ -97,6 +108,19 @@
         function sendEmail() {
             let email = $("#email").val();
             let csrfToken = $("input[name='_csrf']").val();
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email === '') {
+                $('#messageEmail').text('이메일을 작성해 주십시오.');
+                return; // 이메일이 비어있으면 더 이상 진행하지 않음
+            }
+
+            // 이메일 형식이 올바른지 확인
+            if (!emailRegex.test(email)) {
+                $('#messageEmail').text('유효하지 않은 이메일 형식입니다. 다시 입력해 주세요.');
+                return;
+            }
 
             $.ajax({
                 type: 'post',
@@ -173,10 +197,14 @@ function sendSms() {
             xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), csrfToken);
         },
         success: function(data) {
-            alert("휴대폰으로 인증 코드가 발송되었습니다.");
-            $('#smsLabel').show();
-            $('#smsCheck').show();
-            $('#smsCheckBtn').show();
+            if (data.status === 'already_verified') { // 서버가 인증된 전화번호인지 여부를 응답
+                alert("이미 인증된 휴대전화입니다.");
+            } else {
+                alert("휴대폰으로 인증 코드가 발송되었습니다.");
+                $('#smsLabel').show();
+                $('#smsCheck').show();
+                $('#smsCheckBtn').show();
+            }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log('Error:', textStatus, errorThrown);

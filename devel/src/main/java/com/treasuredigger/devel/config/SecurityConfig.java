@@ -1,5 +1,6 @@
 package com.treasuredigger.devel.config;
 
+import com.treasuredigger.devel.service.CustomOAuth2UserService;
 import com.treasuredigger.devel.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
+        this.customOAuth2UserService = customOAuth2UserService;
+    }
 
     @Autowired
     MemberService memberService;
@@ -46,7 +53,9 @@ public class SecurityConfig {
                 ).logout(logoutCustomizer -> logoutCustomizer
                         .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
                         .logoutSuccessUrl("/")
-                )
+                ).oauth2Login(oauth2Login ->
+                        oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
+                                userInfoEndpointConfig.userService(customOAuth2UserService)))
                 .build();
     }
 

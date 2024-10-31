@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -65,7 +67,7 @@ public class MemberService implements UserDetailsService {
         memberRepository.delete(member);
     }
 
-    public Member findMemberByEmail(String email) {
+    public Optional<Member> findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
 
