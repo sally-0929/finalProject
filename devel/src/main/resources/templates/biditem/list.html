@@ -101,6 +101,7 @@
     <div class="container">
         <h2 class="text-center" style="margin-top:50px">카테고리</h2>
         <div class="row justify-content-center flex-nowrap" style="margin:40px 0 20px 0;">
+
             <div class="col-auto">
                 <a th:href="@{/biditem/list}" class="btn rounded-circle category-btn">전체보기</a>
             </div>
@@ -109,11 +110,29 @@
                    class="btn rounded-circle category-btn"
                    th:text="${category.cname}">카테고리</a>
             </div>
+
         </div>
+
     </div>
+    <script>
+            function changeAuctionStatus() {
+                const auctionStatus = document.getElementById("auctionStatus").value;
+                window.location.href = `/biditem/list?auctionStatus=${auctionStatus}`;
+            }
 
+    </script>
 
+    <form id="auctionForm" action="/biditem/list" method="GET">
 
+        <select id="auctionStatus" name="auctionStatus" onchange="changeAuctionStatus()">
+            <option value="" th:selected="${auctionStatus == 'WAIT'}">---경매 상태---</option>
+            <option value="WAIT" th:selected="${auctionStatus == 'WAIT'}">경매 예정</option>
+            <option value="ING" th:selected="${auctionStatus == 'ING'}">경매 중</option>
+            <option value="END" th:selected="${auctionStatus == 'END'}">경매 완료</option>
+        </select>
+
+    </form>
+    
 
         <div class="row">
         <th:block th:each="item, status: ${bidItemList}">
