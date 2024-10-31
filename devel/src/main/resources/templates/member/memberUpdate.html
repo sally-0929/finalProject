@@ -60,6 +60,13 @@
         function checkUserEmail() {
             let email = $("#email").val();
             let csrfToken = $("input[name='_csrf']").val(); // CSRF 토큰 가져오기
+
+            if (email === '') {
+                alert('이메일을 작성해 주십시오.');
+                $('#messageEmail').empty(); // 메시지 영역 비우기
+                return; // 이메일이 비어있으면 더 이상 진행하지 않음
+            }
+
             $.ajax({
                 type: 'post',
                 url: '/email/check',

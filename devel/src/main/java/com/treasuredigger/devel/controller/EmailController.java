@@ -1,5 +1,6 @@
 package com.treasuredigger.devel.controller;
 
+import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.service.EmailService;
 import com.treasuredigger.devel.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,13 @@ public class EmailController {
 
     @PostMapping("/sendAuth")
     public ResponseEntity<String> sendEmailAuth(@RequestParam String email, HttpSession session) {
+        Member member = memberService.findMemberByEmail(email);
+
+        // 이메일이 이미 인증된 경우 처리
+        if (member != null && member.isEmailVerified()) {
+            return ResponseEntity.status(409).body("이미 인증된 이메일입니다.");
+        }
+
         String codeAuth = generateAuthCode(); // 인증 코드 생성
         emailService.sendEmail(email, "이메일 인증 코드", "인증 코드: " + codeAuth);
 
