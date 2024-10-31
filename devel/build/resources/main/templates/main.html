@@ -87,28 +87,44 @@
     </div>
 
     <div class="row">
-        <th:block th:each="item, status: ${items.getContent()}">
-            <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
-                <div class="card">
-                    <a th:href="'/item/' +${item.id}" class="text-dark">
-                        <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 250px; width: 100%; object-fit: contain; object-position: center;">
-                        <div class="card-body">
-                            <!-- 판매 상태 표시 -->
-                            <div>
-                                <span th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge badge-primary">
-                                판매중
-                                </span>
-                                    <span th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge btn-danger">
-                                    품절
-                                </span>
+        <!-- 판매중인 상품 -->
+        <th:block th:each="item : ${items.getContent()}">
+            <th:block th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}">
+                <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
+                    <div class="card">
+                        <a th:href="'/item/' + ${item.id}" class="text-dark">
+                            <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 250px; width: 100%; object-fit: contain; object-position: center;">
+                            <div class="card-body">
+                                <div>
+                                    <span class="badge badge-primary">판매중</span>
+                                </div>
+                                <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.itemNm}]]</span><br>
+                                <span class="card-title text-danger" style="font-size:16px"><span th:text="${item.price}"></span>원</span>
                             </div>
-                            <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.itemNm}]]</span><br>
-                            <span class="card-title text-danger" style="font-size:16px"><span th:text="${item.price}"></span>원
-                            </span>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </th:block>
+        </th:block>
+
+        <!-- 품절 상품 -->
+        <th:block th:each="item : ${items.getContent()}">
+            <th:block th:if="${item.itemSellStatus != T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}">
+                <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
+                    <div class="card">
+                        <a th:href="'/item/' + ${item.id}" class="text-dark">
+                            <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 250px; width: 100%; object-fit: contain; object-position: center;">
+                            <div class="card-body">
+                                <div>
+                                    <span class="badge btn-danger">품절</span>
+                                </div>
+                                <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.itemNm}]]</span><br>
+                                <span class="card-title text-danger" style="font-size:16px"><span th:text="${item.price}"></span>원</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </th:block>
         </th:block>
     </div>
     <script>
