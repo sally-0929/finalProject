@@ -44,7 +44,10 @@
     <!-- 검색 기능 쿼리 -->
     <select id="selectBidList" resultType="com.treasuredigger.devel.dto.BidItemDto">
         <include refid="BaseBidItemQuery" />
-        and btt.bid_end_date > now()
+        <if test="auctionStatus != 'END'">
+        AND btt.bid_end_date > now()
+        </if>
+
         <if test="cid != null and cid != ''">
             AND btt.cid = #{cid}
         </if>
@@ -52,6 +55,11 @@
             AND (btt.bid_item_name LIKE CONCAT('%', #{searchQuery}, '%')
             OR btt.bid_item_desc LIKE CONCAT('%', #{searchQuery}, '%'))
         </if>
+        <if test="auctionStatus != null and auctionStatus != ''">
+        AND btt.item_Status = #{auctionStatus}
+        </if>
+
+
         ORDER BY btt.bid_end_date
         LIMIT #{pageable.offset}, #{pageable.pageSize}
     </select>
