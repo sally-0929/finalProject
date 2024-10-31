@@ -167,7 +167,7 @@
                     <input type="hidden" th:value="${item.price}" id="price" name="price">
                     <span id="priceDisplay"></span>
                 </div>
-                <div class="input-group w-50">
+                <div th:if="${item.stockNumber > 0}" class="input-group w-50">
                     <div class="input-group-prepend">
                         <span class="input-group-text">수량</span>
                     </div>
