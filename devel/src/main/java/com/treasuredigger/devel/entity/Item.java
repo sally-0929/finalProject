@@ -9,8 +9,6 @@ import jakarta.persistence.*;
 import com.treasuredigger.devel.dto.ItemFormDto;
 import com.treasuredigger.devel.exception.OutOfStockException;
 
-import java.util.List;
-
 @Entity
 @Table(name="item")
 @Getter
@@ -46,10 +44,6 @@ public class Item extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_id") // 판매자 ID 컬럼
     private Member seller;
-
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Wishlist> wishlists;
-
 
     public void updateItem(ItemFormDto itemFormDto){
         this.itemNm = itemFormDto.getItemNm();

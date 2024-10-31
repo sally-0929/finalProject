@@ -141,52 +141,12 @@
             margin-top: 70px;
             white-space: pre-wrap;
         }
-
-        .heart-button {
-            font-size: 24px;
-            color: grey;
-            cursor: pointer;
-        }
-        .heart-button.liked {
-            color: red;
-
     </style>
 </th:block>
 
 <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%;">
 
     <input type="hidden" id="itemId" th:value="${item.id}">
-
-    <script>
-        $(document).ready(function() {
-            $('.heart-button').click(function() {
-                var itemId = $(this).data('item-id');
-                var memberId = $(this).data('member-id');
-                var action = $(this).hasClass('liked') ? 'remove' : 'add';
-
-                $.ajax({
-                    url: '/wishlist/' + action,
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ itemId: itemId, memberId: memberId }),
-                    success: function() {
-                        if (action === 'add') {
-                            $('.heart-button').addClass('liked');
-                        } else {
-                            $('.heart-button').removeClass('liked');
-                        }
-                    },
-                    error: function() {
-                        alert('오류가 발생했습니다. 다시 시도해 주세요.');
-                    }
-                });
-            });
-        });
-    
-
-
-    <!-- 찜하기 버튼 -->
-    <i class="heart-button" th:classappend="${isLiked ? ' liked' : ''}" data-item-id="${biditem.bidItemId}" data-member-id="${currentUserId}">&#9829;
 
     <div class="d-flex">
         <div class="repImgDiv">
