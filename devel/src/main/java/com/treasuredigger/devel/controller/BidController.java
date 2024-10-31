@@ -40,19 +40,19 @@ public class BidController {
     @GetMapping("/list")
     public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                         @RequestParam(value = "searchQuery", required = false) String searchQuery,
-                        @RequestParam(value = "cid", required = false) String cid){
+                        @RequestParam(value = "cid", required = false) String cid, @RequestParam(value ="auctionStatus" , required = false) String auctionStatus){
             if(page <0 ) page = 0;
-
+            log.info("auctionStatus ++ " + auctionStatus);
             bidItemService.updateItemStatuses();
             Pageable pageable = PageRequest.of(page, 15);
-            Page<BidItemDto> bidItemPage = bidItemService.getList(searchQuery,pageable, cid);
+            Page<BidItemDto> bidItemPage = bidItemService.getList(searchQuery,pageable, cid, auctionStatus);
             log.info("model value ++ " + bidItemPage);
 
             model.addAttribute("categories", categoryService.list());
            model.addAttribute("bidItemList", bidItemPage.getContent());
            model.addAttribute("currentPage", bidItemPage.getNumber());
            model.addAttribute("totalPages", bidItemPage.getTotalPages());
-
+            model.addAttribute("auctionStatus", auctionStatus);
            log.info("category List Page data +++" + categoryService.list());
 
            log.info("현재페이지 로그" + bidItemPage.getNumber());

@@ -96,7 +96,7 @@
                 cache: false,
                 success: function(result, status){
                     alert("상품을 장바구니에 담았습니다.");
-                    location.href = '/';
+                    location.href = '/cart';
                 },
                 error: function(jqXHR, status, error){
 
@@ -167,7 +167,7 @@
                     <input type="hidden" th:value="${item.price}" id="price" name="price">
                     <span id="priceDisplay"></span>
                 </div>
-                <div class="input-group w-50">
+                <div th:if="${item.stockNumber > 0}" class="input-group w-50">
                     <div class="input-group-prepend">
                         <span class="input-group-text">수량</span>
                     </div>
@@ -175,9 +175,16 @@
                 </div>
             </div>
             <hr class="my-4">
-            남은 수량 : <span id="stockDisplay" th:text="${item.stockNumber}"></span>개
+            남은 수량 : <span id="stockDisplay" th:text="${item.stockNumber}"></span>개 <br>
 
-            <div class="text-right mgt-50">
+            판매자 :<span class="h4" th:text="${item.sellerId}"></span>
+                <img style="width:20px;" th:if="${item.sellerRole == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
+                <img style="width:20px;" th:if="${item.sellerRole == 'SILVER'}" th:src="@{/images/silver.png}" alt="Silver" />
+                <img style="width:20px;" th:if="${item.sellerRole == 'GOLD'}" th:src="@{/images/gold.png}" alt="Gold" />
+                <img style="width:20px;" th:if="${item.sellerRole == 'VIP'}" th:src="@{/images/vip.png}" alt="VIP" />
+                <img style="width:20px;" th:if="${item.sellerRole == 'VVIP'}" th:src="@{/images/vvip.png}" alt="VVIP" />
+
+            <div th:if="${item.stockNumber > 0}" class="text-right mgt-50">
                 <h5>결제 금액</h5>
                 <h3 id="totalPrice" class="font-weight-bold"></h3>
             </div>
