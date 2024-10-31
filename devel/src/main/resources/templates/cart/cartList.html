@@ -29,6 +29,11 @@
             // X 버튼 클릭 이벤트 수정
             $(document).on("click", ".close span", function() {
                 var cartItemId = $(this).data("id"); // data-id 속성에서 cartItemId를 가져옴
+                // 삭제 확인 대화상자
+                var confirmDelete = confirm("정말 삭제하시겠습니까?");
+                if (!confirmDelete) {
+                    return; // 사용자가 취소하면 함수를 종료
+                }
                 deleteCartItem(cartItemId);
             });
         });

@@ -43,6 +43,10 @@ public class Item extends BaseEntity {
     @JoinColumn(name = "cid", referencedColumnName = "cid")
     private ItemCategory itemCategory;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id") // 판매자 ID 컬럼
+    private Member seller;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wishlist> wishlists;
 

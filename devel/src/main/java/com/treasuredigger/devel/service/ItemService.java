@@ -9,7 +9,11 @@ import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.repository.CategoryRepository;
 import com.treasuredigger.devel.repository.ItemImgRepository;
 import com.treasuredigger.devel.repository.ItemRepository;
+import com.treasuredigger.devel.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,14 +43,31 @@ public class ItemService {
 
     private final CategoryRepository itemCategoryRepository;
 
+    private final MemberRepository memberRepository;
+
+
     public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
 
         // 카테고리 가져오기
         ItemCategory itemCategory = itemCategoryRepository.findById(itemFormDto.getCid())
                 .orElseThrow(EntityNotFoundException::new); // 카테고리 ID 추가
 
+        // 현재 로그인한 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserMid = authentication.getName(); // 현재 로그인한 사용자의 mid (이메일 혹은 ID)
+
+        // Member 객체 찾기
+        Member currentMember = memberRepository.findByMid(currentUserMid);
+        if (currentMember == null) {
+            throw new EntityNotFoundException("Member not found");
+        }
+
         //상품 등록
         Item item = itemFormDto.createItem(itemCategory);
+        itemRepository.save(item);
+
+        // 아이템에 판매자 설정
+        item.setSeller(currentMember);
         itemRepository.save(item);
 
         //이미지 등록
@@ -78,6 +99,11 @@ public class ItemService {
                 .orElseThrow(EntityNotFoundException::new);
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
+
+        Member seller = item.getSeller();
+        itemFormDto.setSellerId(seller.getMid());
+        itemFormDto.setSellerRole(seller.getMemberGrade().getMemberGradeStatus().name());
+
         return itemFormDto;
     }
 

@@ -17,6 +17,9 @@ public class ItemFormDto {
 
     private Long id;
 
+    private String sellerId; // 판매자 ID
+    private String sellerRole; // 판매자 권한
+
     @NotBlank(message = "카테고리 ID는 필수 입력 값입니다.")
     private String cid;
 
