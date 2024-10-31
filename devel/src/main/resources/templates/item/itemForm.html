@@ -65,6 +65,14 @@
             <input type="hidden" th:field="*{itemSellStatus}" value="SELL">
         </div>
 
+        <div class="form-group">
+            <select th:field="*{cid}" class="custom-select">
+                <option value="">카테고리를 선택하세요</option>
+                <option th:each="category : ${categories}" th:value="${category.cid}" th:text="${category.cname}"
+                        th:selected="*{cid} == ${category.cid}"></option>
+            </select>
+        </div>
+
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text">상품명</span>

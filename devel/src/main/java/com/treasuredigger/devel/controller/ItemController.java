@@ -1,7 +1,9 @@
 package com.treasuredigger.devel.controller;
 
 import com.treasuredigger.devel.entity.Item;
+import com.treasuredigger.devel.entity.ItemCategory;
 import com.treasuredigger.devel.entity.Member;
+import com.treasuredigger.devel.service.CategoryService;
 import com.treasuredigger.devel.service.ItemService;
 import com.treasuredigger.devel.service.MemberGradeService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,10 +35,12 @@ import java.util.Optional;
 public class ItemController {
 
     private final ItemService itemService;
+    private final CategoryService categoryService;
 
     @GetMapping(value = "/admin/item/new")
-    public String itemForm(Model model){
+    public String itemForm(Model model) {
         model.addAttribute("itemFormDto", new ItemFormDto());
+        model.addAttribute("categories", categoryService.list());
         return "item/itemForm";
     }
 
@@ -45,11 +49,13 @@ public class ItemController {
                           Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
 
         if(bindingResult.hasErrors()){
+            model.addAttribute("categories", categoryService.list());
             return "item/itemForm";
         }
 
         if(itemImgFileList.get(0).isEmpty() && itemFormDto.getId() == null){
             model.addAttribute("errorMessage", "첫번째 상품 이미지는 필수 입력 값 입니다.");
+            model.addAttribute("categories", categoryService.list());
             return "item/itemForm";
         }
 
@@ -57,6 +63,7 @@ public class ItemController {
             itemService.saveItem(itemFormDto, itemImgFileList);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
+            model.addAttribute("categories", categoryService.list());
             return "item/itemForm";
         }
 
@@ -69,9 +76,11 @@ public class ItemController {
         try {
             ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
             model.addAttribute("itemFormDto", itemFormDto);
+            model.addAttribute("categories", categoryService.list());
         } catch(EntityNotFoundException e){
             model.addAttribute("errorMessage", "존재하지 않는 상품 입니다.");
             model.addAttribute("itemFormDto", new ItemFormDto());
+            model.addAttribute("categories", categoryService.list());
             return "item/itemForm";
         }
 
@@ -82,11 +91,13 @@ public class ItemController {
     public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
                              @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList, Model model){
         if(bindingResult.hasErrors()){
+            model.addAttribute("categories", categoryService.list());
             return "item/itemForm";
         }
 
         if(itemImgFileList.get(0).isEmpty() && itemFormDto.getId() == null){
             model.addAttribute("errorMessage", "첫번째 상품 이미지는 필수 입력 값 입니다.");
+            model.addAttribute("categories", categoryService.list());
             return "item/itemForm";
         }
 
@@ -94,6 +105,7 @@ public class ItemController {
             itemService.updateItem(itemFormDto, itemImgFileList);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 수정 중 에러가 발생하였습니다.");
+            model.addAttribute("categories", categoryService.list());
             return "item/itemForm";
         }
 

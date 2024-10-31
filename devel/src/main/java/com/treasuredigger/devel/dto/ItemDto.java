@@ -23,4 +23,8 @@ public class ItemDto {
 
     private LocalDateTime updateTime;
 
+    private String cname;
+
+    private String itemCategoryId;
+
 }

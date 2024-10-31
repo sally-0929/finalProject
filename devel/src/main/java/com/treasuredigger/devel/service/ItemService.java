@@ -3,8 +3,10 @@ package com.treasuredigger.devel.service;
 import com.treasuredigger.devel.constant.ItemSellStatus;
 import com.treasuredigger.devel.dto.ItemFormDto;
 import com.treasuredigger.devel.entity.Item;
+import com.treasuredigger.devel.entity.ItemCategory;
 import com.treasuredigger.devel.entity.ItemImg;
 import com.treasuredigger.devel.entity.Member;
+import com.treasuredigger.devel.repository.CategoryRepository;
 import com.treasuredigger.devel.repository.ItemImgRepository;
 import com.treasuredigger.devel.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +37,16 @@ public class ItemService {
 
     private final ItemImgRepository itemImgRepository;
 
+    private final CategoryRepository itemCategoryRepository;
+
     public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
 
+        // 카테고리 가져오기
+        ItemCategory itemCategory = itemCategoryRepository.findById(itemFormDto.getCid())
+                .orElseThrow(EntityNotFoundException::new); // 카테고리 ID 추가
+
         //상품 등록
-        Item item = itemFormDto.createItem();
+        Item item = itemFormDto.createItem(itemCategory);
         itemRepository.save(item);
 
         //이미지 등록
@@ -78,6 +86,12 @@ public class ItemService {
         Item item = itemRepository.findById(itemFormDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemFormDto);
+
+        // 카테고리 업데이트
+        ItemCategory itemCategory = itemCategoryRepository.findById(itemFormDto.getCid())
+                .orElseThrow(EntityNotFoundException::new); // 카테고리 ID 추가
+        item.setItemCategory(itemCategory); // 카테고리 설정
+
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 
         //이미지 등록
@@ -104,5 +118,11 @@ public class ItemService {
                 .orElseThrow(EntityNotFoundException::new);
         return item.getItemSellStatus();
     }
+
+    @Transactional(readOnly = true)
+    public Page<MainItemDto> getMainItemPageByCategory(String cid, ItemSearchDto itemSearchDto, Pageable pageable) {
+        return itemRepository.getMainItemPageByCategory(cid, itemSearchDto, pageable);
+    }
+
 
 }

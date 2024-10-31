@@ -76,38 +76,12 @@
         <h2 class="text-center" style="margin-top:50px">카테고리</h2>
         <div class="row justify-content-center flex-nowrap" style="margin:40px 0 20px 0;">
             <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
+                <a th:href="@{/}" class="btn rounded-circle category-btn">전체보기</a>
             </div>
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
-            </div>
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
-            </div>
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
-            </div>
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row justify-content-center flex-nowrap" style="margin:40px 0 80px 0;">
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
-            </div>
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
-            </div>
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
-            </div>
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
-            </div>
-            <div class="col-auto">
-                <a href="/" class="btn rounded-circle category-btn">카테고리</a>
+            <div th:each="category : ${categories}" class="col-auto">
+                <a th:href="@{/(cid=${category.cid})}"
+                   class="btn rounded-circle category-btn"
+                   th:text="${category.cname}">카테고리</a>
             </div>
         </div>
     </div>
