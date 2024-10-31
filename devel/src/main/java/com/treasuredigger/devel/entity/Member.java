@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="member")
 @Getter @Setter
@@ -44,6 +46,10 @@ public class Member extends BaseEntity {
     public Member() {
 
     }
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Wishlist> wishlists;
+
 
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder){
         Member member = new Member();

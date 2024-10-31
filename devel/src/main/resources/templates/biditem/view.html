@@ -197,6 +197,14 @@
             <hr class="my-4">
             입찰횟수 :<div class="h4" th:text="${biditem.bidCount-1}"></div>
 
+            <!-- 찜하기 버튼 -->
+            <form th:action="@{/wishlist/add}" method="post">
+
+                <input type="hidden" name="itemId" th:value="0" />
+                <input type="hidden" name="bidItemId" th:value="${biditem.bidItemId}" />
+                <button type="submit">찜하기</button>
+            </form>
+
             <button type="button" class="btn btn-primary" id="bidListButton" th:data-biditemid="${biditem.bidItemId}">입찰 목록 보기</button>
 
             <!-- 입찰목록 모달 창 -->
@@ -313,6 +321,7 @@
                     bidNowPriceInput.value = currentPrice + price;
                 }
             </script>
+
 
 
 
