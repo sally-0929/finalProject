@@ -1,6 +1,7 @@
 package com.treasuredigger.devel.dto;
 
 import com.treasuredigger.devel.constant.ItemStatus;
+import com.treasuredigger.devel.entity.BidItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -41,8 +42,17 @@ public class BidItemDto {
 
     private List<BIdItemImgDto> biditemImgDtoList = new ArrayList<>();
 
-
-
-
-}
+    public BidItem convertDtoToEntity(BidItemDto bidItemDto) {
+        BidItem bidItem = new BidItem();
+        bidItem.setBidItemId(bidItemDto.getBidItemId());
+        bidItem.setBidItemName(bidItemDto.getBidItemName());
+        bidItem.setBidItemDesc(bidItemDto.getBidItemDesc());
+        bidItem.setStartPrice(bidItemDto.getStartPrice());
+        bidItem.setMaxPrice(bidItemDto.getMaxPrice());
+        bidItem.setBidStartDate(bidItemDto.getBidStartDate());
+        bidItem.setBidEndDate(bidItemDto.getBidEndDate());
+        bidItem.setItemStatus(ItemStatus.valueOf(bidItemDto.getItemStatus()));
+        return bidItem;
+        }
+    }
 
