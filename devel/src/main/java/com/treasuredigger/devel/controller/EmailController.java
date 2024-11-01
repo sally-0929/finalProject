@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/email")
 public class EmailController {
@@ -21,20 +23,31 @@ public class EmailController {
 
     @PostMapping("/check")
     public ResponseEntity<String> checkEmail(@RequestParam String email) {
-        boolean emailExists = memberService.findMemberByEmail(email) != null;
+        Optional<Member> memberOpt = memberService.findMemberByEmail(email);
 
-        if (emailExists) {
-            return ResponseEntity.ok("un-useable");
+        if (memberOpt.isPresent()) {
+            Member member = memberOpt.get();
+            if (member.isEmailVerified()) {
+                return ResponseEntity.ok("already_verified"); // 이미 인증된 이메일
+            }
+            return ResponseEntity.ok("un-useable"); // 사용 중인 이메일
         }
-        return ResponseEntity.ok("useable");
+        return ResponseEntity.ok("useable"); // 사용 가능한 이메일
     }
 
     @PostMapping("/sendAuth")
     public ResponseEntity<String> sendEmailAuth(@RequestParam String email, HttpSession session) {
-        Member member = memberService.findMemberByEmail(email);
+        Optional<Member> memberOpt = memberService.findMemberByEmail(email);
+
+        // 이메일이 존재하지 않는 경우 처리
+        if (memberOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("존재하지 않는 이메일입니다.");
+        }
+
+        Member member = memberOpt.get(); // Optional에서 Member 가져오기
 
         // 이메일이 이미 인증된 경우 처리
-        if (member != null && member.isEmailVerified()) {
+        if (member.isEmailVerified()) {
             return ResponseEntity.status(409).body("이미 인증된 이메일입니다.");
         }
 

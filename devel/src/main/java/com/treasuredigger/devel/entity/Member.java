@@ -2,8 +2,7 @@ package com.treasuredigger.devel.entity;
 
 import com.treasuredigger.devel.constant.Role;
 import com.treasuredigger.devel.dto.MemberFormDto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.persistence.*;
@@ -11,6 +10,9 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="member")
 @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class Member extends BaseEntity {
 
     @Id
@@ -31,6 +33,8 @@ public class Member extends BaseEntity {
 
     private String phone;
 
+    private String provider;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -40,10 +44,6 @@ public class Member extends BaseEntity {
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL) // MemberGrade와의 관계
     private MemberGrade memberGrade;
-
-    public Member() {
-
-    }
 
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder){
         Member member = new Member();
@@ -65,6 +65,25 @@ public class Member extends BaseEntity {
         this.email = memberFormDto.getEmail();
         this.phone = memberFormDto.getPhone();
         this.address = memberFormDto.getAddress();
+    }
+
+    @Builder
+    public Member(Long id, String name, String email, String password, Role role, String provider) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.provider = provider;
+    }
+
+    public Member update(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getRoleKey() {
+        return this.role.getKey();
     }
 
 }
