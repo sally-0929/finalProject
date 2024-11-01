@@ -206,7 +206,7 @@
             <p class="lead" th:text="${item.itemDetail}"></p>
         </div>
     </div>
-
+5
     <div th:each="itemImg : ${item.itemImgDtoList}" class="text-center">
         <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="600">
     </div>

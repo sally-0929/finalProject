@@ -195,7 +195,7 @@
 <!--            </span>-->
             <div class="h4" th:text="${biditem.bidItemName}"></div>
             <hr class="my-4">
-            입찰횟수 :<div class="h4" th:text="${biditem.bidCount-1}"></div>
+            입찰횟수 <div class="h4" th:text="${biditem.bidCount-1}"></div>
 
             <button type="button" class="btn btn-primary" id="bidListButton" th:data-biditemid="${biditem.bidItemId}">입찰 목록 보기</button>
 
@@ -277,7 +277,7 @@
 
 
             <hr class="my-4">
-            현재 입찰가 :
+            현재 입찰가
             <input type="number"   class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" th:min="${minPrice}" max="${biditem.maxPrice}" required>
             <div id="priceButtons">
                 <button type="button" class="btn btn-secondary" onclick="addBidPrice(1000)">1,000원</button>
@@ -319,11 +319,11 @@
 
             <input type="hidden" id="minPrice" th:value="${minPrice}">
             <hr class="my-4">
-            즉시 구매값 :<div class="h4" id="formattedMaxPrice" th:text="${biditem.maxPrice}"></div>
+            즉시 구매값 <div class="h4" id="formattedMaxPrice" th:text="${biditem.maxPrice}"></div>
 
 
             <h3 class="card-title text-danger" th:attr="data-enddate=${biditem.bidEndDate}"></h3>
-            남은시간 : <p th:id="'remainingTime-' + ${biditem.bidItemId}">남은 시간 계산 중...</p>
+            남은 시간<p th:id="'remainingTime-' + ${biditem.bidItemId}">남은 시간 계산 중...</p>
 
 
 
@@ -365,7 +365,7 @@
             </script>
 
 
-            마감기한:
+            마감기한
             <div id="formattedEndDate" class="h4" th:text="${biditem.bidEndDate}"></div>
 
             <script>
@@ -379,7 +379,7 @@
                     document.getElementById('formattedEndDate').textContent = formattedEndDate;
                 });
             </script>
-            판매자 :<div class="h4" th:text="${biditem.memberId}"></div>
+            판매자<br><span class="h4" th:text="${biditem.memberId}"></span>
             <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
             <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
             <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
@@ -501,16 +501,17 @@
     <div th:if="${biditem.itemStatus != 'ING' and biditem.itemStatus != 'WAIT'}" class="text-right">
         <button type="button" class="btn btn-danger btn-lg">경매종료</button>
     </div>
+    <div class="text-right" style="margin-top:10px;">
+        <button type="button" class="btn btn-primary btn-lg" th:onclick="'location.href=\'/biditem/list\''">목록으로</button>
+    </div>
 
-    <button type="button" class="btn btn-primary btn-lg" th:onclick="'location.href=\'/biditem/list\''">목록으로</button>
-
-        <div class="jumbotron jumbotron-fluid mgt-30">
-                    <div class="container">
-                        <h4 class="display-5">상품 상세 설명</h4>
-                        <hr class="my-4">
-                        <p class="lead" th:text="${biditem.bidItemDesc}"></p>
-                    </div>
-                </div>
+    <div>
+        <hr class="my-4">
+        <div class="itemDesc-container">
+            <h4>상품 상세 설명</h4>
+            <p class="lead" th:text="${biditem.bidItemDesc}"></p>
+        </div>
+    </div>
 
                 <div th:if="${biditem.biditemImgDtoList != null and #lists.size(biditem.biditemImgDtoList) > 0}" class="text-center">
                     <div th:each="itemImg, iterStat : ${biditem.biditemImgDtoList}">
