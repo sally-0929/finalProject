@@ -8,6 +8,10 @@
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
 </head>
 
 
@@ -175,6 +179,22 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+
+.wishlist-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.wishlist-btn .fa-heart {
+    font-size: 24px;
+    color: grey;
+}
+
+.wishlist-btn .fa-heart.red {
+    color: red;
+}
     </style>
 </th:block>
 
@@ -194,6 +214,66 @@
 <!--                품절-->
 <!--            </span>-->
             <div class="h4" th:text="${biditem.bidItemName}"></div>
+
+            <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn">
+                <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
+            </button>
+
+
+             <script>
+                $(document).ready(function() {
+                    var csrfToken = $('meta[name="_csrf"]').attr('content');
+                    var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+                    var bidItemId = $('#biditemId').val();
+                    var heartIcon = $('#heartIcon');
+
+                    // 페이지 로드 시 찜 여부 확인
+                    $.ajax({
+                        url: '/wishlist/check',
+                        type: 'GET',
+                        data: { bidItemId: bidItemId },
+                        success: function(response) {
+                            if (response) {
+                                heartIcon.addClass('red');
+                            } else {
+                                heartIcon.removeClass('red');
+                            }
+                        }
+                    });
+
+                    // 찜 버튼 클릭 시 토글
+                    $('#wishlistButton').click(function() {
+                        $.ajax({
+                            url: '/wishlist/toggle',
+                            type: 'POST',
+                            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                            data: { bidItemId: bidItemId },
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader(csrfHeader, csrfToken);
+                            },
+                            success: function(response) {
+                                if (heartIcon.hasClass('red')) {
+                                    heartIcon.removeClass('red');
+                                    alert('찜 해제되었습니다.');
+                                } else {
+                                    heartIcon.addClass('red');
+                                    alert('찜 등록되었습니다.');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log('Status:', status);
+                                console.log('Error:', error);
+                                console.log('ResponseText:', xhr.responseText);
+                                alert('찜 기능에 실패했습니다.');
+                            }
+                        });
+                    });
+                });
+            </script>
+
+
+
+
             <hr class="my-4">
             입찰횟수 <div class="h4" th:text="${biditem.bidCount-1}"></div>
 
