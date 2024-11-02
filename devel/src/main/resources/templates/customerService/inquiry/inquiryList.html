@@ -160,10 +160,10 @@
     </thead>
     <tbody>
     <tr th:each="inquiry : ${inquiries}">
-      <td>
-        <span th:text="${inquiry.member.name.substring(0, inquiry.member.name.length() - 1)}"></span>
-        <span>*</span>
-      </td>
+<!--      <td>-->
+<!--        <span th:text="${inquiry.member.name.substring(0, inquiry.member.name.length() - 1)}"></span>-->
+<!--        <span>*</span>-->
+<!--      </td>-->
       <td style="cursor: pointer;">
         <a th:href="@{/customer-service/inquiries/{id}(id=${inquiry.id})}" th:text="${inquiry.title}" style="display: block; height: 100%; width: 100%; text-align: left; text-decoration: none; color: inherit;"></a>
       </td>

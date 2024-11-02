@@ -18,6 +18,7 @@ public class OAuthAttributes {
     private String name;
     private String email;
     private String registrationId; // 제공자 정보를 추가
+    private String id;
 
     public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         OAuthAttributes oAuthAttributes;
@@ -47,10 +48,12 @@ public class OAuthAttributes {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         return OAuthAttributes.builder()
+                .id((String) response.get("id"))
                 .name((String) response.get("name"))
                 .email((String) response.get("email"))
                 .attributes(response)
-                .nameAttributeKey(userNameAttributeName)
+                .nameAttributeKey("id") // Naver에서 사용할 사용자 ID 속성
+                .registrationId("naver") // 제공자 정보 설정
                 .build();
     }
 
@@ -63,7 +66,12 @@ public class OAuthAttributes {
             throw new IllegalArgumentException("Invalid Kakao response: Missing account or profile");
         }
 
+        // Kakao ID를 가져올 때 Long을 String으로 변환
+        Object kakaoIdObj = attributes.get("id");
+        String kakaoId = (kakaoIdObj instanceof Long) ? String.valueOf(kakaoIdObj) : (String) kakaoIdObj;
+
         return OAuthAttributes.builder()
+                .id(kakaoId)
                 .name((String) profile.get("nickname"))
                 .email((String) response.get("email"))
                 .attributes(attributes)
@@ -73,6 +81,7 @@ public class OAuthAttributes {
 
     public Member toEntity() {
         return Member.builder()
+                .mid(id)
                 .name(name)
                 .email(email)
                 .role(Role.USER)
