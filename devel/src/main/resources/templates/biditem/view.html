@@ -11,106 +11,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-
 </head>
-
-
-
-<!-- 사용자 스크립트 추가 -->
-<th:block layout:fragment="script">
-<!--    <script th:inline="javascript">-->
-<!--        $(document).ready(function(){-->
-<!--            var price = $("#price").val();-->
-<!--            $("#priceDisplay").html(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원');-->
-<!--            calculateTotalPrice();-->
-
-<!--            $("#count").change(function(){-->
-<!--                calculateTotalPrice();-->
-<!--            });-->
-<!--        });-->
-
-<!--        function calculateTotalPrice(){-->
-<!--            var count = $("#count").val();-->
-<!--            var price = $("#price").val();-->
-<!--            var totalPrice = price * count;-->
-<!--            $("#totalPrice").html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원'); // 콤마 추가-->
-<!--        }-->
-
-<!--        function order(){-->
-<!--            var token = $("meta[name='_csrf']").attr("content");-->
-<!--            var header = $("meta[name='_csrf_header']").attr("content");-->
-
-<!--            var url = "/order";-->
-<!--            var paramData = {-->
-<!--                itemId: $("#itemId").val(),-->
-<!--                count: $("#count").val()-->
-<!--            };-->
-
-<!--            var param = JSON.stringify(paramData);-->
-
-<!--            $.ajax({-->
-<!--                url: url,-->
-<!--                type: "POST",-->
-<!--                contentType: "application/json",-->
-<!--                data: param,-->
-<!--                beforeSend: function(xhr){-->
-<!--                    xhr.setRequestHeader(header, token);-->
-<!--                },-->
-<!--                dataType: "json",-->
-<!--                cache: false,-->
-<!--                success: function(result, status){-->
-<!--                    alert("주문이 완료 되었습니다.");-->
-<!--                    location.href = '/';-->
-<!--                },-->
-<!--                error: function(jqXHR, status, error){-->
-<!--                    if(jqXHR.status == '401'){-->
-<!--                        alert('로그인 후 이용해주세요');-->
-<!--                        location.href = '/members/login';-->
-<!--                    } else {-->
-<!--                        alert(jqXHR.responseText);-->
-<!--                    }-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-
-<!--        function addCart(){-->
-<!--            var token = $("meta[name='_csrf']").attr("content");-->
-<!--            var header = $("meta[name='_csrf_header']").attr("content");-->
-
-<!--            var url = "/cart";-->
-<!--            var paramData = {-->
-<!--                itemId: $("#itemId").val(),-->
-<!--                count: $("#count").val()-->
-<!--            };-->
-
-<!--            var param = JSON.stringify(paramData);-->
-
-<!--            $.ajax({-->
-<!--                url: url,-->
-<!--                type: "POST",-->
-<!--                contentType: "application/json",-->
-<!--                data: param,-->
-<!--                beforeSend: function(xhr){-->
-<!--                    xhr.setRequestHeader(header, token);-->
-<!--                },-->
-<!--                dataType: "json",-->
-<!--                cache: false,-->
-<!--                success: function(result, status){-->
-<!--                    alert("상품을 장바구니에 담았습니다.");-->
-<!--                    location.href = '/';-->
-<!--                },-->
-<!--                error: function(jqXHR, status, error){-->
-<!--                    if(jqXHR.status == '401'){-->
-<!--                        alert('로그인 후 이용해주세요');-->
-<!--                        location.href = '/members/login';-->
-<!--                    } else {-->
-<!--                        alert(jqXHR.responseText);-->
-<!--                    }-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-<!--    </script>-->
-</th:block>
 
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
@@ -124,25 +25,47 @@
         .mgt-50 {
             margin-top: 50px;
         }
-        .repImgDiv {
-            margin-right: 15px;
-            height: auto;
-            width: 50%;
-        }
         .repImg {
             width: 100%;
             height: 400px;
             object-fit: contain;
             object-position: center;
         }
+        .carousel-img {
+            width: 104px;
+            height: 130px;
+            cursor: pointer;
+            object-fit: contain;
+            object-position: center;
+            margin-top:15px;
+            border:5px solid silver;
+            padding:3px;
+            border-radius:10px;
+        }
+        .flex-container {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+        }
+        .flex-item {
+            flex: 1;
+            margin-right: 100px;
+        }
+        .flex-item:last-child {
+            margin-right: 0;
+        }
+        .thumbnail-container {
+            display: flex;
+            gap: 10px;
+        }
         .wd50 {
             height: auto;
             width: 50%;
         }
-       .modal {
+.modal {
   display: none;
   position: fixed;
-  z-index: 1050;
+  z-index: 10000;
   left: 0;
   top: 0;
   width: 100%;
@@ -160,7 +83,7 @@
   width: 800px;
   height: 800px;
   position: absolute;
-  z-index:1200px;
+  z-index:1200;
   top: 500px;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -179,12 +102,17 @@
   text-decoration: none;
   cursor: pointer;
 }
-
-
+.d-flex {
+    display: flex; /* flexbox를 사용하여 가로로 배치 */
+    align-items: flex-start; /* 버튼과 제목을 상단 정렬 */
+    justify-content: space-between; /* 양 끝으로 배치 */
+}
 .wishlist-btn {
     background: none;
     border: none;
     cursor: pointer;
+    margin: 0; /* 버튼의 여백 제거 */
+    padding: 0; /* 패딩 제거하여 크기 최소화 */
 }
 
 .wishlist-btn .fa-heart {
@@ -195,281 +123,297 @@
 .wishlist-btn .fa-heart.red {
     color: red;
 }
+
+.wishlist-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
     </style>
 </th:block>
 
 <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%;">
 
     <input type="hidden" id="biditemId" th:value="${biditem.bidItemId}">
-
-    <div class="d-flex">
-        <div class="repImgDiv">
-            <img th:src="${biditem.biditemImgDtoList[0].imgUrl}" class="rounded repImg">
-        </div>
-        <div class="wd50">
-<!--            <span th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge badge-primary mgb-15">-->
-<!--                판매중-->
-<!--            </span>-->
-<!--            <span th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge btn-danger mgb-15">-->
-<!--                품절-->
-<!--            </span>-->
-            <div class="h4" th:text="${biditem.bidItemName}"></div>
-
-            <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn">
-                <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
-            </button>
-
-
-             <script>
-                $(document).ready(function() {
-                    var csrfToken = $('meta[name="_csrf"]').attr('content');
-                    var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
-                    var bidItemId = $('#biditemId').val();
-                    var heartIcon = $('#heartIcon');
-
-                    // 페이지 로드 시 찜 여부 확인
-                    $.ajax({
-                        url: '/wishlist/check',
-                        type: 'GET',
-                        data: { bidItemId: bidItemId },
-                        success: function(response) {
-                            if (response) {
-                                heartIcon.addClass('red');
-                            } else {
-                                heartIcon.removeClass('red');
-                            }
-                        }
-                    });
-
-                    // 찜 버튼 클릭 시 토글
-                    $('#wishlistButton').click(function() {
-                        $.ajax({
-                            url: '/wishlist/toggle',
-                            type: 'POST',
-                            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                            data: { bidItemId: bidItemId },
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader(csrfHeader, csrfToken);
-                            },
-                            success: function(response) {
-                                if (heartIcon.hasClass('red')) {
-                                    heartIcon.removeClass('red');
-                                    alert('찜 해제되었습니다.');
-                                } else {
-                                    heartIcon.addClass('red');
-                                    alert('찜 등록되었습니다.');
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                console.log('Status:', status);
-                                console.log('Error:', error);
-                                console.log('ResponseText:', xhr.responseText);
-                                alert('찜 기능에 실패했습니다.');
-                            }
-                        });
-                    });
-                });
-            </script>
-
-
-
-
-            <hr class="my-4">
-            입찰횟수 :<div class="h4" th:text="${biditem.bidCount-1}"></div>
-
-            <button type="button" class="btn btn-primary" id="bidListButton" th:data-biditemid="${biditem.bidItemId}">입찰 목록 보기</button>
-
-            <!-- 입찰목록 모달 창 -->
-            <div class="modal fade" id="bidListModal" tabindex="-1" role="dialog" aria-labelledby="bidListModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="bidListModalLabel">입찰 목록</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <table id="bidTable" class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th scope="col">번호</th>
-                                    <th scope="col">금액</th>
-                                    <th scope="col">등록자</th>
-                                    <th scope="col">시간</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                        </div>
-                    </div>
+    <div style="width: 80%; margin: 0 auto;">
+        <div class="flex-container mb-4">
+            <!-- 큰 이미지 -->
+            <div class="flex-item">
+                <img id="largeImage" th:src="${biditem.biditemImgDtoList[0].imgUrl}" class="rounded repImg">
+                <div class="thumbnail-container mb-4">
+                    <!-- 조그만 이미지 -->
+                    <img th:each="itemImg : ${biditem.biditemImgDtoList}" th:if="${not #strings.isEmpty(itemImg.imgUrl)}"
+                         th:src="${itemImg.imgUrl}" class="thumbnail-img carousel-img" alt="썸네일 이미지">
                 </div>
+                <span style="color:gray">※ 이미지를 클릭하면 크게 볼 수 있습니다.</span>
             </div>
+            <div class="wd50">
+                <div class="flex-item" style="margin-right:0 !important">
+                    <div class="d-flex justify-content-between mb-2">
+                    <div></div> <!-- 빈 div로 첫 번째 줄을 비우기 위해 추가 -->
+                    <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn">
+                        <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
+                    </button>
+                </div>
+                <div class="h4" th:text="${biditem.bidItemName}"></div> <!-- 제목이 두 번째 줄에 위치 -->
+                </div>
 
-            <script>
-                $(document).ready(function() {
-                    $('#bidListButton').click(function() {
-                        var bidItemId = $(this).data('biditemid');
-                        console.log('AJAX 요청 시작. Bid Item ID:', bidItemId);  // 로그 추가
 
+                 <script>
+                    $(document).ready(function() {
+                        var csrfToken = $('meta[name="_csrf"]').attr('content');
+                        var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+                        var bidItemId = $('#biditemId').val();
+                        var heartIcon = $('#heartIcon');
+
+                        // 큰 이미지 초기 설정
+                        $("#largeImage").attr("src", $(".thumbnail-img").first().attr("src"));
+
+                        // 조그만 이미지 클릭 시 큰 이미지로 변경
+                        $(".thumbnail-img").click(function() {
+                            var src = $(this).attr("src");
+                            $("#largeImage").attr("src", src);
+                        });
+
+                        // 페이지 로드 시 찜 여부 확인
                         $.ajax({
-                            url: '/biditem/getBidList',
+                            url: '/wishlist/check',
                             type: 'GET',
                             data: { bidItemId: bidItemId },
-                            dataType: 'json',
-                            success: function(data) {
-                                console.log('Data received:', data);  // 데이터 수신 로그
-                                var bidTableBody = $('#bidTable tbody');
-                                bidTableBody.empty();
-                                var formatter = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' });
-
-                                $.each(data, function(index, bid) {
-
-                                    if(index === data.length -1 ) {
-                                        return true;
-                                    }
-                                    bidTableBody.append(
-                                        '<tr>' +
-                                        '<td>' + bid.rownum + '</td>' +
-                                        '<td>' + bid.bidRegPrice.toLocaleString('ko-KR') + '원</td>' +
-                                        '<td>' + bid.createdBy + '</td>' +
-                                        '<td>' + moment(bid.regtime).format('YYYY-MM-DD HH:mm:ss') + '</td>' +
-                                        '</tr>'
-                                    );
-                                });
-                                $('#bidListModal').modal('show');
-                            },
-                            error: function(xhr, status, error) {
-
-                                alert('로그인 후 이용가능합니다.');
-                                window.location.href= '/members/login';
+                            success: function(response) {
+                                if (response) {
+                                    heartIcon.addClass('red');
+                                } else {
+                                    heartIcon.removeClass('red');
+                                }
                             }
                         });
+
+                        // 찜 버튼 클릭 시 토글
+                        $('#wishlistButton').click(function() {
+                            $.ajax({
+                                url: '/wishlist/toggle',
+                                type: 'POST',
+                                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                                data: { bidItemId: bidItemId },
+                                beforeSend: function(xhr) {
+                                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                                },
+                                success: function(response) {
+                                    if (heartIcon.hasClass('red')) {
+                                        heartIcon.removeClass('red');
+                                        alert('찜 해제되었습니다.');
+                                    } else {
+                                        heartIcon.addClass('red');
+                                        alert('찜 등록되었습니다.');
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.log('Status:', status);
+                                    console.log('Error:', error);
+                                    console.log('ResponseText:', xhr.responseText);
+                                    alert('찜 기능에 실패했습니다.');
+                                }
+                            });
+                        });
                     });
-                });
-            </script>
+                </script>
 
 
 
 
-            <hr class="my-4">
-            현재 입찰가 :
-            <input type="number"   class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" th:min="${minPrice}" max="${biditem.maxPrice}" required>
-            <div id="priceButtons">
-                <button type="button" class="btn btn-secondary" onclick="addBidPrice(1000)">1,000원</button>
-                <button type="button" class="btn btn-secondary" onclick="addBidPrice(5000)">5,000원</button>
-                <button type="button" class="btn btn-secondary" onclick="addBidPrice(10000)">10,000원</button>
-            </div>
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    var bidNowPrice = parseInt(document.getElementById("bidNowPrice").value, 10);
+                <hr class="my-4">
+                입찰횟수 <div class="h4" th:text="${biditem.bidCount-1}"></div>
 
-                    if (bidNowPrice >= 100000) {
-                        var priceButtonsDiv = document.getElementById("priceButtons");
+                <button type="button" class="btn btn-primary" id="bidListButton" th:data-biditemid="${biditem.bidItemId}">입찰목록보기</button>
 
-                        var btn50000 = document.createElement("button");
-                        btn50000.type = "button";
-                        btn50000.className = "btn btn-secondary";
-                        btn50000.onclick = function() { addBidPrice(50000); };
-                        btn50000.textContent = "50,000원";
-                        priceButtonsDiv.appendChild(btn50000);
-
-                        var btn100000 = document.createElement("button");
-                        btn100000.type = "button";
-                        btn100000.className = "btn btn-secondary";
-                        btn100000.onclick = function() { addBidPrice(100000); };
-                        btn100000.textContent = "100,000원";
-                        priceButtonsDiv.appendChild(btn100000);
-                    }
-                });
-
-                function addBidPrice(price) {
-                    var bidNowPriceInput = document.getElementById("bidNowPrice");
-                    var currentPrice = parseInt(bidNowPriceInput.value, 10);
-                    bidNowPriceInput.value = currentPrice + price;
-                }
-            </script>
-
-
-
-
-            <input type="hidden" id="minPrice" th:value="${minPrice}">
-            <hr class="my-4">
-            즉시 구매값 :<div class="h4" id="formattedMaxPrice" th:text="${biditem.maxPrice}"></div>
-
-
-            <h3 class="card-title text-danger" th:attr="data-enddate=${biditem.bidEndDate}"></h3>
-            남은시간 : <p th:id="'remainingTime-' + ${biditem.bidItemId}">남은 시간 계산 중...</p>
-
-
-
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    const endDateElement = document.querySelector('.card-title.text-danger');
-                    const endDateStr = endDateElement.getAttribute('data-enddate');
-                    const endDate = new Date(endDateStr);
-                    const remainingTimeElement = document.querySelector('p[id^="remainingTime-"]');
-
-                    var maxPriceElement = document.getElementById('formattedMaxPrice');
-                    var maxPrice = parseInt(maxPriceElement.textContent, 10); //
-                    maxPriceElement.textContent = maxPrice.toLocaleString('ko-KR') + '원';
-
-                    function updateRemainingTime() {
-                        const now = new Date();
-                        const timeDiff = endDate - now;
-
-                        if (timeDiff <= 0) {
-                            remainingTimeElement.textContent = '경매 종료';
-                            return;
-                        }
-
-                        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-                        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-                        remainingTimeElement.textContent = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초 남음`;
-
-                        if (timeDiff <= 1000 * 60 * 60 * 24) {
-                            remainingTimeElement.style.color = 'red';
-                        }
-                    }
-
-                    updateRemainingTime();
-                    setInterval(updateRemainingTime, 1000);
-                });
-            </script>
-
-
-            마감기한:
-            <div id="formattedEndDate" class="h4" th:text="${biditem.bidEndDate}"></div>
-
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    const bidEndDateStr = "[[${biditem.bidEndDate}]]";
-                    const bidEndDate = new Date(bidEndDateStr);
-
-                    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-                    const formattedEndDate = new Intl.DateTimeFormat('ko-KR', options).format(bidEndDate);
-
-                    document.getElementById('formattedEndDate').textContent = formattedEndDate;
-                });
-            </script>
-            판매자 :<div class="h4" th:text="${biditem.memberId}"></div>
-            <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
-            <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
-            <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
-            <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'VIP'}" th:src="@{/images/vip.png}" alt="vip" />
-            <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'VVIP'}" th:src="@{/images/vvip.png}" alt="vvip" />
+                <!-- 입찰목록 모달 창 -->
+                <div class="modal fade" id="bidListModal" tabindex="-1" role="dialog" aria-labelledby="bidListModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="bidListModalLabel">입찰 목록</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <table id="bidTable" class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">번호</th>
+                                        <th scope="col">금액</th>
+                                        <th scope="col">등록자</th>
+                                        <th scope="col">시간</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <script>
+                    $(document).ready(function() {
+                        $('#bidListButton').click(function() {
+                            var bidItemId = $(this).data('biditemid');
+                            console.log('AJAX 요청 시작. Bid Item ID:', bidItemId);  // 로그 추가
+
+                            $.ajax({
+                                url: '/biditem/getBidList',
+                                type: 'GET',
+                                data: { bidItemId: bidItemId },
+                                dataType: 'json',
+                                success: function(data) {
+                                    console.log('Data received:', data);  // 데이터 수신 로그
+                                    var bidTableBody = $('#bidTable tbody');
+                                    bidTableBody.empty();
+                                    var formatter = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' });
+
+                                    $.each(data, function(index, bid) {
+
+                                        if(index === data.length -1 ) {
+                                            return true;
+                                        }
+                                        bidTableBody.append(
+                                            '<tr>' +
+                                            '<td>' + bid.rownum + '</td>' +
+                                            '<td>' + bid.bidRegPrice.toLocaleString('ko-KR') + '원</td>' +
+                                            '<td>' + bid.createdBy + '</td>' +
+                                            '<td>' + moment(bid.regtime).format('YYYY-MM-DD HH:mm:ss') + '</td>' +
+                                            '</tr>'
+                                        );
+                                    });
+                                    $('#bidListModal').modal('show');
+                                },
+                                error: function(xhr, status, error) {
+
+                                    alert('로그인 후 이용가능합니다.');
+                                    window.location.href= '/members/login';
+                                }
+                            });
+                        });
+                    });
+                </script>
 
 
+
+
+                <hr class="my-4">
+                현재 입찰가
+                <input type="number"   class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" th:min="${minPrice}" max="${biditem.maxPrice}" required>
+                <div id="priceButtons">
+                    <button type="button" class="btn btn-secondary" onclick="addBidPrice(1000)">1,000원</button>
+                    <button type="button" class="btn btn-secondary" onclick="addBidPrice(5000)">5,000원</button>
+                    <button type="button" class="btn btn-secondary" onclick="addBidPrice(10000)">10,000원</button>
+                </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var bidNowPrice = parseInt(document.getElementById("bidNowPrice").value, 10);
+
+                        if (bidNowPrice >= 100000) {
+                            var priceButtonsDiv = document.getElementById("priceButtons");
+
+                            var btn50000 = document.createElement("button");
+                            btn50000.type = "button";
+                            btn50000.className = "btn btn-secondary";
+                            btn50000.onclick = function() { addBidPrice(50000); };
+                            btn50000.textContent = "50,000원";
+                            priceButtonsDiv.appendChild(btn50000);
+
+                            var btn100000 = document.createElement("button");
+                            btn100000.type = "button";
+                            btn100000.className = "btn btn-secondary";
+                            btn100000.onclick = function() { addBidPrice(100000); };
+                            btn100000.textContent = "100,000원";
+                            priceButtonsDiv.appendChild(btn100000);
+                        }
+                    });
+
+                    function addBidPrice(price) {
+                        var bidNowPriceInput = document.getElementById("bidNowPrice");
+                        var currentPrice = parseInt(bidNowPriceInput.value, 10);
+                        bidNowPriceInput.value = currentPrice + price;
+                    }
+                </script>
+
+
+
+
+                <input type="hidden" id="minPrice" th:value="${minPrice}">
+                <hr class="my-4">
+                즉시 구매값 <div class="h4" id="formattedMaxPrice" th:text="${biditem.maxPrice}"></div>
+
+
+                <h3 class="card-title text-danger" th:attr="data-enddate=${biditem.bidEndDate}"></h3>
+                남은 시간<p th:id="'remainingTime-' + ${biditem.bidItemId}">남은 시간 계산 중...</p>
+
+
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const endDateElement = document.querySelector('.card-title.text-danger');
+                        const endDateStr = endDateElement.getAttribute('data-enddate');
+                        const endDate = new Date(endDateStr);
+                        const remainingTimeElement = document.querySelector('p[id^="remainingTime-"]');
+
+                        var maxPriceElement = document.getElementById('formattedMaxPrice');
+                        var maxPrice = parseInt(maxPriceElement.textContent, 10); //
+                        maxPriceElement.textContent = maxPrice.toLocaleString('ko-KR') + '원';
+
+                        function updateRemainingTime() {
+                            const now = new Date();
+                            const timeDiff = endDate - now;
+
+                            if (timeDiff <= 0) {
+                                remainingTimeElement.textContent = '경매 종료';
+                                return;
+                            }
+
+                            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+                            remainingTimeElement.textContent = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초 남음`;
+
+                            if (timeDiff <= 1000 * 60 * 60 * 24) {
+                                remainingTimeElement.style.color = 'red';
+                            }
+                        }
+
+                        updateRemainingTime();
+                        setInterval(updateRemainingTime, 1000);
+                    });
+                </script>
+
+
+                마감기한
+                <div id="formattedEndDate" th:text="${biditem.bidEndDate}"></div>
+                <br>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const bidEndDateStr = "[[${biditem.bidEndDate}]]";
+                        const bidEndDate = new Date(bidEndDateStr);
+
+                        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+                        const formattedEndDate = new Intl.DateTimeFormat('ko-KR', options).format(bidEndDate);
+
+                        document.getElementById('formattedEndDate').textContent = formattedEndDate;
+                    });
+                </script>
+                판매자 <span class="h4" th:text="${biditem.memberId}"></span>
+                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
+                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
+                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
+                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'VIP'}" th:src="@{/images/vip.png}" alt="vip" />
+                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'VVIP'}" th:src="@{/images/vvip.png}" alt="vvip" />
+            </div>
+        </div>
 
     <!-- 입찰 버튼 표시 조건 -->
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
@@ -489,17 +433,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
 
     <script>
         $(document).ready(function() {
@@ -581,25 +514,26 @@
     <div th:if="${biditem.itemStatus != 'ING' and biditem.itemStatus != 'WAIT'}" class="text-right">
         <button type="button" class="btn btn-danger btn-lg">경매종료</button>
     </div>
+    <div class="text-right" style="margin-top:10px;">
+        <button type="button" class="btn btn-primary btn-lg" th:onclick="'location.href=\'/biditem/list\''">목록으로</button>
+    </div>
 
-    <button type="button" class="btn btn-primary btn-lg" th:onclick="'location.href=\'/biditem/list\''">목록으로</button>
+    <div>
+        <hr class="my-4">
+        <div class="itemDesc-container">
+            <h4>상품 상세 설명</h4>
+            <p style="white-space: pre-wrap; margin-top:30px" th:text="${biditem.bidItemDesc}"></p>
+        </div>
+    </div>
 
-        <div class="jumbotron jumbotron-fluid mgt-30">
-                    <div class="container">
-                        <h4 class="display-5">상품 상세 설명</h4>
-                        <hr class="my-4">
-                        <p class="lead" th:text="${biditem.bidItemDesc}"></p>
-                    </div>
-                </div>
-
-                <div th:if="${biditem.biditemImgDtoList != null and #lists.size(biditem.biditemImgDtoList) > 0}" class="text-center">
-                    <div th:each="itemImg, iterStat : ${biditem.biditemImgDtoList}">
-                        <div th:if="${iterStat.index < 5}">
-                            <img th:if="${itemImg.imgUrl != null}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" style="width: 800px;">
-                        </div>
-                    </div>
-                </div>
-
+    <div th:if="${biditem.biditemImgDtoList != null and #lists.size(biditem.biditemImgDtoList) > 0}" class="text-center">
+        <div th:each="itemImg, iterStat : ${biditem.biditemImgDtoList}">
+            <div th:if="${iterStat.index < 5}">
+                <img th:if="${itemImg.imgUrl != null}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" style="width: 600px;">
             </div>
+        </div>
+    </div>
 
-            </html>
+    </div>
+</div>
+</html>
