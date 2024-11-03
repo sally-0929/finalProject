@@ -37,17 +37,19 @@ public class EmailController {
 
     @PostMapping("/sendAuth")
     public ResponseEntity<String> sendEmailAuth(@RequestParam String email, HttpSession session) {
-        Optional<Member> memberOpt = memberService.findMemberByEmail(email);
-
-        // 이메일이 존재하지 않는 경우 처리
-        if (memberOpt.isEmpty()) {
-            return ResponseEntity.status(404).body("존재하지 않는 이메일입니다.");
-        }
-
-        Member member = memberOpt.get(); // Optional에서 Member 가져오기
+        Member member = memberService.findNormalMemberByEmail(email);
+        //        Optional<Member> memberOpt = memberService.findMemberByEmail(email);
+//
+//        // 이메일이 존재하지 않는 경우 처리
+//        if (memberOpt.isEmpty()) {
+//            return ResponseEntity.status(404).body("존재하지 않는 이메일입니다.");
+//        }
+//
+//        Member member = memberOpt.get(); // Optional에서 Member 가져오기
 
         // 이메일이 이미 인증된 경우 처리
-        if (member.isEmailVerified()) {
+        if(member != null && member.isEmailVerified()){
+//        if (member.isEmailVerified()) {
             return ResponseEntity.status(409).body("이미 인증된 이메일입니다.");
         }
 

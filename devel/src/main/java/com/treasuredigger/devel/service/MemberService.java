@@ -67,6 +67,10 @@ public class MemberService implements UserDetailsService {
         memberRepository.delete(member);
     }
 
+    public Member findNormalMemberByEmail(String email){
+        return memberRepository.findNormalByEmail(email);
+    }
+
     public Optional<Member> findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
     }

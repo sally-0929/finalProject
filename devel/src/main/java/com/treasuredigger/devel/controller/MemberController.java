@@ -60,7 +60,12 @@ public class MemberController {
     }
 
     @GetMapping(value = "/login")
-    public String loginMember(){
+    public String loginMember(Model model, HttpServletRequest request) {
+        // 세션에서 에러 메시지를 가져와서 모델에 추가
+        if (request.getSession().getAttribute("loginErrorMsg") != null) {
+            model.addAttribute("loginErrorMsg", request.getSession().getAttribute("loginErrorMsg"));
+            request.getSession().removeAttribute("loginErrorMsg"); // 메시지를 한 번만 보여주기 위해 제거
+        }
         return "/member/memberLoginForm";
     }
 
