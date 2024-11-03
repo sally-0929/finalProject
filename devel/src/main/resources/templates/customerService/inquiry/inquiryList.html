@@ -160,10 +160,9 @@
     </thead>
     <tbody>
     <tr th:each="inquiry : ${inquiries}">
-<!--      <td>-->
-<!--        <span th:text="${inquiry.member.name.substring(0, inquiry.member.name.length() - 1)}"></span>-->
-<!--        <span>*</span>-->
-<!--      </td>-->
+      <td>
+        <span id="member-name" th:text="${inquiry.member.name}"></span>
+      </td>
       <td style="cursor: pointer;">
         <a th:href="@{/customer-service/inquiries/{id}(id=${inquiry.id})}" th:text="${inquiry.title}" style="display: block; height: 100%; width: 100%; text-align: left; text-decoration: none; color: inherit;"></a>
       </td>
@@ -203,6 +202,17 @@
 
 
 <div th:replace="~{fragments/footer::footer}"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const memberNameElement = document.getElementById("member-name");
+      const name = memberNameElement.textContent;
+      if (name) {
+          memberNameElement.textContent = name.slice(0, -1) + '*'; // 마지막 글자를 *로 변경
+      }
+  });
+</script>
+
 
 </body>
 </html>

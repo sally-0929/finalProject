@@ -80,12 +80,21 @@ public class OAuthAttributes {
     }
 
     public Member toEntity() {
-        return Member.builder()
+        // Member 객체를 생성
+        Member member = Member.builder()
                 .mid(id)
                 .name(name)
                 .email(email)
-                .role(Role.USER)
-                .provider(registrationId) // 제공자 설정
+                .role(Role.MEMBER)
+                .provider(registrationId)
                 .build();
+
+        // MemberGrade 객체 생성
+        MemberGrade memberGrade = new MemberGrade(member); // MemberGrade 생성 시 Member 객체 전달
+
+        // Member 객체에 MemberGrade 설정
+        member.setMemberGrade(memberGrade);
+
+        return member;
     }
 }

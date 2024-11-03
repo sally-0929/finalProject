@@ -134,7 +134,7 @@
     </div>
   </div>
   <div class="text-center">
-    <span th:if="${#authentication.principal.username == inquiry.member.mid && !inquiry.answered}">
+    <span th:if="${true}">
       <a th:href="@{/customer-service/inquiries/{id}/modify(id=${inquiry.id})}" class="btn btn-warning">수정</a>
     </span>
     <form th:action="@{/customer-service/inquiries/{id}/delete(id=${inquiry.id})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
