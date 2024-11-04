@@ -4,11 +4,13 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/layout2}">
 
+
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
 
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 </head>
@@ -410,15 +412,21 @@
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
-                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'VIP'}" th:src="@{/images/vip.png}" alt="vip" />
-                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'VVIP'}" th:src="@{/images/vvip.png}" alt="vvip" />
+                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'VIP'}" th:src="@{/images/gold.png}" alt="vip" />
+                <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'VVIP'}" th:src="@{/images/gold.png}" alt="vvip" />
             </div>
         </div>
 
     <!-- 입찰 버튼 표시 조건 -->
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
         <button type="button" class="btn btn-light border border-primary btn-lg" id="bidButton" sec:authorize="isAuthenticated()">입찰하기</button>
-        <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">즉시구매하기</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="onClickBuyNow('[[${biditem.bidItemId}]]')">즉시구매하기</button>
+        <script>
+            function onClickBuyNow(itemId) {
+            alert('공사중입니다');
+
+    }
+        </script>
 <!--        <div sec:authorize="isAuthenticated()">-->
 <!--            <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">-->
 <!--                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>-->
@@ -427,10 +435,10 @@
     </div>
     <div th:if="${biditem.itemStatus == 'WAIT'}" class="text-right">
         <div sec:authorize="isAuthenticated()">
-            <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">
-<!--                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>-->
-                <button type="button" class="btn btn-primary btn-lg" id="cancelAuctionButton">경매 취소하기</button>
-            </div>
+<!--            <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">-->
+<!--&lt;!&ndash;                <a th:href="@{/biditem/edit/{id}(id=${biditem.bidItemId})}" class="btn btn-primary btn-lg">경매 수정하기</a>&ndash;&gt;-->
+<!--                <button type="button" class="btn btn-primary btn-lg" id="cancelAuctionButton">경매 취소하기</button>-->
+<!--            </div>-->
         </div>
     </div>
 
