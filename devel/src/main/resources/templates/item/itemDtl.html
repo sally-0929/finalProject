@@ -6,6 +6,7 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <!-- 사용자 스크립트 추가 -->
@@ -159,6 +160,27 @@
             display: flex;
             gap: 10px;
         }
+        .wishlist-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin: 0; /* 버튼의 여백 제거 */
+    padding: 0; /* 패딩 제거하여 크기 최소화 */
+}
+
+.wishlist-btn .fa-heart {
+    font-size: 24px;
+    color: grey;
+}
+
+.wishlist-btn .fa-heart.red {
+    color: red;
+}
+
+.wishlist-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
     </style>
 </th:block>
 
@@ -185,6 +207,62 @@
                 <span th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge btn-danger mgb-15">
                     품절
                 </span>
+                <div></div> <!-- 빈 div로 첫 번째 줄을 비우기 위해 추가 -->
+                <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn">
+                    <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
+                </button>
+
+                <script>
+                    $(document).ready(function() {
+                        var csrfToken = $('meta[name="_csrf"]').attr('content');
+                        var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+                        var bidItemId = $('#itemId').val();
+                        var heartIcon = $('#heartIcon');
+
+                        // 페이지 로드 시 찜 여부 확인
+                        $.ajax({
+                            url: '/wishlist/check',
+                            type: 'GET',
+                            data: { ItemId: ItemId },
+                            success: function(response) {
+                                if (response) {
+                                    heartIcon.addClass('red');
+                                } else {
+                                    heartIcon.removeClass('red');
+                                }
+                            }
+                        });
+
+                        // 찜 버튼 클릭 시 토글
+                        $('#wishlistButton').click(function() {
+                            $.ajax({
+                                url: '/wishlist/toggle',
+                                type: 'POST',
+                                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                                data: { ItemId: ItemId },
+                                beforeSend: function(xhr) {
+                                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                                },
+                                success: function(response) {
+                                    if (heartIcon.hasClass('red')) {
+                                        heartIcon.removeClass('red');
+                                        alert('찜 해제되었습니다.');
+                                    } else {
+                                        heartIcon.addClass('red');
+                                        alert('찜 등록되었습니다.');
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.log('Status:', status);
+                                    console.log('Error:', error);
+                                    console.log('ResponseText:', xhr.responseText);
+                                    alert('찜 기능에 실패했습니다.');
+                                }
+                            });
+                        });
+                    });
+                </script>
+
                 <div class="h4" th:text="${item.itemNm}"></div>
                 <hr class="my-4">
 
