@@ -27,6 +27,9 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus; //주문상태
 
+    @Column(name = "total_amount")
+    private int totalAmount;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL
             , orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -46,6 +49,7 @@ public class Order extends BaseEntity {
 
         order.setOrderStatus(OrderStatus.ORDER);
         order.setOrderDate(LocalDateTime.now());
+        order.setTotalAmount(order.getTotalPrice());
         return order;
     }
 
@@ -59,6 +63,7 @@ public class Order extends BaseEntity {
 
     public void cancelOrder() {
         this.orderStatus = OrderStatus.CANCEL;
+        this.totalAmount = 0;
         for (OrderItem orderItem : orderItems) {
             orderItem.cancel();
         }

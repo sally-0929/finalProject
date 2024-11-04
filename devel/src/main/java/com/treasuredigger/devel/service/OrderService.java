@@ -35,6 +35,8 @@ public class OrderService {
 
     private final ItemImgRepository itemImgRepository;
 
+    private final MemberGradeService memberGradeService;
+
     public Long order(OrderDto orderDto, String mid){
 
         Item item = itemRepository.findById(orderDto.getItemId())
@@ -47,7 +49,8 @@ public class OrderService {
         orderItemList.add(orderItem);
         Order order = Order.createOrder(member, orderItemList);
         orderRepository.save(order);
-
+        // 주문 후 회원 등급 갱신
+        memberGradeService.incrementMgdesc(member);
         return order.getId();
     }
 
@@ -93,7 +96,11 @@ public class OrderService {
     public void cancelOrder(Long orderId){
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(EntityNotFoundException::new);
+        int orderTotalPrice = order.getTotalPrice();
         order.cancelOrder();
+
+        Member member = order.getMember();
+        memberGradeService.deductFromMgdesc(member, orderTotalPrice);
     }
 
     public Long orders(List<OrderDto> orderDtoList, String mid){
@@ -111,6 +118,8 @@ public class OrderService {
 
         Order order = Order.createOrder(member, orderItemList);
         orderRepository.save(order);
+        // 주문 후 회원 등급 갱신
+        memberGradeService.incrementMgdesc(member);
 
         return order.getId();
     }
