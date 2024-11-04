@@ -50,7 +50,7 @@
 
             </li>
 
-            <form class="form-inline my-2 my-lg-0" th:action="@{/}" method="get">
+            <form id="searchForm" class="form-inline my-2 my-lg-0" th:action="@{/}" method="get">
                 <input name="searchQuery" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
@@ -76,6 +76,18 @@
                         'width=1000,height=800,scrollbars=yes,resizable=yes' // 팝업창 크기 및 속성
                     );
                 }
+
+                // 현재 URL 확인 후 특정 경로에 따라 검색 폼을 숨김
+                window.onload = function() {
+                    const currentUrl = window.location.pathname;
+                    const searchForm = document.getElementById("searchForm");
+
+                    // 특정 경로가 포함된 경우 검색 폼 숨기기
+                    if (currentUrl.includes("/customer-service/inquiries")) {
+                        searchForm.style.display = "none";
+                    } else {
+                    }
+                };
             </script>
         </div>
     </nav>
