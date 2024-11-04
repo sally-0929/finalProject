@@ -100,6 +100,10 @@ public class ItemService {
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
 
+        if (item.getItemCategory() != null) {
+            itemFormDto.setCid(item.getItemCategory().getCid());
+        }
+
         Member seller = item.getSeller();
         itemFormDto.setSellerId(seller.getMid());
         itemFormDto.setSellerRole(seller.getMemberGrade().getMemberGradeStatus().name());
