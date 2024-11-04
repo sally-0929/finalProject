@@ -100,7 +100,7 @@
 
     <div class="container">
         <h2 class="text-center" style="margin-top:50px">카테고리</h2>
-        <div class="row justify-content-center flex-nowrap" style="margin:40px 0 20px 0;">
+        <div class="row justify-content-center flex-nowrap" style="margin:40px 0 50px 0;">
             <div class="col-auto">
                 <a th:href="@{/biditem/list(auctionStatus=${auctionStatus})}" class="btn rounded-circle category-btn" data-cid="">전체보기</a>
             </div>
@@ -153,19 +153,19 @@
         <div class="row">
         <th:block th:each="item, status: ${bidItemList}">
             <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
-                <div class="card">
+                <div class="card" style="border:none;">
                     <a th:href="'/biditem/view/' + ${item.bidItemId}" class="text-dark">
-                        <img th:src="${item.bidImgUrl}" class="card-img-top" style="height: 250px; width: 100%; object-fit: contain; object-position: center;">
+                        <img th:src="${item.bidImgUrl}" class="card-img-top" style="height: 250px; width: 100%; object-fit: contain; object-position: center; border:1px solid lightgray; border-radius:10px;">
                         <div class="card-body">
 
-                            <p class="card-text;" style="font-size:12px">
-                                <span th:if="${item.itemStatus eq 'WAIT'}">경매대기중</span>
-                                <span th:if="${item.itemStatus eq 'ING'}">경매중</span>
-                                <span th:if="${item.itemStatus eq 'END'}">경매종료</span>
-                                <span th:if="${item.itemStatus ne 'WAIT' and item.itemStatus ne 'ING' and item.itemStatus ne 'END'}">알 수 없음</span>
+                            <p class="card-text;">
+                                <span class="badge badge-warning" th:if="${item.itemStatus eq 'WAIT'}">경매대기중</span>
+                                <span class="badge badge-primary" th:if="${item.itemStatus eq 'ING'}">경매중</span>
+                                <span class="badge btn-danger" th:if="${item.itemStatus eq 'END'}">경매종료</span>
+                                <span class="badge btn-danger" th:if="${item.itemStatus ne 'WAIT' and item.itemStatus ne 'ING' and item.itemStatus ne 'END'}">알 수 없음</span>
                             </p>
 
-                            <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.bidItemName}]]</span><br>
+                            <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%; margin-bottom:0px">[[${item.bidItemName}]]</span><br>
                             <span class="card-title" style="font-size:16px">
                                 현재가 : <span id="currentPrice-[[${item.bidItemId}]]">[[${item.bidNowPrice}]]</span>원
                             </span><br>
