@@ -173,7 +173,20 @@
     </tbody>
   </table>
   <div class="text-right">
-    <a th:href="@{/customer-service/inquiries/register}" class="btn btn-primary">문의하기</a>
+    <!-- 비로그인 상태에서 보이는 버튼 -->
+    <a th:if="${#authentication.name == 'anonymousUser'}"
+       href="javascript:void(0);"
+       class="btn btn-primary"
+       onclick="alert('로그인 후 이용해주세요'); location.href='/members/login';">
+      문의하기
+    </a>
+
+    <!-- 로그인 상태에서 보이는 버튼 -->
+    <a th:if="${#authentication.name != 'anonymousUser'}"
+       th:href="@{/customer-service/inquiries/register}"
+       class="btn btn-primary">
+      문의하기
+    </a>
   </div>
 </div>
 
