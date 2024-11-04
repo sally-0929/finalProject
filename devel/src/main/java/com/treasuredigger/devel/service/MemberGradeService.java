@@ -63,6 +63,16 @@ public class MemberGradeService {
         }
     }
 
+    public int calculateAmountForNextGrade(MemberGradeStatus currentGrade, int currentAmount) {
+        return switch (currentGrade) {
+            case NORMAL -> Math.max(100_000 - currentAmount, 0);
+            case SILVER -> Math.max(200_000 - currentAmount, 0);
+            case GOLD -> Math.max(500_000 - currentAmount, 0);
+            case VIP -> Math.max(1_000_000 - currentAmount, 0);
+            case VVIP -> 0;
+        };
+    }
+
 //    public MemberGradeStatus getMemberGradeStatus(Member member) {
 //        MemberGrade memberGrade = memberGradeRepository.findByMember(member); // MemberGrade 조회
 //        if (memberGrade != null) {

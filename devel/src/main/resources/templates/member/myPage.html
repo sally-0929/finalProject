@@ -74,14 +74,20 @@
                 </tr>
             </table>
 
-            <div class="user" style="display: flex; justify-content: flex-end; padding: 10px;">
-                <strong>회원 등급:</strong>
-                <span th:text="${memberGradeStatus}"></span>
-                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
-                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).SILVER}" th:src="@{/images/silver.png}" alt="silver" />
-                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).GOLD}" th:src="@{/images/gold.png}" alt="gold" />
-                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VIP}" th:src="@{/images/gold.png}" alt="vip" />
-                <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VVIP}" th:src="@{/images/gold.png}" alt="vvip" />
+            <div class="user" style="padding: 10px;">
+                <div style="display: flex; align-items: center;">
+                    <strong>회원 등급:</strong>
+                    <span th:text="${memberGradeStatus}"></span>
+                    <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).NORMAL}" th:src="@{/images/bronze.png}" alt="Normal" />
+                    <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).SILVER}" th:src="@{/images/silver.png}" alt="silver" />
+                    <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).GOLD}" th:src="@{/images/gold.png}" alt="gold" />
+                    <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VIP}" th:src="@{/images/gold.png}" alt="vip" />
+                    <img style="width:20px;" th:if="${memberGradeStatus != null && memberGradeStatus == T(com.treasuredigger.devel.constant.MemberGradeStatus).VVIP}" th:src="@{/images/gold.png}" alt="vvip" />
+                </div>
+                <!-- 두 번째 줄: 다음 등급까지 필요한 금액 -->
+                <div th:if="${amountNeeded > 0}" style="margin-top: 5px; font-size: 14px; color: #555;">
+                    <span th:text="'다음 등급까지: ' + ${amountNeeded} + '원'"></span>
+                </div>
             </div>
         </div>
 
