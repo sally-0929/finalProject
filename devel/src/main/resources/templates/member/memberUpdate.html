@@ -130,10 +130,14 @@
                     '_csrf': csrfToken // CSRF 토큰 추가
                 },
                 success: function(data) {
-                    alert("해당 이메일로 발송되었습니다. 확인해주세요");
-                    $('#emailLabel').show();
-                    $('#emailCheck').show();
-                    $('#checkBtn').show();
+                    if (data === 'already_verified') {
+                        alert('이미 인증된 이메일입니다.'); // 이미 인증된 이메일에 대한 알림
+                    } else {
+                        alert("해당 이메일로 발송되었습니다. 확인해주세요");
+                        $('#emailLabel').show();
+                        $('#emailCheck').show();
+                        $('#checkBtn').show();
+                    }
                 },
                 error: function() {
                     console.log('error');
