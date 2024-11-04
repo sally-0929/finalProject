@@ -40,9 +40,13 @@
             object-fit: contain;
             object-position: center;
             margin-top:15px;
-            border:5px solid silver;
+            border:2px solid silver;
             padding:3px;
             border-radius:10px;
+            transition: scale 0.3s ease;
+        }
+        .carousel-img:hover {
+            scale:1.2;
         }
         .flex-container {
             display: flex;
@@ -408,7 +412,7 @@
                         document.getElementById('formattedEndDate').textContent = formattedEndDate;
                     });
                 </script>
-                판매자 <span class="h4" th:text="${biditem.memberId}"></span>
+                판매자 <span style="font-weight:bold" th:text="${biditem.memberId}"></span>
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
@@ -537,7 +541,7 @@
     <div th:if="${biditem.biditemImgDtoList != null and #lists.size(biditem.biditemImgDtoList) > 0}" class="text-center">
         <div th:each="itemImg, iterStat : ${biditem.biditemImgDtoList}">
             <div th:if="${iterStat.index < 5}">
-                <img th:if="${itemImg.imgUrl != null}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" style="width: 600px;">
+                <img th:if="${itemImg.imgUrl != null}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="90%" style="margin-bottom:50px">
             </div>
         </div>
     </div>

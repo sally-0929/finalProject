@@ -139,9 +139,13 @@
             object-fit: contain;
             object-position: center;
             margin-top:15px;
-            border:5px solid silver;
+            border:2px solid silver;
             padding:3px;
             border-radius:10px;
+            transition: scale 0.3s ease;
+        }
+        .carousel-img:hover {
+            scale:1.2;
         }
         .flex-container {
             display: flex;
@@ -202,14 +206,12 @@
                 </div>
                 <hr class="my-4">
                 남은 수량 : <span id="stockDisplay" th:text="${item.stockNumber}"></span>개 <br>
-
-                판매자 <span class="h4" th:text="${item.sellerId}"></span>
+                    판매자 <span style="font-weight:bold" th:text="${item.sellerId}"></span>
                     <img style="width:20px;" th:if="${item.sellerRole == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
                     <img style="width:20px;" th:if="${item.sellerRole == 'SILVER'}" th:src="@{/images/silver.png}" alt="Silver" />
                     <img style="width:20px;" th:if="${item.sellerRole == 'GOLD'}" th:src="@{/images/gold.png}" alt="Gold" />
-                    <img style="width:20px;" th:if="${item.sellerRole == 'VIP'}" th:src="@{/images/vip.png}" alt="VIP" />
-                    <img style="width:20px;" th:if="${item.sellerRole == 'VVIP'}" th:src="@{/images/vvip.png}" alt="VVIP" />
-
+                    <img style="width:20px;" th:if="${item.sellerRole == 'VIP'}" th:src="@{/images/gold.png}" alt="VIP" />
+                    <img style="width:20px;" th:if="${item.sellerRole == 'VVIP'}" th:src="@{/images/gold.png}" alt="VVIP" />
                 <div th:if="${item.stockNumber > 0}" class="text-right mgt-50">
                     <h5>결제 금액</h5>
                     <h3 id="totalPrice" class="font-weight-bold"></h3>
@@ -218,6 +220,9 @@
                 <div th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()">장바구니 담기</button>
                     <button type="button" class="btn btn-primary btn-lg" onclick="order()">주문하기</button>
+                </div>
+                <div class="text-right" style="margin-top:10px;">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="history.back();">목록으로</button>
                 </div>
                 <div th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-danger btn-lg">품절</button>
@@ -233,7 +238,7 @@
             </div>
         </div>
         <div th:each="itemImg : ${item.itemImgDtoList}" class="text-center">
-            <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="600">
+            <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded" width="90%" style="margin-bottom:50px">
         </div>
     </div>
 </div>

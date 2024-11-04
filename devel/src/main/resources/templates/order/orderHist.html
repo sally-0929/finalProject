@@ -48,6 +48,21 @@
                 }
             });
         }
+
+        $(document).ready(function () {
+            // 가격 포맷팅 함수
+            function formatNumberWithCommas(number) {
+                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            // 페이지 로드 시 모든 주문 항목 가격 포맷팅
+            $('.order-price').each(function () {
+                var price = parseInt($(this).text().replace(/[^0-9]/g, ''));
+                if (!isNaN(price)) {
+                    $(this).text(formatNumberWithCommas(price) + '원');
+                }
+            });
+        });
     </script>
 
 </th:block>
@@ -112,7 +127,7 @@
                 <div class="align-self-center w-75">
                     <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold"></span>
                     <div class="fs18 font-weight-light">
-                        <span th:text="${orderItem.orderPrice} +'원'"></span>
+                        <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
                         <span th:text="${orderItem.count} +'개'"></span>
                     </div>
                 </div>
