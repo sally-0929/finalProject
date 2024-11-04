@@ -27,6 +27,26 @@
     </div>
 
     <div class="footer" th:replace="~{fragments/footer::footer}"></div>
+<script>
+    // 다음 등급까지 필요한 금액 포맷팅
+    const amountNeededElement = document.getElementById("amountNeeded");
+    if (amountNeededElement) {
+        const amountNeededText = amountNeededElement.textContent; // 원래 텍스트 가져오기
+        const amountNeededValue = parseInt(amountNeededText.replace(/[^0-9]/g, '')); // 숫자만 추출
+        console.log("Amount Needed Value:", amountNeededValue); // 값 확인
 
+        if (!isNaN(amountNeededValue)) {
+            // 콤마 추가
+            const formattedAmount = formatNumberWithCommas(amountNeededValue);
+            amountNeededElement.textContent = `다음 등급까지: ${formattedAmount}원`;
+        }
+    } else {
+        console.log("amountNeeded element not found");
+    }
+
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+</script>
 </body>
 </html>

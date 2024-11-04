@@ -161,7 +161,7 @@
     <tbody>
     <tr th:each="inquiry : ${inquiries}">
       <td>
-        <span id="member-name" th:text="${inquiry.member.name}"></span>
+        <span class="member-name" th:text="${inquiry.member.name}"></span>
       </td>
       <td style="cursor: pointer;">
         <a th:href="@{/customer-service/inquiries/{id}(id=${inquiry.id})}" th:text="${inquiry.title}" style="display: block; height: 100%; width: 100%; text-align: left; text-decoration: none; color: inherit;"></a>
@@ -205,12 +205,14 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-      const memberNameElement = document.getElementById("member-name");
-      const name = memberNameElement.textContent;
-      if (name) {
-          memberNameElement.textContent = name.slice(0, -1) + '*'; // 마지막 글자를 *로 변경
-      }
-  });
+  const memberNameElements = document.getElementsByClassName("member-name");
+  for (const element of memberNameElements) {
+    const name = element.textContent;
+    if (name) {
+      element.textContent = name.slice(0, -1) + '*'; // 마지막 글자를 *로 변경
+    }
+  }
+});
 </script>
 
 

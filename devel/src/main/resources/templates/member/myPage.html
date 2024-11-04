@@ -86,7 +86,7 @@
                 </div>
                 <!-- 두 번째 줄: 다음 등급까지 필요한 금액 -->
                 <div th:if="${amountNeeded > 0}" style="margin-top: 5px; font-size: 14px; color: #555;">
-                    <span th:text="'다음 등급까지: ' + ${amountNeeded} + '원'"></span>
+                    <span id="amountNeeded" th:text="'다음 등급까지: ' + ${amountNeeded} + '원'"></span>
                 </div>
             </div>
         </div>

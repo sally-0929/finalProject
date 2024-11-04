@@ -68,16 +68,6 @@
             </script>
             <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
             <!-- Google 번역.끝 -->
-            <!-- 마지막 글자 *표시 하기 -->
-            <script>
-                window.onload = function() {
-                    const usernameElement = document.getElementById("username");
-                    const originalUsername = usernameElement.textContent;
-                    if (originalUsername.length > 0) {
-                        usernameElement.textContent = originalUsername.slice(0, -1) + "*"; // 마지막 글자를 *로 변경
-                    }
-                };
-            </script>
             <script>
                 function openPasswordCheckPopup() {
                     window.open(
