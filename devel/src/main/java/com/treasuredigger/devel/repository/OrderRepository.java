@@ -1,5 +1,7 @@
 package com.treasuredigger.devel.repository;
 
+import com.treasuredigger.devel.constant.OrderStatus;
+import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -21,4 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "where o.createdBy = :createBy"
     )
     Long countOrder(@Param("createBy") String createBy);
+
+    @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.member = :member AND o.orderStatus <> :excludedStatus")
+    long sumTotalByMemberAndOrderStatusNot(@Param("member") Member member, @Param("excludedStatus") OrderStatus excludedStatus);
 }

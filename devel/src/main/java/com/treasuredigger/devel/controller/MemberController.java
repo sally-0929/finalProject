@@ -88,6 +88,9 @@ public class MemberController {
         MemberGradeDto memberGradeDto = memberGradeService.getMemberGrade(member.getId());
         model.addAttribute("memberGradeStatus", memberGradeDto.getMemberGradeStatus());
 
+        int amountNeeded = memberGradeService.calculateAmountForNextGrade(memberGradeDto.getMemberGradeStatus(), memberGradeDto.getMgdesc());
+        model.addAttribute("amountNeeded", amountNeeded);
+
         return "member/myPage";
     }
 
