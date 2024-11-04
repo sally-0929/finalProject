@@ -68,7 +68,8 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(String mid, String name, String email, String password, Role role, String provider, MemberGrade memberGrade) {
+    public Member(Long id, String mid, String name, String email, String password, Role role, String provider, MemberGrade memberGrade) {
+        this.id = id;
         this.mid = mid;
         this.name = name;
         this.email = email;
