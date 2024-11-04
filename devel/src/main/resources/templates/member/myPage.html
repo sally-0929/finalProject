@@ -97,7 +97,7 @@
 
         <div class="my-card-container">
             <div class="my-card" th:if="${member.provider != null}">
-                <a href="#" th:onclick="'return false;'">
+                <a href="#" th:onclick="'alert(\'소셜로그인은 정보 수정이 불가합니다.\'); return false;'">
                     <img th:src="@{/images/memberupdate.png}" alt="회원정보수정" style="width: 80px;">
                 </a>
                 <p>회원정보수정</p>

@@ -122,6 +122,11 @@
                 return;
             }
 
+            if ($('#messageEmail').text() === '이미 사용 중인 이메일입니다.') {
+                alert('이미 사용 중인 이메일입니다. 인증 코드를 발송할 수 없습니다.');
+                return; // 더 이상 진행하지 않음
+            }
+
             $.ajax({
                 type: 'post',
                 url: '/email/sendAuth',
@@ -283,30 +288,34 @@ function smsAuthCheck() {
         <table>
             <div class="form-group">
                 <label for="name">이름</label>
-                <input type="text" style="width:250px;" class="form-control" id="name" th:field="*{name}" placeholder="이름 입력" required/>
+                <input type="text" style="width:250px;" class="form-control" id="name" th:field="*{name}" placeholder="이름 입력" readonly>
             </div>
             <div class="form-group">
                 <label for="email">이메일</label>
-                <input type="email" style="width:250px;" class="form-control" id="email" th:field="*{email}" placeholder="이메일 입력" onchange="checkUserEmail();" required/>
+                <input type="email" style="width:250px;" class="form-control" id="email" th:field="*{email}" placeholder="이메일 입력" onchange="checkUserEmail();" required
+                       th:readonly="${member.emailVerified}"/>
                 <div class="invalid-feedback">이메일을 입력하세요.</div>
                 <div id="messageEmail"></div>
 
                 <!-- 이메일 인증 버튼 -->
-                <button type="button" id="emailAuth" class="my-1 mb-3 btn btn-info" onclick="sendEmail();">이메일 인증 코드 발송</button>
+                <button type="button" id="emailAuth" class="my-1 mb-3 btn btn-info" onclick="sendEmail();" th:disabled="${member.emailVerified}">이메일 인증 코드 발송</button>
 
                 <!-- 이메일 코드 입력 필드 -->
                 <label id="emailLabel" for="emailCheck" class="form-label mb-1" style="display: none;">이메일 코드</label>
-                <input type="text" class="form-control mt-0" id="emailCheck" name="emailCheck" required style="display: none;">
+                <input type="text" class="form-control mt-0" id="emailCheck" name="emailCheck" required style="display: none;"
+                       th:readonly="${member.emailVerified}">
 
                 <!-- 인증 확인 버튼 -->
                 <button type="button" class="my-1 btn btn-info" id="checkBtn" onclick="emailAuthCheck();" style="display: none;">인증 확인</button>
             </div>
             <div class="form-group">
                 <label for="phone">핸드폰 번호</label>
-                <input type="text" style="width:250px;" class="form-control" id="phone" th:field="*{phone}" placeholder="핸드폰 입력" required/>
-                <button id="smsCode" type="button" class="my-1 mb-3 btn btn-info" onclick="sendSms();">휴대폰 인증 코드 발송</button>
+                <input type="text" style="width:250px;" class="form-control" id="phone" th:field="*{phone}" placeholder="핸드폰 입력" required
+                       th:readonly="${member.phoneVerified}"/>
+                <button id="smsCode" type="button" class="my-1 mb-3 btn btn-info" onclick="sendSms();" th:disabled="${member.phoneVerified}">휴대폰 인증 코드 발송</button>
                 <label id="smsLabel" for="smsCheck" class="form-label mb-1" style="display: none;">인증 코드</label>
-                <input type="text" class="form-control mt-0" id="smsCheck" required style="display: none;">
+                <input type="text" class="form-control mt-0" id="smsCheck" required style="display: none;"
+                       th:readonly="${member.phoneVerified}">
                 <button type="button" class="my-1 btn btn-info" id="smsCheckBtn" onclick="smsAuthCheck();" style="display: none;">인증 확인</button>
                 <div id="messageSms"></div>
             </div>
@@ -315,7 +324,7 @@ function smsAuthCheck() {
                 <div class="form-group">
                     <div class="text1">
                         <input type="text" class="form-control addr_text" style="width: 180px !important; display:inline-block !important;" name="mem_zipcode"
-                               id="mem_zipcode" placeholder="우편번호 입력">
+                               id="mem_zipcode" placeholder="우편번호 입력" readonly>
                         <input style="background-color: #2B2E36 !important; width: 100px !important; display:inline-block !important; color:white; margin:5px; padding-left:10px;" class="a_search btn btn-lg"
                                type="button" value="주소검색" onclick="find_addr();">
                     </div>

@@ -50,7 +50,7 @@ public class EmailController {
         // 이메일이 이미 인증된 경우 처리
         if(member != null && member.isEmailVerified()){
 //        if (member.isEmailVerified()) {
-            return ResponseEntity.status(409).body("이미 인증된 이메일입니다.");
+            return ResponseEntity.ok("already_verified");
         }
 
         String codeAuth = generateAuthCode(); // 인증 코드 생성
