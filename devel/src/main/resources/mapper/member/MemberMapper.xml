@@ -25,4 +25,26 @@
         m.member_id = #{memberId}
     </select>
 
+    <select id="getBidMyList" resultType="com.treasuredigger.devel.dto.WishlistDto">
+        select wt.item_id as itemId,
+        wt.bid_item_id as bidItemId,
+        bit.bid_item_name as bidItemName,
+        (SELECT MAX(bt.bid_reg_price)
+        FROM bids_tbl bt
+        WHERE bt.bid_item_id = bt.bid_item_id) AS bidNowPrice,
+        bit.max_price as maxPrice,
+        bit.item_status as itemStatus,
+        i.item_nm as itemNm,
+        i.item_sell_status as iSellStatus,
+        i.price as price,
+        i.stock_number as stockNumber
+        from wishlist_tbl wt
+        left join bid_items_tbl bit on wt.bid_item_id = bit.bid_item_id
+        join `member` m on wt.member_id = m.member_id
+        left join item i on wt.item_id = i.item_id
+        where wt.created_by =#{createdBy}
+
+
+    </select>
+
 </mapper>
