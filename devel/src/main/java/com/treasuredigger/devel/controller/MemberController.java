@@ -1,11 +1,15 @@
 package com.treasuredigger.devel.controller;
 
 import com.treasuredigger.devel.constant.MemberGradeStatus;
+import com.treasuredigger.devel.dto.BidItemDto;
 import com.treasuredigger.devel.dto.MemberFormDto;
 import com.treasuredigger.devel.dto.MemberGradeDto;
+import com.treasuredigger.devel.dto.WishlistDto;
 import com.treasuredigger.devel.entity.Inquiry;
+import com.treasuredigger.devel.entity.Wishlist;
 import com.treasuredigger.devel.service.MemberGradeService;
 import com.treasuredigger.devel.service.MemberService;
+import com.treasuredigger.devel.service.WishlistService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -26,6 +30,9 @@ import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+import java.util.List;
+
 @RequestMapping("/members")
 @Controller
 @RequiredArgsConstructor
@@ -34,6 +41,8 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberGradeService memberGradeService;
     private final PasswordEncoder passwordEncoder;
+
+    private final WishlistService wishlistService;
 
     @GetMapping(value = "/new")
     public String memberForm(Model model){
@@ -151,6 +160,18 @@ public class MemberController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 틀립니다."); // 실패 메시지
         }
+    }
+
+    @GetMapping("/wishlist")
+    public String wishlist(Principal principal, Model model){
+
+        String email = principal.getName();
+        List<WishlistDto> wishlists  = wishlistService.getWishlistByMember(email);
+        System.out.println("wishif test"  + wishlists);
+        model.addAttribute("wishlist" , wishlists);
+
+        return "member/wishlist";
+
     }
 
 }
