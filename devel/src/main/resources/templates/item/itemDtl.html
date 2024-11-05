@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/layout1}">
 
 <head>
@@ -18,21 +19,22 @@
             calculateTotalPrice();
 
             $("#count").change(function(){
-                var stock = parseInt($("#stockDisplay").text(), 10);
-                var count = parseInt($("#count").val(), 10);
+                var stock = parseInt($("#stockDisplay").text(), 10); // 재고 수량 가져오기
+                var count = parseInt($("#count").val(), 10); // 현재 입력된 수량
 
                 if (count > stock) {
                     alert("재고 수량을 초과했습니다. 남은 재고 : " + stock + "개");
-                    count = stock;
-                    $("#count").val(count);
+                    count = stock; // 재고 수량으로 설정
+                    $("#count").val(count); // 수량 업데이트
                 }
                 calculateTotalPrice();
             });
 
+            // 큰 이미지 초기 설정
             $("#largeImage").attr("src", $(".thumbnail-img").first().attr("src"));
             $(".thumbnail-img").first().addClass("selected-thumbnail");
 
-
+            // 조그만 이미지 클릭 시 큰 이미지로 변경
             $(".thumbnail-img").click(function() {
                 var src = $(this).attr("src");
                 $("#largeImage").addClass("fade-out");
@@ -48,7 +50,7 @@
             var count = $("#count").val();
             var price = $("#price").val();
             var totalPrice = price * count;
-            $("#totalPrice").html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원');
+            $("#totalPrice").html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원'); // 콤마 추가
         }
 
         function order(){
@@ -274,59 +276,69 @@
                     품절
                 </span>
                 <div></div> <!-- 빈 div로 첫 번째 줄을 비우기 위해 추가 -->
-                <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn">
+                <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn" sec:authorize="isAuthenticated()">
                     <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
                 </button>
 
                 <script>
                     $(document).ready(function() {
-                        var csrfToken = $('meta[name="_csrf"]').attr('content');
-                        var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
-                        var bidItemId = $('#itemId').val();
-                        var heartIcon = $('#heartIcon');
+                         var csrfToken = $('meta[name="_csrf"]').attr('content');
+                         var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+                         var ItemId = $('#itemId').val();
+                         var heartIcon = $('#heartIcon');
 
-                        // 페이지 로드 시 찜 여부 확인
-                        $.ajax({
-                            url: '/wishlist/check',
-                            type: 'GET',
-                            data: { ItemId: ItemId },
-                            success: function(response) {
-                                if (response) {
-                                    heartIcon.addClass('red');
-                                } else {
-                                    heartIcon.removeClass('red');
-                                }
-                            }
-                        });
+                         // 페이지 로드 시 찜 여부 확인
+                         $.ajax({
+                             url: '/wishlist/check',
+                             type: 'GET',
+                             data: { entityType: 'Item', entityId: ItemId },
+                             beforeSend: function(xhr) {
+                                 xhr.setRequestHeader(csrfHeader, csrfToken);
+                             },
+                             success: function(response) {
+                                 if (response) {
+                                     heartIcon.addClass('red');
+                                 } else {
+                                     heartIcon.removeClass('red');
+                                 }
+                             },
+                             error: function(xhr, status, error) {
+                                 console.log('Status:', status);
+                                 console.log('Error:', error);
+                                 console.log('ResponseText:', xhr.responseText);
+                                 alert('찜 여부 확인에 실패했습니다.');
+                             }
+                         });
 
-                        // 찜 버튼 클릭 시 토글
-                        $('#wishlistButton').click(function() {
-                            $.ajax({
-                                url: '/wishlist/toggle',
-                                type: 'POST',
-                                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                                data: { ItemId: ItemId },
-                                beforeSend: function(xhr) {
-                                    xhr.setRequestHeader(csrfHeader, csrfToken);
-                                },
-                                success: function(response) {
-                                    if (heartIcon.hasClass('red')) {
-                                        heartIcon.removeClass('red');
-                                        alert('찜 해제되었습니다.');
-                                    } else {
-                                        heartIcon.addClass('red');
-                                        alert('찜 등록되었습니다.');
-                                    }
-                                },
-                                error: function(xhr, status, error) {
-                                    console.log('Status:', status);
-                                    console.log('Error:', error);
-                                    console.log('ResponseText:', xhr.responseText);
-                                    alert('찜 기능에 실패했습니다.');
-                                }
-                            });
-                        });
-                    });
+                         // 찜 버튼 클릭 시 토글
+                         $('#wishlistButton').click(function() {
+                             $.ajax({
+                                 url: '/wishlist/toggle',
+                                 type: 'POST',
+                                 contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                                 data: {  entityType: 'Item', entityId: ItemId },
+                                 beforeSend: function(xhr) {
+                                     xhr.setRequestHeader(csrfHeader, csrfToken);
+                                 },
+                                 success: function(response) {
+                                     if (heartIcon.hasClass('red')) {
+                                         heartIcon.removeClass('red');
+                                         alert('찜 해제되었습니다.');
+                                     } else {
+                                         heartIcon.addClass('red');
+                                         alert('찜 등록되었습니다.');
+                                     }
+                                 },
+                                 error: function(xhr, status, error) {
+                                     console.log('Status:', status);
+                                     console.log('Error:', error);
+                                     console.log('ResponseText:', xhr.responseText);
+                                     alert('찜 기능에 실패했습니다.');
+                                 }
+                             });
+                         });
+                     });
+
                 </script>
 
                 <div class="h4" th:text="${item.itemNm}"></div>

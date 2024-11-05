@@ -162,6 +162,15 @@ public class BidController {
         return ResponseEntity.ok("Auction canceled");
     }
 
+    @GetMapping("/mybidlist")
+    public void mybidList(Principal principal, Model model){
+
+        List<BidItemDto> mylist =  bidService.getBidMyList(principal.getName());
+        System.out.println("mybidList" + mylist);
+        model.addAttribute("mybidList" , mylist);
+
+    }
+
 
 
 

@@ -239,7 +239,7 @@
                         $.ajax({
                             url: '/wishlist/check',
                             type: 'GET',
-                            data: { bidItemId: bidItemId },
+                           data: { entityType: 'bidItem', entityId: bidItemId },
                             success: function(response) {
                                 if (response) {
                                     heartIcon.addClass('red');
@@ -255,7 +255,7 @@
                                 url: '/wishlist/toggle',
                                 type: 'POST',
                                 contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                                data: { bidItemId: bidItemId },
+                                data: { entityType: 'bidItem', entityId: bidItemId },
                                 beforeSend: function(xhr) {
                                     xhr.setRequestHeader(csrfHeader, csrfToken);
                                 },

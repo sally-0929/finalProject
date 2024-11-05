@@ -16,4 +16,6 @@ public interface BidItemMapper {
 
     List<BidDto> getBidList(@Param("bidItemId")String bidItemId);
 
+    List<BidItemDto> getBidMyList(@Param("createdBy") String created_by);
+
 }
