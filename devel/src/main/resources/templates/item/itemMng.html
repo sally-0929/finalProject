@@ -38,6 +38,61 @@
         .form-inline{
             margin-top:20px;
         }
+        .pagination .page-link {
+            color: black;
+            background-color: transparent;
+            border: none;
+            border-radius: 6px; /* 네모 모양에 약간 둥근 모서리 */
+            width: 30px; /* 버튼의 너비 고정 */
+            height: 30px; /* 버튼의 높이 고정 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0; /* 패딩 제거 */
+            margin: 0 2px; /* 좌우 간격을 위한 약간의 마진 */
+            font-size: 1rem; /* 아이콘 크기 조정 */
+            cursor: pointer; /* 포인터 커서 */
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: black; /* 활성화된 페이지 배경 색상 */
+            color: white; /* 활성화된 페이지 텍스트 색상 */
+            border-radius: 6px; /* 약간 둥근 모서리 */
+        }
+
+        .pagination .page-link:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: black;
+            border-radius: 6px; /* 네모 유지 */
+        }
+
+        .pagination .page-link:focus {
+            box-shadow: none; /* 포커스 시 기본 강조 제거 */
+        }
+
+        /* < > 화살표에도 동일한 스타일 적용 */
+        .pagination .page-item .page-link {
+            padding: 6px 10px;
+        }
+        /* 테이블 열 너비 및 정렬 */
+        .table td, .table th {
+            vertical-align: middle;
+            text-align: center; /* 모든 셀 중앙 정렬 */
+        }
+
+        .table td:nth-child(2), .table th:nth-child(2) {
+            text-align: left; /* 상품명 왼쪽 정렬 */
+            width: 50%; /* 상품명 열 넓히기 */
+        }
+
+        .table td:nth-child(5), .table th:nth-child(5) {
+            width: 20%; /* 등록일 열 좁히기 */
+            text-align: left; /* 등록일 왼쪽 정렬 */
+        }
+
+        .table td:nth-child(1), .table td:nth-child(3), .table td:nth-child(4) {
+            text-align: center; /* 나머지 열 좌우 중앙 정렬 */
+        }
     </style>
 </th:block>
 
@@ -73,7 +128,7 @@
 
                 <li class="page-item" th:classappend="${items.first}?'disabled'">
                     <a th:onclick="'javascript:page(' + ${items.number - 1} + ')'" aria-label='Previous' class="page-link">
-                        <span aria-hidden='true'> << </span>
+                        <span aria-hidden='true'> < </span>
                     </a>
                 </li>
 
@@ -83,7 +138,7 @@
 
                 <li class="page-item" th:classappend="${items.last}?'disabled'">
                     <a th:onclick="'javascript:page(' + ${items.number + 1} + ')'" aria-label='Next' class="page-link">
-                        <span aria-hidden='true'> >> </span>
+                        <span aria-hidden='true'> > </span>
                     </a>
                 </li>
 
@@ -108,7 +163,7 @@
                 <option value="createdBy">등록자</option>
             </select>
             <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="검색어를 입력해주세요">
-            <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
+            <button style="margin-left:5px;" id="searchBtn" type="submit" class="btn btn-primary">검색</button>
         </div>
     </form>
 

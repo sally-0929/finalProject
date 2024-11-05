@@ -119,17 +119,40 @@
           text-align: left;
       }
 
+      .pagination .page-link {
+          color: black;
+          background-color: transparent;
+          border: none;
+          border-radius: 6px; /* 네모 모양에 약간 둥근 모서리 */
+          width: 30px; /* 버튼의 너비 고정 */
+          height: 30px; /* 버튼의 높이 고정 */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0; /* 패딩 제거 */
+          margin: 0 2px; /* 좌우 간격을 위한 약간의 마진 */
+          font-size: 1rem; /* 아이콘 크기 조정 */
+      }
+
       .pagination .page-item.active .page-link {
-          background-color: #007bff;
-          color: white;
+          background-color: black; /* 활성화된 페이지 배경 색상 */
+          color: white; /* 활성화된 페이지 텍스트 색상 */
+          border-radius: 6px; /* 약간 둥근 모서리 */
       }
 
+      .pagination .page-link:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+          color: black;
+          border-radius: 6px; /* 네모 유지 */
+      }
+
+      .pagination .page-link:focus {
+          box-shadow: none; /* 포커스 시 기본 강조 제거 */
+      }
+
+      /* << >> 화살표에도 동일한 스타일 적용 */
       .pagination .page-item .page-link {
-          color: #007bff;
-      }
-
-      .pagination .page-item.disabled .page-link {
-          color: #6c757d;
+          padding: 6px 10px;
       }
 
       .custom-switch .custom-control-label::before {
@@ -217,8 +240,9 @@
       문의하기
     </a>
 
-    <!-- 로그인 상태에서 보이는 버튼 -->
+    <!-- 로그인 상태에서 보이는 버튼 (admin 제외) -->
     <a th:if="${#authentication.name != 'anonymousUser'}"
+       sec:authorize="!hasRole('ADMIN')"
        th:href="@{/customer-service/inquiries/register}"
        class="btn btn-primary">
       문의하기
@@ -231,7 +255,7 @@
     <ul class="pagination justify-content-center">
       <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
         <a class="page-link" th:href="@{/customer-service/inquiries(page=${currentPage > 0 ? currentPage - 1 : 0})}" aria-label="Previous">
-          <span aria-hidden="true"><<</span>
+          <span aria-hidden="true"> < </span>
         </a>
       </li>
       <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
@@ -241,7 +265,7 @@
       </li>
       <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
         <a class="page-link" th:href="@{/customer-service/inquiries(page=${currentPage + 1})}" aria-label="Next">
-          <span aria-hidden="true"> >> </span>
+          <span aria-hidden="true"> > </span>
         </a>
       </li>
     </ul>

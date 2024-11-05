@@ -141,8 +141,8 @@
         .mgt-30 {
             margin-top: 30px;
         }
-        .mgt-90 {
-            margin-top: 90px;
+        .mgt-120 {
+            margin-top: 120px;
         }
 
         .repImg {
@@ -268,18 +268,19 @@
             </div>
 
             <!-- 상품 정보 -->
-            <div class="flex-item">
-                <span th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge badge-primary mgb-15">
-                    판매중
-                </span>
-                <span th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge btn-danger mgb-15">
-                    품절
-                </span>
-                <div></div> <!-- 빈 div로 첫 번째 줄을 비우기 위해 추가 -->
-                <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn" sec:authorize="isAuthenticated()">
-                    <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
-                </button>
-
+            <div class="flex-item" style="position: relative;">
+                <div class="d-flex justify-content-between mb-2">
+                    <span th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge badge-primary mgb-15">
+                        판매중
+                    </span>
+                    <span th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge btn-danger mgb-15">
+                        품절
+                    </span>
+                    <div></div> <!-- 빈 div로 첫 번째 줄을 비우기 위해 추가 -->
+                    <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn" sec:authorize="isAuthenticated()">
+                        <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
+                    </button>
+                </div>
                 <script>
                     $(document).ready(function() {
                          var csrfToken = $('meta[name="_csrf"]').attr('content');
@@ -364,7 +365,7 @@
                     <img style="width:20px;" th:if="${item.sellerRole == 'GOLD'}" th:src="@{/images/gold.png}" alt="Gold" />
                     <img style="width:20px;" th:if="${item.sellerRole == 'VIP'}" th:src="@{/images/gold.png}" alt="VIP" />
                     <img style="width:20px;" th:if="${item.sellerRole == 'VVIP'}" th:src="@{/images/gold.png}" alt="VVIP" />
-                <div th:if="${item.stockNumber > 0}" class="text-right mgt-90">
+                <div th:if="${item.stockNumber > 0}" class="text-right mgt-120">
                     <h5>결제 금액</h5>
                     <h3 id="totalPrice" class="font-weight-bold"></h3>
                 </div>
