@@ -56,17 +56,23 @@
             </form>
             <!-- Google 번역 -->
             <div id="google_translate_element" class="hd_lang"></div>
-            <script>
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    var script = document.createElement('script');
+                    script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+                    script.async = true;
+                    document.head.appendChild(script);
+                });
+
                 function googleTranslateElementInit() {
                     new google.translate.TranslateElement({
                         pageLanguage: 'ko',
-                        includedLanguages: 'ko,zh-CN,zh-TW,ja,vi,th,tl,km,my,mn,ru,en,fr,ar',
+                        includedLanguages: 'ko,zh-CN,zh-TW,ja,vi,th,tl,km,my,mn,ru,en,fr,ar,de',
                         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                         autoDisplay: false
                     }, 'google_translate_element');
                 }
             </script>
-            <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
             <!-- Google 번역.끝 -->
         </div>
     </nav>

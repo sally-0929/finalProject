@@ -34,6 +34,9 @@ public class Order extends BaseEntity {
             , orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Payment> payments = new ArrayList<>();
+
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);
@@ -67,6 +70,12 @@ public class Order extends BaseEntity {
         for (OrderItem orderItem : orderItems) {
             orderItem.cancel();
         }
+    }
+
+    // 결제 내역 추가
+    public void addPayment(Payment payment) {
+        this.payments.add(payment);
+        payment.setOrder(this);  // 결제 내역과 주문 연결
     }
 
 }

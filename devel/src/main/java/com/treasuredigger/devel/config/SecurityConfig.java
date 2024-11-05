@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/members/passwordCheck").authenticated()
                         .requestMatchers("/email/sendAuth").permitAll()
                         .requestMatchers("/sms/send").permitAll()
+                        .requestMatchers("/api/v1/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 ).formLogin(formLoginCustomizer -> formLoginCustomizer
