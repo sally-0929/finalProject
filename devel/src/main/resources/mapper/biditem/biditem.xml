@@ -85,6 +85,13 @@
         AND btt.bid_item_id = #{bidItemId}
     </select>
 
+    <select id="getBidMyList" resultType="com.treasuredigger.devel.dto.BidItemDto">
+        <include refid="BaseBidItemQuery" />
+        AND btt.created_by = #{createdBy}
+    </select>
+
+
+
     <select id="getBidList" resultType="com.treasuredigger.devel.dto.BidDto">
         SELECT *
         FROM (
