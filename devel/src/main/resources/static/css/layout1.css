@@ -22,7 +22,7 @@ ul, li {
 
 .header {
     padding-top:20px;
-    width:80%;
+    width:70%;
     position: fixed;
     top: 0;
     z-index: 9999;
@@ -31,7 +31,7 @@ ul, li {
 }
 
 .content {
-    width:80%;
+    width:70%;
     padding-bottom: 50px;
     padding-top: 200px;
     flex: 1;
