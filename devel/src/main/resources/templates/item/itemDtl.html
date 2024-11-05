@@ -18,24 +18,29 @@
             calculateTotalPrice();
 
             $("#count").change(function(){
-                var stock = parseInt($("#stockDisplay").text(), 10); // 재고 수량 가져오기
-                var count = parseInt($("#count").val(), 10); // 현재 입력된 수량
+                var stock = parseInt($("#stockDisplay").text(), 10);
+                var count = parseInt($("#count").val(), 10);
 
                 if (count > stock) {
                     alert("재고 수량을 초과했습니다. 남은 재고 : " + stock + "개");
-                    count = stock; // 재고 수량으로 설정
-                    $("#count").val(count); // 수량 업데이트
+                    count = stock;
+                    $("#count").val(count);
                 }
                 calculateTotalPrice();
             });
 
-            // 큰 이미지 초기 설정
             $("#largeImage").attr("src", $(".thumbnail-img").first().attr("src"));
+            $(".thumbnail-img").first().addClass("selected-thumbnail");
 
-            // 조그만 이미지 클릭 시 큰 이미지로 변경
+
             $(".thumbnail-img").click(function() {
                 var src = $(this).attr("src");
-                $("#largeImage").attr("src", src);
+                $("#largeImage").addClass("fade-out");
+                setTimeout(function() {
+                    $("#largeImage").attr("src", src).removeClass("fade-out");
+                }, 250);
+                $(".thumbnail-img").removeClass("selected-thumbnail");
+                $(this).addClass("selected-thumbnail");
             });
         });
 
@@ -43,7 +48,7 @@
             var count = $("#count").val();
             var price = $("#price").val();
             var totalPrice = price * count;
-            $("#totalPrice").html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원'); // 콤마 추가
+            $("#totalPrice").html(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원');
         }
 
         function order(){
@@ -134,8 +139,8 @@
         .mgt-30 {
             margin-top: 30px;
         }
-        .mgt-50 {
-            margin-top: 50px;
+        .mgt-90 {
+            margin-top: 90px;
         }
 
         .repImg {
@@ -143,6 +148,12 @@
             height: 400px;
             object-fit: contain;
             object-position: center;
+            border:1px solid lightgray;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        .repImg.fade-out {
+            opacity: 0;
         }
         .carousel-img {
             width: 104px;
@@ -151,13 +162,13 @@
             object-fit: contain;
             object-position: center;
             margin-top:15px;
-            border:2px solid silver;
+            border:1px solid lightgray;
             padding:3px;
             border-radius:10px;
-            transition: scale 0.3s ease;
+            transition: transform 0.3s ease;
         }
-        .carousel-img:hover {
-            scale:1.2;
+        .carousel-img.selected-thumbnail {
+            transform: scale(1.15);
         }
         .flex-container {
             display: flex;
@@ -341,7 +352,7 @@
                     <img style="width:20px;" th:if="${item.sellerRole == 'GOLD'}" th:src="@{/images/gold.png}" alt="Gold" />
                     <img style="width:20px;" th:if="${item.sellerRole == 'VIP'}" th:src="@{/images/gold.png}" alt="VIP" />
                     <img style="width:20px;" th:if="${item.sellerRole == 'VVIP'}" th:src="@{/images/gold.png}" alt="VVIP" />
-                <div th:if="${item.stockNumber > 0}" class="text-right mgt-50">
+                <div th:if="${item.stockNumber > 0}" class="text-right mgt-90">
                     <h5>결제 금액</h5>
                     <h3 id="totalPrice" class="font-weight-bold"></h3>
                 </div>
