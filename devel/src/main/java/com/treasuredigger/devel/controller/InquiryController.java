@@ -24,12 +24,31 @@ public class InquiryController {
     private final MemberService memberService;
 
     @GetMapping
-    public String listInquiries(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Inquiry> inquiryPage = inquiryService.getInquiriesWithPagination(page, 10);
+    public String listInquiries(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "false") boolean myInquiries,
+            @RequestParam(required = false, defaultValue = "false") boolean unansweredOnly,
+            Authentication authentication,
+            Model model) {
+        Page<Inquiry> inquiryPage;
+        if (unansweredOnly && authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+            // 관리자 미답변 문의만 보기
+            inquiryPage = inquiryService.getUnansweredInquiriesWithPagination(page, 10);
+        } else if (myInquiries && authentication != null) {
+            // 일반 사용자의 문의만 보기
+            Member member = memberService.findMemberByMid(authentication.getName());
+            inquiryPage = inquiryService.getInquiriesByMemberWithPagination(member, page, 10);
+        } else {
+            // 전체 문의 보기
+            inquiryPage = inquiryService.getInquiriesWithPagination(page, 10);
+        }
         model.addAttribute("inquiries", inquiryPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", inquiryPage.getTotalPages());
         model.addAttribute("hasPrevious", page > 0);
+        model.addAttribute("myInquiries", myInquiries);
+        model.addAttribute("unansweredOnly", unansweredOnly);
         return "customerService/inquiry/inquiryList"; // inquiryList.html로 이동
     }
 
