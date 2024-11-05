@@ -1,6 +1,7 @@
 package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.entity.Inquiry;
+import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.repository.InquiryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,5 +52,15 @@ public class InquiryService {
     public Page<Inquiry> getInquiriesWithPagination(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return inquiryRepository.findAll(pageable);
+    }
+
+    public Page<Inquiry> getInquiriesByMemberWithPagination(Member member, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inquiryRepository.findByMember(member, pageable);
+    }
+
+    public Page<Inquiry> getUnansweredInquiriesWithPagination(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inquiryRepository.findByAnsweredFalse(pageable);
     }
 }
