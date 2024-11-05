@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/layout1}">
 
 <head>
@@ -266,7 +267,7 @@
                     품절
                 </span>
                 <div></div> <!-- 빈 div로 첫 번째 줄을 비우기 위해 추가 -->
-                <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn">
+                <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn" sec:authorize="isAuthenticated()">
                     <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
                 </button>
 
