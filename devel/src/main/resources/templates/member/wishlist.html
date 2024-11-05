@@ -141,30 +141,30 @@
 </th:block>
 
 <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%;">
-  <script> document.addEventListener("DOMContentLoaded", function() {
-  const rows = document.querySelectorAll('#bidTable tbody tr');
-  rows.forEach(function(row) {
-  const bidItemId = row.querySelector('.bid-item-id').value;
-  const endDateElement = row.querySelector('.bid-end-date');
-  const endDateStr = endDateElement.getAttribute('data-enddate');
-  const endDate = new Date(endDateStr);
-  const now = new Date();
-  const timeDiff = endDate - now;
-  // 포맷팅 (예: YYYY-MM-DD)
-  const formattedEndDate = `${endDate.getFullYear()}-${('0' + (endDate.getMonth() + 1)).slice(-2)}-${('0' + endDate.getDate()).slice(-2)}`;
-  endDateElement.textContent = formattedEndDate;
-  // 하루 전날이면 빨간색으로 표시
-  if (timeDiff <= 1000 * 60 * 60 * 24 && timeDiff > 0) { endDateElement.style.color = 'red'; }
-  row.addEventListener('click', function() { window.location.href = `/biditem/view/${bidItemId}`;
-  });
-  });
-  });
-  </script>
+    <script>
+        $(document).ready(function() {
+            // 경매 아이템 클릭 이벤트
+            $(document).on('click', '#bidItemTable tbody tr', function() {
+                var bidItemId = $(this).find('.bid-item-id').val();
+                if (bidItemId) {  // 값이 있는지 확인
+                    window.location.href = '/biditem/view/' + bidItemId;
+                }
+            });
+
+            // 일반 아이템 클릭 이벤트
+            $(document).on('click', '#itemTable tbody tr', function() {
+                var itemId = $(this).find('.item-id').val();
+                if (itemId) {  // 값이 있는지 확인
+                    window.location.href = '/item/' + itemId;
+                }
+            });
+        });
+    </script>
 
     <h2>나의 찜 목록 List </h2>
 
-    <!-- itemId가 null인 경우 -->
-    <table class="table table-striped">
+    <!-- 경매 아이템 테이블 -->
+    <table id="bidItemTable" class="table table-striped">
         <thead>
         <tr>
             <th scope="col">경매아이템 이름</th>
@@ -174,16 +174,18 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="wishlist : ${wishlist}">
-            <th th:if="${wishlist.itemId == null}" scope="row" th:text="${wishlist.bidItemName}"></th>
-            <td th:if="${wishlist.itemId == null}" th:text="${wishlist.itemStatus}"></td>
-            <td th:if="${wishlist.itemId == null}" th:text="${wishlist.bidNowPrice}"></td>
-            <td th:if="${wishlist.itemId == null}" th:text="${wishlist.maxPrice}"></td>
+        <tr th:each="wishlist : ${wishlist}" th:if="${wishlist.itemId == null}">
+            <th scope="row" th:text="${wishlist.bidItemName}"></th>
+            <td th:text="${wishlist.itemStatus}"></td>
+            <td th:text="${wishlist.bidNowPrice}"></td>
+            <td th:text="${wishlist.maxPrice}"></td>
+            <input type="hidden" class="bid-item-id" th:value="${wishlist.bidItemId}"/>
         </tr>
         </tbody>
     </table>
-    <!-- itemId가 null이 아닌 경우 -->
-    <table class="table table-striped">
+
+    <!-- 일반 아이템 테이블 -->
+    <table id="itemTable" class="table table-striped">
         <thead>
         <tr>
             <th scope="col">아이템 이름</th>
@@ -193,11 +195,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="wishlist : ${wishlist}">
-            <th th:if="${wishlist.itemId != null}" scope="row" th:text="${wishlist.itemNm}"></th>
-            <td th:if="${wishlist.itemId != null}" th:text="${wishlist.iSellStatus}"></td>
-            <td th:if="${wishlist.itemId != null}" th:text="${wishlist.price}"></td>
-            <td th:if="${wishlist.itemId != null}" th:text="${wishlist.stockNumber}"></td>
+        <tr th:each="wishlist : ${wishlist}" th:if="${wishlist.itemId != null}">
+            <th scope="row" th:text="${wishlist.itemNm}"></th>
+            <td th:text="${wishlist.iSellStatus}"></td>
+            <td th:text="${wishlist.price}"></td>
+            <td th:text="${wishlist.stockNumber}"></td>
+            <input type="hidden" class="item-id" th:value="${wishlist.itemId}"/>
         </tr>
         </tbody>
     </table>
