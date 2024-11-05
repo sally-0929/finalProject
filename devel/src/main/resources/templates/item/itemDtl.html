@@ -73,8 +73,12 @@
                     location.href = '/';
                 },
                 error: function(jqXHR, status, error){
-                    alert('로그인 후 이용해주세요');
-                    location.href = '/members/login';
+                    if (jqXHR.status === 400) {
+                        alert(jqXHR.responseText); // 서버에서 받은 에러 메시지 출력
+                    } else {
+                        alert('로그인 후 이용해주세요');
+                        location.href = '/members/login';
+                    }
                 }
             });
         }
