@@ -198,12 +198,22 @@
             <div class="wd50">
                 <div class="flex-item" style="margin-right:0 !important">
                     <div class="d-flex justify-content-between mb-2">
-                    <div></div> <!-- 빈 div로 첫 번째 줄을 비우기 위해 추가 -->
-                    <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn" sec:authorize="isAuthenticated()">
-                        <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
-                    </button>
-                </div>
-                <div class="h4" th:text="${biditem.bidItemName}"></div> <!-- 제목이 두 번째 줄에 위치 -->
+                        <!-- 경매 상태 표시 -->
+                        <span th:if="${biditem.itemStatus == 'ING'}" class="badge badge-primary mgb-15">
+                            경매중
+                        </span>
+                                <span th:if="${biditem.itemStatus == 'WAIT'}" class="badge badge-warning mgb-15">
+                            경매대기중
+                        </span>
+                                <span th:if="${biditem.itemStatus == 'END'}" class="badge badge-danger mgb-15">
+                            경매종료
+                        </span>
+                        <div></div> <!-- 빈 div로 첫 번째 줄을 비우기 위해 추가 -->
+                        <button id="wishlistButton" data-biditemid="${biditem.bidItemId}" class="wishlist-btn" sec:authorize="isAuthenticated()">
+                            <i id="heartIcon" class="far fa-heart"></i> <!-- 기본은 빈 하트 -->
+                        </button>
+                    </div>
+                    <div class="h4" th:text="${biditem.bidItemName}"></div> <!-- 제목이 두 번째 줄에 위치 -->
                 </div>
 
                 <div class="scroll-button-container">
