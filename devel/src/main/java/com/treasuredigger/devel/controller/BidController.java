@@ -91,8 +91,8 @@ public class BidController {
 
         try {
             bidItemService.saveItem(BiditemFormDto, itemImgFileList, email);
-            Member member = memberService.findMemberByMid(email);
-            memberGradeService.incrementMgdesc(member);
+//            Member member = memberService.findMemberByMid(email);
+//            memberGradeService.incrementMgdesc(member);
         } catch (Exception e){
             e.printStackTrace();
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
