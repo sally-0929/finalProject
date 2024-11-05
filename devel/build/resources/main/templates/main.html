@@ -74,7 +74,7 @@
 
     <div class="container">
         <h2 class="text-center" style="margin-top:50px">카테고리</h2>
-        <div class="row justify-content-center flex-nowrap" style="margin:40px 0 20px 0;">
+        <div class="row justify-content-center flex-nowrap" style="margin:40px 0 50px 0;">
             <div class="col-auto">
                 <a th:href="@{/}" class="btn rounded-circle category-btn">전체보기</a>
             </div>
@@ -91,14 +91,14 @@
         <th:block th:each="item : ${items.getContent()}">
             <th:block th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}">
                 <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
-                    <div class="card">
+                    <div class="card" style="border:none;">
                         <a th:href="'/item/' + ${item.id}" class="text-dark">
-                            <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 250px; width: 100%; object-fit: contain; object-position: center;">
+                            <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 250px; width: 100%; object-fit: contain; object-position: center; border:1px solid lightgray; border-radius:10px;">
                             <div class="card-body">
                                 <div>
                                     <span class="badge badge-primary">판매중</span>
                                 </div>
-                                <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.itemNm}]]</span><br>
+                                <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%; margin-bottom:0px">[[${item.itemNm}]]</span><br>
                                 <span class="card-title text-danger" style="font-size:16px"><span th:text="${item.price}"></span>원</span>
                             </div>
                         </a>
