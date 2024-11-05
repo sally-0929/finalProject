@@ -83,15 +83,26 @@
                     );
                 }
 
-                // 현재 URL 확인 후 특정 경로에 따라 검색 폼을 숨김
                 window.onload = function() {
                     const currentUrl = window.location.pathname;
                     const searchForm = document.getElementById("searchForm");
-
-                    // 특정 경로가 포함된 경우 검색 폼 숨기기
-                    if (currentUrl.includes("/customer-service/inquiries")) {
+                    if (currentUrl.startsWith("/customer-service/")) {
                         searchForm.style.display = "none";
-                    } else {
+                    }
+                    if (currentUrl.startsWith("/admin/")) {
+                        searchForm.style.display = "none";
+                    }
+                    if (currentUrl.startsWith("/members/")) {
+                        searchForm.style.display = "none";
+                    }
+                    if (currentUrl.startsWith("/orders")) {
+                        searchForm.style.display = "none";
+                    }
+                    if (currentUrl.startsWith("/cart")) {
+                        searchForm.style.display = "none";
+                    }
+                    if (currentUrl.startsWith("/biditem/mybidlist")) {
+                        searchForm.style.display = "none";
                     }
                 };
             </script>
