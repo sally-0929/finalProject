@@ -254,10 +254,10 @@
     <form id="auctionForm" action="/biditem/list" method="GET">
 
         <select id="auctionStatus" name="auctionStatus" onchange="changeAuctionStatus()">
-            <option value="">---경매 상태---</option>
-            <option value="WAIT" th:selected="${auctionStatus == 'WAIT'}">경매 예정</option>
-            <option value="ING" th:selected="${auctionStatus == 'ING'}">경매 중</option>
-            <option value="END" th:selected="${auctionStatus == 'END'}">경매 완료</option>
+            <option value="">---경매상태---</option>
+            <option value="WAIT" th:selected="${auctionStatus == 'WAIT'}">경매대기중</option>
+            <option value="ING" th:selected="${auctionStatus == 'ING'}">경매중</option>
+            <option value="END" th:selected="${auctionStatus == 'END'}">경매종료</option>
         </select>
 
     </form>

@@ -130,8 +130,14 @@
         .wishlist-container img:hover {
             filter: grayscale(100%);
         }
+        .wishlist-container li{
+            transition:transform 0.3s ease;
+        }
+        .wishlist-container li:hover{
+            transform: translateY(-5px);
+        }
         .link-hover h6 {
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
             text-align: center;
             display: block;
             color: gray;
@@ -139,6 +145,7 @@
 
         .link-hover:hover h6 {
             color: black;
+            transform: translateY(-5px);
         }
 
         .link-hover {
@@ -180,14 +187,20 @@
 
     <div class="container">
         <h2 class="text-center" style="margin-top:50px">카테고리</h2>
-        <div class="row justify-content-center flex-nowrap" style="margin:40px 0 50px 0;">
-            <div class="col-auto">
+
+        <!-- 카테고리 버튼 컨테이너 -->
+        <div class="d-flex flex-wrap justify-content-center" style="max-width: 900px; margin: 40px auto 50px auto; gap: 10px;">
+            <!-- 전체보기 버튼 포함 첫 5개 버튼 -->
+            <div class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
                 <a th:href="@{/}" class="btn rounded-circle category-btn">전체보기</a>
             </div>
-            <div th:each="category : ${categories}" class="col-auto">
-                <a th:href="@{/(cid=${category.cid})}"
-                   class="btn rounded-circle category-btn"
-                   th:text="${category.cname}">카테고리</a>
+            <div th:each="category, stat : ${categories}" th:if="${stat.index < 4}" class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
+                <a th:href="@{/(cid=${category.cid})}" class="btn rounded-circle category-btn" th:text="${category.cname}">카테고리</a>
+            </div>
+
+            <!-- 나머지 5개 버튼 -->
+            <div th:each="category, stat : ${categories}" th:if="${stat.index >= 4 && stat.index < 9}" class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
+                <a th:href="@{/(cid=${category.cid})}" class="btn rounded-circle category-btn" th:text="${category.cname}">카테고리</a>
             </div>
         </div>
     </div>

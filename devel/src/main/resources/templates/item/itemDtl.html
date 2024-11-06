@@ -405,10 +405,10 @@
 
                 <div th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()">장바구니 담기</button>
-                    <button type="button" class="btn btn-primary btn-lg" onclick="order()">주문하기</button>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="order()">결제</button>
                 </div>
                 <div class="text-right" style="margin-top:10px;">
-                    <button type="button" class="btn btn-primary btn-lg" onclick="history.back();">목록으로</button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="history.back();">목록으로 돌아가기</button>
                 </div>
                 <div th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-danger btn-lg">품절</button>
@@ -439,8 +439,8 @@
         </div>
         <div>
             <hr class="my-4">
-            <div class="itemDesc-container" style="margin-bottom:50px;">
-                <h4>상품 상세 설명</h4>
+            <div class="itemDesc-container" style="margin-bottom:50px; width:90%">
+                <h4>상품상세설명</h4>
                 <p style="white-space: pre-wrap; margin-top:30px" th:text="${item.itemDetail}"></p>
             </div>
         </div>
