@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,12 +36,14 @@ public class BidController {
 
     private final MemberService memberService;
 
+    private final WishlistService wishlistService;
+
     private final MemberGradeService memberGradeService;
 
     @GetMapping("/list")
     public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                         @RequestParam(value = "searchQuery", required = false) String searchQuery,
-                        @RequestParam(value = "cid", required = false) String cid, @RequestParam(value ="auctionStatus" , required = false) String auctionStatus){
+                        @RequestParam(value = "cid", required = false) String cid, @RequestParam(value ="auctionStatus" , required = false) String auctionStatus, Authentication authentication){
             if(page <0 ) page = 0;
             log.info("auctionStatus ++ " + auctionStatus);
             bidItemService.updateItemStatuses();
@@ -49,10 +52,16 @@ public class BidController {
             log.info("model value ++ " + bidItemPage);
 
             model.addAttribute("categories", categoryService.list());
-           model.addAttribute("bidItemList", bidItemPage.getContent());
-           model.addAttribute("currentPage", bidItemPage.getNumber());
-           model.addAttribute("totalPages", bidItemPage.getTotalPages());
+            model.addAttribute("bidItemList", bidItemPage.getContent());
+            model.addAttribute("currentPage", bidItemPage.getNumber());
+            model.addAttribute("totalPages", bidItemPage.getTotalPages());
             model.addAttribute("auctionStatus", auctionStatus);
+
+            if (authentication != null && authentication.isAuthenticated()) {
+                String userId = authentication.getName();
+                List<WishlistDto> recentBidWishlist = wishlistService.getRecentBidWishlistByMember(userId, 3);
+                model.addAttribute("recentBidWishlist", recentBidWishlist);
+            }
            log.info("category List Page data +++" + categoryService.list());
 
            log.info("현재페이지 로그" + bidItemPage.getNumber());
@@ -103,11 +112,15 @@ public class BidController {
     }
 
     @GetMapping(value = "/view/{bidItemId}")
-    public String itemDtl(Model model, @PathVariable("bidItemId") String bidItemId){
+    public String itemDtl(Model model, @PathVariable("bidItemId") String bidItemId, Authentication authentication){
         BidItemDto bidItemDto =  bidItemService.viewDtl(bidItemId);
         model.addAttribute("biditem", bidItemDto);
         model.addAttribute("minPrice", bidItemDto.getBidNowPrice() + 1);
-        log.info("minPrice " + bidItemDto.getBidNowPrice() + 1);
+        if (authentication != null && authentication.isAuthenticated()) {
+            String userId = authentication.getName();
+            List<WishlistDto> recentBidWishlist = wishlistService.getRecentBidWishlistByMember(userId, 3);
+            model.addAttribute("recentBidWishlist", recentBidWishlist);
+        }
         return "biditem/view";
     }
 

@@ -19,6 +19,6 @@ public class WishlistDto {
     private Integer stockNumber;
     private Integer maxPrice;
     private Integer bidNowPrice;
-
+    private String imgUrl;
 
 }

@@ -1,7 +1,11 @@
 package com.treasuredigger.devel.controller;
 
+import com.treasuredigger.devel.dto.WishlistDto;
 import com.treasuredigger.devel.service.CategoryService;
 import com.treasuredigger.devel.service.ItemService;
+import com.treasuredigger.devel.service.WishlistService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -13,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -20,10 +26,11 @@ import java.util.Optional;
 public class MainController {
 
     private final ItemService itemService;
-    private final CategoryService categoryService; // CategoryService 추가
+    private final CategoryService categoryService;
+    private final WishlistService wishlistService;
 
     @GetMapping(value = "/")
-    public String main(ItemSearchDto itemSearchDto, Optional<Integer> page, Optional<String> cid, Model model) {
+    public String main(ItemSearchDto itemSearchDto, Optional<Integer> page, Optional<String> cid, Model model, Authentication authentication) {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 15);
 
         Page<MainItemDto> items;
@@ -42,6 +49,12 @@ public class MainController {
             item.setItemSellStatus(itemService.getItemSellStatus(item.getId())); // 판매 상태 추가
         }
         model.addAttribute("categories", categoryService.list());
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            String userId = authentication.getName();
+            List<WishlistDto> recentItemWishlist = wishlistService.getRecentItemWishlistByMember(userId, 3);
+            model.addAttribute("recentItemWishlist", recentItemWishlist);
+        }
 
         return "main";
     }
