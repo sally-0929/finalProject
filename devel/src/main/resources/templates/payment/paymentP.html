@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Payment Page</title>
   <!-- jQuery CDN 추가 -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <!-- 아임포트 스크립트 추가 -->
@@ -10,8 +9,8 @@
 </head>
 <body>
 <!-- 버튼들 -->
-<button id="cardPay" onclick="handlePayment('html5_inicis.INIpayTest', 'card')">카드 결제</button>
-<button id="kakaoPay" onclick="handlePayment('kakaopay', 'card')">카카오페이 결제</button>
+<button id="cardPay" onclick="handlePayment('html5_inicis.INIpayTest', 'card')">통합 결제</button>
+<!--<button id="kakaoPay" onclick="handlePayment('kakaopay', 'card')">카카오페이 결제</button>-->
 
 <script th:inline="javascript">
   var IMP = window.IMP;

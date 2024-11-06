@@ -18,10 +18,6 @@ public class PaymentService {
     private final IamportClient iamportClient;
     private final PaymentRepository paymentRepository;
 
-    /**
-     * 아임포트 서버로부터 결제 정보를 검증
-     * @param imp_uid
-     */
     public IamportResponse<Payment> validateIamport(String imp_uid) {
         try {
             IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
@@ -33,12 +29,6 @@ public class PaymentService {
         }
     }
 
-    /**
-     * 아임포트 서버로부터 결제 취소 요청
-     *
-     * @param imp_uid
-     * @return
-     */
     public IamportResponse<Payment> cancelPayment(String imp_uid) {
         try {
             CancelData cancelData = new CancelData(imp_uid, true);
