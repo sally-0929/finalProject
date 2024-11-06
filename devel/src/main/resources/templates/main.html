@@ -203,6 +203,7 @@
                 <a th:href="@{/(cid=${category.cid})}" class="btn rounded-circle category-btn" th:text="${category.cname}">카테고리</a>
             </div>
         </div>
+        <a th:href="@{/payments/paymentP}">결제 페이지로 이동</a>
     </div>
     <div class="scroll-button-container">
         <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">

@@ -1,109 +1,52 @@
 package com.treasuredigger.devel.controller;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import com.treasuredigger.devel.entity.Member;
-import com.treasuredigger.devel.entity.Order;
-import com.treasuredigger.devel.service.IamportService;
-import com.treasuredigger.devel.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import com.treasuredigger.devel.dto.PaymentDto;
+import com.treasuredigger.devel.service.PaymentService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Controller
-@RequestMapping("/api/v1")
+@RequestMapping("/payments")
+@RequiredArgsConstructor
+@Slf4j
 public class PaymentController {
+    private final PaymentService paymentService;
 
-    @Autowired
-    HttpSession session;
-
-    @Autowired
-    OrderService orderService;
-
-    private final IamportService iamportService;
-    private IamportClient iamportClient;
-
-    @Autowired
-    public PaymentController(IamportService iamportService, IamportClient iamportClient) {
-        this.iamportService = iamportService;
-        this.iamportClient = iamportClient;
+    @PostMapping("/validation/{imp_uid}")
+    public IamportResponse<Payment> validateIamport(@PathVariable String imp_uid) throws IamportResponseException, IOException {
+        log.info("imp_uid: {}", imp_uid);
+        log.info("validateIamport");
+        return paymentService.validateIamport(imp_uid);
     }
 
-    // 결제 요청을 처리하는 메서드
-    @PostMapping("/payment")
-    @ResponseBody
-    public Map<String, Object> processPayment(
-            @RequestParam("imp_uid") String imp_uid,
-            @RequestParam("order_idx") int order_idx,
-            @RequestParam("order_amount") int order_amount) {
-
-        Map<String, Object> resultMap = new HashMap<>();
-
-        Member user = (Member) session.getAttribute("user");
-
-        if (user == null) {
-            resultMap.put("result", "fail_no_user");
-            return resultMap;
-        }
-
-        try {
-            IamportResponse<Payment> paymentResponse = iamportService.getPaymentInfo(imp_uid);
-            Payment payment = paymentResponse.getResponse();
-
-            // 결제 금액 확인
-            if (payment.getAmount().compareTo(new BigDecimal(order_amount)) == 0) {
-                // 결제 처리 후 필요한 추가 작업 (예: DB에 결제 정보 저장)
-                resultMap.put("result", "success");
-            } else {
-                resultMap.put("result", "fail_not_same_payment");
-            }
-
-        } catch (IamportResponseException | IOException e) {
-            resultMap.put("result", "fail_exception");
-        }
-
-        return resultMap;
+    @PostMapping("/order")
+    public ResponseEntity<String> processOrder(@RequestBody PaymentDto paymentDto) {
+        // 주문 정보를 로그에 출력
+        log.info("Received orders: {}", paymentDto.toString());
+        // 성공적으로 받아들였다는 응답 반환
+        return ResponseEntity.ok(paymentService.saveOrder(paymentDto));
     }
 
-    // 결제 완료 후 이동할 화면
-    @RequestMapping("/success")
-    public String paymentSuccess(
-            @RequestParam("performance_idx") int performance_idx,
-            @RequestParam("order_idx") int order_idx,
-            @RequestParam("used_point2") String used_point2,
-            String email,
-            Pageable pageable,
-            Model model) {
+    @PostMapping("/cancel/{imp_uid}")
+    public IamportResponse<Payment> cancelPayment(@PathVariable String imp_uid) throws IamportResponseException, IOException {
+        return paymentService.cancelPayment(imp_uid);
+    }
 
-        Member user = (Member) session.getAttribute("user");
-
-        if (user == null) {
-            return "redirect:/login"; // 로그인 페이지로 리다이렉트
-        }
-
-        // 주문 정보 가져오기 (DB에서 조회)
-        Order order = (Order) orderService.getOrderList(email, pageable);
-        model.addAttribute("order", order);
-        model.addAttribute("used_point2", used_point2);
-
-        return "payment/success";
+    @GetMapping("/paymentP")
+    public String showPaymentPage() {
+        System.out.println("여기 왜 안옴");
+        return "payment/paymentP";
     }
 }
-
 
