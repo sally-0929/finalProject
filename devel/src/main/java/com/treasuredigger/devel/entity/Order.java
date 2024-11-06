@@ -30,12 +30,11 @@ public class Order extends BaseEntity {
     @Column(name = "total_amount")
     private int totalAmount;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL
-            , orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Payment> payments = new ArrayList<>();
+    private List<PaymentEntity> payments = new ArrayList<>();
 
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
@@ -72,10 +71,18 @@ public class Order extends BaseEntity {
         }
     }
 
-    // 결제 내역 추가
-    public void addPayment(Payment payment) {
-        this.payments.add(payment);
-        payment.setOrder(this);  // 결제 내역과 주문 연결
+    // 주문에 포함된 모든 Item을 반환하는 메서드 추가
+    public List<Item> getItems() {
+        List<Item> items = new ArrayList<>();
+        for (OrderItem orderItem : orderItems) {
+            items.add(orderItem.getItem());  // OrderItem에서 Item 객체를 가져옴
+        }
+        return items;
     }
 
+    // 결제 내역 추가
+    public void addPayment(PaymentEntity paymentEntity) {
+        this.payments.add(paymentEntity);
+        paymentEntity.setOrder(this);  // 결제 내역과 주문 연결
+    }
 }
