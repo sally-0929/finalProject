@@ -302,7 +302,7 @@
 
             <!-- 상품 정보 -->
             <div class="flex-item" style="position: relative;">
-                <div class="d-flex justify-content-between mb-2">
+                <div class="d-flex justify-content-between">
                     <span th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge badge-primary mgb-15">
                         판매중
                     </span>
@@ -439,7 +439,7 @@
         </div>
         <div>
             <hr class="my-4">
-            <div class="itemDesc-container" style="margin-bottom:50px; width:90%">
+            <div class="itemDesc-container" style="margin: 0 auto 50px auto; width:90%">
                 <h4>상품상세설명</h4>
                 <p style="white-space: pre-wrap; margin-top:30px" th:text="${item.itemDetail}"></p>
             </div>

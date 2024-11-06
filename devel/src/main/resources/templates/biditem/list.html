@@ -188,15 +188,20 @@
 
     <div class="container">
         <h2 class="text-center" style="margin-top:50px">카테고리</h2>
-        <div class="row justify-content-center flex-nowrap" style="margin:40px 0 50px 0;">
-            <div class="col-auto">
+
+        <!-- 카테고리 버튼 컨테이너 -->
+        <div class="d-flex flex-wrap justify-content-center" style="max-width: 900px; margin: 40px auto 50px auto; gap: 10px;">
+            <div class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
                 <a th:href="@{/biditem/list(auctionStatus=${auctionStatus})}" class="btn rounded-circle category-btn" data-cid="">전체보기</a>
             </div>
-            <div th:each="category : ${categories}" class="col-auto">
+            <div th:each="category, stat : ${categories}" th:if="${stat.index < 4}" class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
                 <a th:href="@{/biditem/list(cid=${category.cid}, auctionStatus=${auctionStatus})}"
                    class="btn rounded-circle category-btn"
                    data-cid="${category.cid}"
                    th:text="${category.cname}">카테고리</a>
+            </div>
+            <div th:each="category, stat : ${categories}" th:if="${stat.index >= 4 && stat.index < 9}" class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
+                <a th:href="@{/biditem/list(cid=${category.cid}, auctionStatus=${auctionStatus})}" class="btn rounded-circle category-btn" th:text="${category.cname}">카테고리</a>
             </div>
         </div>
 
@@ -253,8 +258,13 @@
 
     <form id="auctionForm" action="/biditem/list" method="GET">
 
-        <select id="auctionStatus" name="auctionStatus" onchange="changeAuctionStatus()">
-            <option value="">---경매상태---</option>
+        <select id="auctionStatus" name="auctionStatus" onchange="changeAuctionStatus()"
+                style="display: inline-block; text-align: center; text-align-last: center;
+                   vertical-align: middle; height: 40px; padding: 5px 0;
+                   font-size: 16px; color: #333; background-color: #f8f8f8;
+                   border: 2px solid #ddd; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+                   transition: border-color 0.3s ease, box-shadow 0.3s ease; margin-bottom:10px;">
+            <option value="" style="color: #888;"> -- 경매상태 -- </option>
             <option value="WAIT" th:selected="${auctionStatus == 'WAIT'}">경매대기중</option>
             <option value="ING" th:selected="${auctionStatus == 'ING'}">경매중</option>
             <option value="END" th:selected="${auctionStatus == 'END'}">경매종료</option>
