@@ -7,12 +7,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="member")
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Member extends BaseEntity {
 
     @Id
@@ -44,6 +45,29 @@ public class Member extends BaseEntity {
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL) // MemberGrade와의 관계
     private MemberGrade memberGrade;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // Bid와의 관계
+    private List<Bid> bids;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // BidItem와의 관계
+    private List<BidItem> bidItems;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // order와의 관계
+    private List<Order> orders;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // inquirys와의 관계
+    private List<Inquiry> inquirys;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // wishlists와의 관계
+    private List<Wishlist> wishlists;
+
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL) // items와의 관계
+    private List<Item> items;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // carts와의 관계
+    private List<Cart> carts;
+
+
 
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder){
         Member member = new Member();
