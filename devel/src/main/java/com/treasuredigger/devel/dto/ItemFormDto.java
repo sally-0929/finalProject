@@ -5,15 +5,19 @@ import com.treasuredigger.devel.entity.Item;
 import com.treasuredigger.devel.entity.ItemCategory;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.modelmapper.ModelMapper;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
-public class ItemFormDto {
+@ToString
+public class ItemFormDto{
 
     private Long id;
 
@@ -34,6 +38,9 @@ public class ItemFormDto {
 
     @NotNull(message = "재고는 필수 입력 값입니다.")
     private Integer stockNumber;
+
+    private LocalDateTime regTime;
+    private LocalDateTime updateTime;
 
     private ItemSellStatus itemSellStatus = ItemSellStatus.SELL;
     //private ItemSellStatus itemSellStatus;

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/layout1}">
 
 <head>
@@ -49,7 +50,7 @@
 
         .scroll-button-container {
             position: fixed;
-            top: 70%;
+            top: 52%;
             right: 50px;
             transform: translateY(-50%);
             display: flex;
@@ -122,6 +123,31 @@
             padding: 6px 10px;
         }
 
+        .wishlist-container img {
+            transition: filter 0.3s ease;
+        }
+
+        .wishlist-container img:hover {
+            filter: grayscale(100%);
+        }
+        .link-hover h6 {
+            transition: color 0.3s ease;
+            text-align: center;
+            display: block;
+            color: gray;
+        }
+
+        .link-hover:hover h6 {
+            color: black;
+        }
+
+        .link-hover {
+            text-decoration: none !important; /* 링크에 강제 밑줄 제거 */
+        }
+
+        .link-hover:hover {
+            text-decoration: none !important; /* 링크에 강제 밑줄 제거 */
+        }
 
     </style>
 </th:block>
@@ -166,50 +192,46 @@
         </div>
     </div>
     <div class="scroll-button-container">
+        <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">
+            <!-- 로그인한 사용자에게만 콘텐츠 표시 -->
+            <a href="/members/wishlist" class="scroll-label link-hover">
+                <h6>찜목록보러가기</h6>
+            </a>
+            <ul style="list-style-type: none; padding: 0;">
+                <li th:each="wishlistItem : ${recentItemWishlist}" style="margin-bottom: 15px;">
+                    <a th:href="'/item/' + ${wishlistItem.itemId}" class="text-dark d-flex flex-column align-items-center">
+                        <img th:src="${wishlistItem.imgUrl}" style="width: 95px; height: 95px; object-fit: contain; object-position: center;margin-bottom: 5px; border:1px solid lightgray; border-radius:10px;">
+                        <span th:text="${wishlistItem.itemNm}" style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; display: block; width: 90px;"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 로그인하지 않은 상태에서는 공간을 남겨두기 -->
+        <div th:if="${!#authorization.expression('isAuthenticated()')}" style="visibility: hidden; height: 450px;"></div>
         <span class="scroll-label">TOP</span>
         <button class="scroll-button" onclick="scrollToHeader()"><i class="fas fa-angle-up"></i></button>
         <button class="scroll-button" onclick="scrollToFooter()"><i class="fas fa-angle-down"></i></button>
         <span class="scroll-label">BOTTOM</span>
     </div>
     <div class="row">
-        <!-- 판매중인 상품 -->
         <th:block th:each="item : ${items.getContent()}">
-            <th:block th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}">
-                <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
-                    <div class="card" style="border:none;">
-                        <a th:href="'/item/' + ${item.id}" class="text-dark">
-                            <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 300px; width: 100%; object-fit: contain; object-position: center; border:1px solid lightgray; border-radius:10px;">
-                            <div class="card-body">
-                                <div>
-                                    <span class="badge badge-primary">판매중</span>
-                                </div>
-                                <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%; margin-bottom:0px">[[${item.itemNm}]]</span><br>
-                                <span class="card-title text-danger" style="font-size:16px"><span th:text="${item.price}"></span>원</span>
+            <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
+                <div class="card" style="border:none">
+                    <a th:href="'/item/' + ${item.id}" class="text-dark">
+                        <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 300px; width: 100%; object-fit: contain; object-position: center; border:1px solid lightgray; border-radius:10px;">
+                        <div class="card-body">
+                            <div>
+                                <span th:classappend="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL} ? 'badge badge-primary' : 'badge btn-danger'"
+                                      th:text="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL ? '판매중' : '품절'}">
+                                </span>
                             </div>
-                        </a>
-                    </div>
+                            <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%; margin-bottom:0px">[[${item.itemNm}]]</span><br>
+                            <span class="card-title text-danger" style="font-size:16px"><span th:text="${item.price}"></span>원</span>
+                        </div>
+                    </a>
                 </div>
-            </th:block>
-        </th:block>
-
-        <!-- 품절 상품 -->
-        <th:block th:each="item : ${items.getContent()}">
-            <th:block th:if="${item.itemSellStatus != T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}">
-                <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
-                    <div class="card">
-                        <a th:href="'/item/' + ${item.id}" class="text-dark">
-                            <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 250px; width: 100%; object-fit: contain; object-position: center;">
-                            <div class="card-body">
-                                <div>
-                                    <span class="badge btn-danger">품절</span>
-                                </div>
-                                <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%;">[[${item.itemNm}]]</span><br>
-                                <span class="card-title text-danger" style="font-size:16px"><span th:text="${item.price}"></span>원</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </th:block>
+            </div>
         </th:block>
     </div>
     <script>

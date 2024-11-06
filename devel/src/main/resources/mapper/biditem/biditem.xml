@@ -88,6 +88,7 @@
     <select id="getBidMyList" resultType="com.treasuredigger.devel.dto.BidItemDto">
         <include refid="BaseBidItemQuery" />
         AND btt.created_by = #{createdBy}
+        order by btt.bid_end_date desc
     </select>
 
 

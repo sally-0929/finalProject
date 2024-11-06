@@ -1,11 +1,17 @@
 package com.treasuredigger.devel.controller;
 
+import com.treasuredigger.devel.dto.WishlistDto;
+import com.treasuredigger.devel.dto.ItemDto;
+import com.treasuredigger.devel.dto.OrderHistDto;
 import com.treasuredigger.devel.entity.Item;
 import com.treasuredigger.devel.entity.ItemCategory;
 import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.service.CategoryService;
 import com.treasuredigger.devel.service.ItemService;
 import com.treasuredigger.devel.service.MemberGradeService;
+import com.treasuredigger.devel.service.MemberService;
+import com.treasuredigger.devel.service.WishlistService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +25,8 @@ import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +44,9 @@ public class ItemController {
 
     private final ItemService itemService;
     private final CategoryService categoryService;
+    private final WishlistService wishlistService;
+
+    private final MemberService memberService;
 
     @GetMapping(value = "/admin/item/new")
     public String itemForm(Model model) {
@@ -126,11 +137,30 @@ public class ItemController {
     }
 
     @GetMapping(value = "/item/{itemId}")
-    public String itemDtl(Model model, @PathVariable("itemId") Long itemId){
+    public String itemDtl(Model model, @PathVariable("itemId") Long itemId, Authentication authentication){
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         model.addAttribute("item", itemFormDto);
         model.addAttribute("itemSellStatus", itemService.getItemSellStatus(itemId)); // 판매 상태 추가
+        if (authentication != null && authentication.isAuthenticated()) {
+            String userId = authentication.getName();
+            List<WishlistDto> recentItemWishlist = wishlistService.getRecentItemWishlistByMember(userId, 3);
+            model.addAttribute("recentItemWishlist", recentItemWishlist);
+        }
         return "item/itemDtl";
     }
 
+    @GetMapping(value = {"/sale", "/sale/{page}"})
+    public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model) {
+        System.out.println("prin value" + principal.getName());
+        Pageable pageable = PageRequest.of(page.orElse(0), 4);
+        String email = principal.getName();
+        Member member = memberService.findMemberByMid(email);
+        List<ItemFormDto> saleHistDtoList = itemService.getItemsBySeller(member, pageable);
+        System.out.println("saleHistList" + saleHistDtoList);
+        model.addAttribute("items", saleHistDtoList);
+
+        model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("maxPage", 5);
+        return "item/saleHist";
+    }
 }
