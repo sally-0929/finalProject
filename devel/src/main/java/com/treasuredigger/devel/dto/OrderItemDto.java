@@ -12,8 +12,10 @@ public class OrderItemDto {
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrderPrice();
         this.imgUrl = imgUrl;
+        this.itemId = orderItem.getItem().getId();
     }
 
+    private Long itemId; // 상품 ID
     private String itemNm; //상품명
     private int count; //주문 수량
 

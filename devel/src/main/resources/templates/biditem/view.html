@@ -248,7 +248,7 @@
                 <div class="scroll-button-container">
                     <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">
                         <a href="/members/wishlist" class="scroll-label link-hover">
-                            <h6>찜목록보러가기</h6>
+                            <h6><i class="far fa-heart red" style="color:red;"></i> 관심상품</h6>
                         </a>
                         <ul style="list-style-type: none; padding: 0;">
                             <li th:each="wishlistItem : ${recentBidWishlist}" style="margin-bottom: 15px;">
@@ -291,7 +291,7 @@
                             $(this).addClass("selected-thumbnail");
                         });
 
-                        // 페이지 로드 시 찜 여부 확인
+                        // 페이지 로드 시 관심상품 여부 확인
                         $.ajax({
                             url: '/wishlist/check',
                             type: 'GET',
@@ -305,7 +305,7 @@
                             }
                         });
 
-                        // 찜 버튼 클릭 시 토글
+                        // 관심상품 버튼 클릭 시 토글
                         $('#wishlistButton').click(function() {
                             $.ajax({
                                 url: '/wishlist/toggle',
@@ -318,17 +318,17 @@
                                 success: function(response) {
                                     if (heartIcon.hasClass('red')) {
                                         heartIcon.removeClass('red');
-                                        alert('찜 해제되었습니다.');
+                                        alert('관심상품 해제되었습니다.');
                                     } else {
                                         heartIcon.addClass('red');
-                                        alert('찜 등록되었습니다.');
+                                        alert('관심상품 등록되었습니다.');
                                     }
                                 },
                                 error: function(xhr, status, error) {
                                     console.log('Status:', status);
                                     console.log('Error:', error);
                                     console.log('ResponseText:', xhr.responseText);
-                                    alert('찜 기능에 실패했습니다.');
+                                    alert('관심상품 기능에 실패했습니다.');
                                 }
                             });
                         });
@@ -432,8 +432,9 @@
 
 
                 <hr class="my-3">
-                현재 입찰가
-                <div class="h4" id="currentBidPrice" th:text="${biditem.bidNowPrice}"></div>
+                현재입찰가
+                <div class="h4 mb-3" style="color:red" id="currentBidPrice" th:text="${biditem.bidNowPrice}"></div>
+                희망입찰가
                 <input type="number" class="form-control h4" id="bidNowPrice" name="bidNowPrice" th:value="${biditem.bidNowPrice}" th:min="${minPrice}" max="${biditem.maxPrice}" required>
                 <div id="priceButtons">
                     <button type="button" class="btn btn-secondary" onclick="addBidPrice(1000)">1,000원</button>
