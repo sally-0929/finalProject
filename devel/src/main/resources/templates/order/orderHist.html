@@ -70,11 +70,15 @@
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
-        .content-mg{
-            margin-left:30%;
-            margin-right:30%;
-            margin-top:2%;
-            margin-bottom:100px;
+        .content {
+            width: 50%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column; /* 세로로 요소 정렬 */
+            align-items: center; /* 자식 요소들 수평 중앙 정렬 */
+        }
+        .content h2 {
+            align-self: flex-start;
         }
         .repImgDiv{
             margin-right:15px;
@@ -84,12 +88,20 @@
         .repImg{
             height:100px;
             width:100px;
+            object-fit: contain;
+            object-position: center;
+            border:1px solid lightgray;
         }
         .card{
-            width:750px;
+            width:800px;
             height:100%;
-            padding:30px;
+            padding:10px;
             margin-bottom:20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px); /* 카드 호버 시 살짝 떠오르는 효과 */
         }
         .fs18{
             font-size:18px
@@ -132,35 +144,63 @@
         .pagination .page-item .page-link {
             padding: 6px 10px;
         }
+        .btn-outline-secondary {
+            color: #555;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            padding: 0 12px; /* 양쪽에만 여백 추가 */
+            height: 30px; /* 버튼의 높이를 명확히 설정 */
+            display: flex;
+            align-items: center; /* 세로 중앙 정렬 */
+            justify-content: center; /* 가로 중앙 정렬 */
+            font-size: 0.9rem;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #333;
+            color: white;
+            border-color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline-secondary:active {
+            background-color: #555;
+            border-color: #555;
+            box-shadow: none;
+        }
+        .order-item:not(:last-child) {
+            border-bottom: 1px solid #e0e0e0; /* 아주 얕은 회색 구분선 */
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </th:block>
 
 <div layout:fragment="content" class="content">
-
-    <h2 class="mb-4">
-        구매 현황
-    </h2>
-
+    <div style="width: 800px; text-align: left;">
+        <h2 class="mb-4">구매 현황</h2>
+    </div>
     <div th:each="order : ${orders.getContent()}">
-
-        <div class="d-flex mb-3 align-self-center">
-            <h4 th:text="${order.orderDate} + ' 주문'"></h4>
+        <div class="d-flex align-self-center">
+            <h6 th:text="${order.orderDate} + ' 주문'"></h6>
             <div class="ml-3">
                 <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
-                    <button type="button" class="btn btn-outline-secondary" th:value="${order.orderId}" onclick="cancelOrder(this.value)">주문취소</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" th:value="${order.orderId}" onclick="cancelOrder(this.value)" style="height: 25px; line-height: 1; font-size: 1em; margin-bottom:5px">주문취소</button>
                 </th:block>
                 <th:block th:unless="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
-                    <h4>(취소 완료)</h4>
+                    <h6>(취소 완료)</h6>
                 </th:block>
             </div>
         </div>
         <div class="card d-flex">
-            <div th:each="orderItem : ${order.orderItemDtoList}" class="d-flex mb-3">
+            <div th:each="orderItem : ${order.orderItemDtoList}" class="d-flex order-item">
                 <div class="repImgDiv">
                     <img th:src="${orderItem.imgUrl}" class = "rounded repImg" th:alt="${orderItem.itemNm}">
                 </div>
                 <div class="align-self-center w-75">
-                    <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold"></span>
+                    <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold" style="font-size:18px"></span>
                     <div class="fs18 font-weight-light">
                         <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
                         <span th:text="${orderItem.count} +'개'"></span>

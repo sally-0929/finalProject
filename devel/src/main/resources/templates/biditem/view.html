@@ -184,14 +184,22 @@
         .wishlist-container img:hover {
             filter: grayscale(100%);
         }
+        .wishlist-container li{
+            transition:transform 0.3s ease;
+        }
+        .wishlist-container li:hover{
+            transform: translateY(-5px);
+        }
         .link-hover h6 {
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
             text-align: center;
             display: block;
             color: gray;
         }
+
         .link-hover:hover h6 {
             color: black;
+            transform: translateY(-5px);
         }
         .link-hover {
             text-decoration: none !important; /* 링크에 강제 밑줄 제거 */
