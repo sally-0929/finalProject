@@ -77,7 +77,7 @@
                 cache: false,
                 success: function(result, status){
                     alert("주문이 완료 되었습니다.");
-                    location.href = '/';
+                    location.href = '/payments/paymentP';
                 },
                 error: function(jqXHR, status, error){
                     if (jqXHR.status === 400) {
