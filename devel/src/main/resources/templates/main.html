@@ -131,14 +131,22 @@
             filter: grayscale(100%);
         }
         .link-hover h6 {
-            transition: font-size 0.3s ease;
+            transition: color 0.3s ease;
             text-align: center;
             display: block;
-            color: black;
+            color: gray;
         }
 
         .link-hover:hover h6 {
-            font-size: 18px;
+            color: black;
+        }
+
+        .link-hover {
+            text-decoration: none !important; /* 링크에 강제 밑줄 제거 */
+        }
+
+        .link-hover:hover {
+            text-decoration: none !important; /* 링크에 강제 밑줄 제거 */
         }
 
     </style>
