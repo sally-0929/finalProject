@@ -33,6 +33,7 @@ public interface ItemRepository extends JpaRepository<Item, Long>,
             "%:itemDetail% order by i.price desc", nativeQuery = true)
     List<Item> findByItemDetailByNative(@Param("itemDetail") String itemDetail);
 
+
     List<Item> findBySeller(Member seller, Pageable pageable);
 
 }
