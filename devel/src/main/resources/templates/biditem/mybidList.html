@@ -96,7 +96,11 @@
             <td th:text="${bid.bidCount-1}"></td>
             <td th:text="${#temporals.format(bid.bidStartDate, 'yyyy-MM-dd')}"></td>
             <td class="bid-end-date" th:attr="data-enddate=${bid.bidEndDate}"></td>
-            <td th:text="${bid.itemStatus}"></td>
+            <td th:switch="${bid.itemStatus}">
+                <span th:case="'WAIT'">경매대기중</span>
+                <span th:case="'ING'">경매중</span>
+                <span th:case="'END'">경매종료</span>
+            </td>
 <!--            <td th:text="${bid.memberId}"></td>-->
             <input type="hidden" class="bid-item-id" th:value="${bid.bidItemId}"/>
         </tr>

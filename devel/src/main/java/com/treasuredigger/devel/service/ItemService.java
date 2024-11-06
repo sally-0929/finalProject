@@ -1,7 +1,7 @@
 package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.constant.ItemSellStatus;
-import com.treasuredigger.devel.dto.ItemFormDto;
+import com.treasuredigger.devel.dto.*;
 import com.treasuredigger.devel.entity.Item;
 import com.treasuredigger.devel.entity.ItemCategory;
 import com.treasuredigger.devel.entity.ItemImg;
@@ -20,15 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import com.treasuredigger.devel.dto.ItemImgDto;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-import com.treasuredigger.devel.dto.ItemSearchDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import com.treasuredigger.devel.dto.MainItemDto;
 
 @Service
 @Transactional
@@ -163,8 +160,29 @@ public class ItemService {
         return itemRepository.getMainItemPageByCategory(cid, itemSearchDto, pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ItemDto> getAdminItemDtos(Pageable pageable, ItemSearchDto itemSearchDto) {
+        Page<Item> items = itemRepository.getAdminItemPage(itemSearchDto, pageable); // ItemSearchDto와 Pageable을 사용
+        return items.map(item -> {
+            ItemDto itemDto = new ItemDto();
+            itemDto.setId(item.getId());
+            itemDto.setItemNm(item.getItemNm());
+            itemDto.setPrice(item.getPrice());
+            itemDto.setItemDetail(item.getItemDetail());
+            itemDto.setRegTime(item.getRegTime());
+            itemDto.setUpdateTime(item.getUpdateTime());
+            itemDto.setCname(item.getItemCategory().getCname());
+            itemDto.setStockNumber(item.getStockNumber());
+            itemDto.setItemSellStatus(item.getItemSellStatus());
 
+            ItemImg repImg = itemImgRepository.findByItemIdAndRepimgYn(item.getId(), "Y");
+            if (repImg != null) {
+                itemDto.setImgUrl(repImg.getImgUrl());
+            }
 
+            return itemDto;
+        });
+    }
 
 
 
