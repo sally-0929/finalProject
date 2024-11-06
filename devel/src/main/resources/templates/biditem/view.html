@@ -211,7 +211,9 @@
 
     <input type="hidden" id="biditemId" th:value="${biditem.bidItemId}">
     <div style="width: 80%; margin: 0 auto;">
+        <div class="h4" th:text="${biditem.cname}"></div>
         <div class="flex-container mb-4">
+
             <!-- 큰 이미지 -->
             <div class="flex-item">
                 <img id="largeImage" th:src="${biditem.biditemImgDtoList[0].imgUrl}" class="rounded repImg">
