@@ -3,17 +3,18 @@ package com.treasuredigger.devel.service;
 import com.treasuredigger.devel.dto.BidItemDto;
 import com.treasuredigger.devel.dto.ItemFormDto;
 import com.treasuredigger.devel.dto.WishlistDto;
-import com.treasuredigger.devel.entity.BidItem;
-import com.treasuredigger.devel.entity.Item;
-import com.treasuredigger.devel.entity.Member;
-import com.treasuredigger.devel.entity.Wishlist;
+import com.treasuredigger.devel.entity.*;
 import com.treasuredigger.devel.mapper.MemberMapper;
-import com.treasuredigger.devel.repository.WishlistRepository;
+import com.treasuredigger.devel.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WishlistService {
@@ -23,6 +24,15 @@ public class WishlistService {
 
     @Autowired
     private MemberMapper memberMapper;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private ItemImgRepository itemImgRepository;
+
+    @Autowired
+    private BidItemImgRepository bidItemImgRepository;
 
 
 
@@ -65,6 +75,50 @@ public class WishlistService {
         return memberMapper.getBidMyList(id);
     }
 
+    public List<WishlistDto> getRecentItemWishlistByMember(String memberId, int limit) {
+        Member member = memberRepository.findByMid(memberId);
+        if (member == null) {
+            return Collections.emptyList();
+        }
 
+        List<Wishlist> wishlists = wishlistRepository.findTop3ByMemberAndItemIsNotNullOrderByIdDesc(member);
 
+        return wishlists.stream()
+                .map(wishlist -> {
+                    WishlistDto dto = new WishlistDto();
+                    dto.setItemId(wishlist.getItem().getId());
+                    dto.setItemNm(wishlist.getItem().getItemNm());
+
+                    List<ItemImg> itemImages = itemImgRepository.findByItemIdOrderByIdAsc(wishlist.getItem().getId());
+                    if (!itemImages.isEmpty()) {
+                        dto.setImgUrl(itemImages.get(0).getImgUrl());
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<WishlistDto> getRecentBidWishlistByMember(String memberId, int limit) {
+        Member member = memberRepository.findByMid(memberId);
+        if (member == null) {
+            return Collections.emptyList();
+        }
+
+        List<Wishlist> wishlists = wishlistRepository.findTop3ByMemberAndBidItemIsNotNullOrderByIdDesc(member);
+
+        return wishlists.stream()
+                .map(wishlist -> {
+                    WishlistDto dto = new WishlistDto();
+                    dto.setBidItemId(wishlist.getBidItem().getBidItemId());
+                    dto.setBidItemName(wishlist.getBidItem().getBidItemName());
+
+                    List<BidItemImg> bidItemImages = bidItemImgRepository.findByBidItem_BidItemIdOrderByIdAsc(wishlist.getBidItem().getBidItemId());
+                    if (!bidItemImages.isEmpty()) {
+                        dto.setImgUrl(bidItemImages.get(0).getBidImgUrl());
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 }
+

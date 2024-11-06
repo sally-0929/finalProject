@@ -56,12 +56,12 @@ public class InquiryService {
     }
 
     public Page<Inquiry> getInquiriesByMemberWithPagination(Member member, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
         return inquiryRepository.findByMember(member, pageable);
     }
 
     public Page<Inquiry> getUnansweredInquiriesWithPagination(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
         return inquiryRepository.findByAnsweredFalse(pageable);
     }
 }

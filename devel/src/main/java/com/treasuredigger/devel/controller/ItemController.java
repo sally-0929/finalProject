@@ -1,5 +1,6 @@
 package com.treasuredigger.devel.controller;
 
+import com.treasuredigger.devel.dto.WishlistDto;
 import com.treasuredigger.devel.dto.ItemDto;
 import com.treasuredigger.devel.dto.OrderHistDto;
 import com.treasuredigger.devel.entity.Item;
@@ -9,6 +10,8 @@ import com.treasuredigger.devel.service.CategoryService;
 import com.treasuredigger.devel.service.ItemService;
 import com.treasuredigger.devel.service.MemberGradeService;
 import com.treasuredigger.devel.service.MemberService;
+import com.treasuredigger.devel.service.WishlistService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +44,7 @@ public class ItemController {
 
     private final ItemService itemService;
     private final CategoryService categoryService;
+    private final WishlistService wishlistService;
 
     private final MemberService memberService;
 
@@ -133,10 +137,15 @@ public class ItemController {
     }
 
     @GetMapping(value = "/item/{itemId}")
-    public String itemDtl(Model model, @PathVariable("itemId") Long itemId){
+    public String itemDtl(Model model, @PathVariable("itemId") Long itemId, Authentication authentication){
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         model.addAttribute("item", itemFormDto);
         model.addAttribute("itemSellStatus", itemService.getItemSellStatus(itemId)); // 판매 상태 추가
+        if (authentication != null && authentication.isAuthenticated()) {
+            String userId = authentication.getName();
+            List<WishlistDto> recentItemWishlist = wishlistService.getRecentItemWishlistByMember(userId, 3);
+            model.addAttribute("recentItemWishlist", recentItemWishlist);
+        }
         return "item/itemDtl";
     }
 
