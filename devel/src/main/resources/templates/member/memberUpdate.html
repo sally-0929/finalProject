@@ -335,11 +335,17 @@ function smsAuthCheck() {
                     </div>
                 </div>
                 <!--            <input type="text" th:field="*{address}" class="form-control" placeholder="주소를 입력해주세요">-->
+
                 <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect data</p>
             </div>
             <button type="submit" class="btn btn-primary">수정</button>
+
         </table>
     </form>
+        <form th:action="@{/members/memberDelete}" method="get" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm" sec:authorize="isAuthenticated()">회원 탈퇴</button>
+        </form>
+
     </div>
         <div>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
