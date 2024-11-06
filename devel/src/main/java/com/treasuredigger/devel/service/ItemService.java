@@ -111,6 +111,15 @@ public class ItemService {
         return itemFormDto;
     }
 
+    @Transactional(readOnly = true)
+    public List<ItemFormDto> getItemsBySeller(Member seller, Pageable pageable) {
+        List<Item> items = itemRepository.findBySeller(seller, pageable);
+        List<ItemFormDto> itemFormDtos = new ArrayList<>();
+        for (Item item : items) {
+            itemFormDtos.add(getItemDtl(item.getId()));
+        } return itemFormDtos;
+    }
+
     public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
         //상품 수정
         Item item = itemRepository.findById(itemFormDto.getId())
@@ -153,6 +162,9 @@ public class ItemService {
     public Page<MainItemDto> getMainItemPageByCategory(String cid, ItemSearchDto itemSearchDto, Pageable pageable) {
         return itemRepository.getMainItemPageByCategory(cid, itemSearchDto, pageable);
     }
+
+
+
 
 
 }
