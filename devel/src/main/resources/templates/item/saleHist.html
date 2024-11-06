@@ -50,13 +50,14 @@
 </th:block>
 
 <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%;">
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const rows = document.querySelectorAll('#bidTable tbody tr');
             rows.forEach(function(row) {
                 const itemId = row.querySelector('.item-id').value;
                 row.addEventListener('click', function() {
-                    window.location.href = `/item/${itemId}`;
+                    window.location.href = `/admin/item/${itemId}`;
                 });
                 const priceElement = row.querySelector('.price');
                 const priceText = priceElement.textContent.trim();
