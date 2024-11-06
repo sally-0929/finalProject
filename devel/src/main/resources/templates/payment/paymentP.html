@@ -2,80 +2,99 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <!-- jQuery CDN 추가 -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <!-- 아임포트 스크립트 추가 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <title>결제 페이지</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 </head>
 <body>
-<!-- 버튼들 -->
-<button id="cardPay" onclick="handlePayment('html5_inicis.INIpayTest', 'card')">통합 결제</button>
-<!--<button id="kakaoPay" onclick="handlePayment('kakaopay', 'card')">카카오페이 결제</button>-->
+<h1>결제 정보</h1>
 
-<script th:inline="javascript">
+<!-- 주문 정보 출력 -->
+<div>
+  <h2>주문 정보</h2>
+  <p><strong>주문 번호:</strong> <span th:text="${order.id}"></span></p>
+  <p><strong>주문자:</strong> <span th:text="${order.member.name}"></span></p>
+  <p><strong>주문일:</strong> <span th:text="${order.orderDate}"></span></p>
+  <p><strong>주문 상태:</strong> <span th:text="${order.orderStatus}"></span></p>
+  <p><strong>주문 상태:</strong> <span th:text="${order.totalAmount}"></span></p>
+</div>
+
+<!-- 주문 항목 출력 -->
+<h2>주문 항목</h2>
+<table border="1" cellpadding="10">
+  <thead>
+  <tr>
+    <th>상품명</th>
+    <th>가격</th>
+    <th>수량</th>
+    <th>총 금액</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="orderItem : ${orderItems}">
+    <td th:text="${orderItem.orderPrice}"></td> <!-- 상품 가격 -->
+    <td th:text="${orderItem.count}"></td> <!-- 수량 -->
+    <td th:text="${orderItem.getTotalPrice()}"></td> <!-- 총 금액 -->
+  </tr>
+  </tbody>
+</table>
+
+<!-- 총 결제 금액 -->
+<h3>총 금액: <span th:text="${order.totalAmount}"></span> 원</h3>
+
+<hr>
+
+<!-- 결제 버튼 -->
+<h3>결제를 진행하세요</h3>
+<button id="payButton">결제하기</button>
+
+<script>
   var IMP = window.IMP;
-  IMP.init("imp14351567");
+  IMP.init("imp14351567");  // 아임포트 가맹점 코드
 
-  function handlePayment(pg, payMethod) {
-      console.log("handlePayment");
-      console.log(pg);
-      console.log(payMethod);
+  $('#payButton').click(function() {
+      var orderId = "[[${order.id}]]"; // orderId를 여기서 처리
+      var totalAmount = "[[${order.totalAmount}]]"; // 주문 총액을 여기서 처리
+      totalAmount = Number(totalAmount);
 
-      var order = {
-          productId: 1,
-          productName: '상품1',
-          price: 3000,
-          quantity: 1
-      };
-
-      // 결제하기 버튼 클릭 시 결제 요청
+      // 결제 요청
       IMP.request_pay({
-          pg: pg,
-          pay_method: payMethod,
-          merchant_uid: '212R3A11TD233AAC', // 주문번호 생성
-          name: '상품1',
-          amount: 3000, // 결제 가격
-          buyer_name: '김민규',
-          buyer_tel: '010-1234-5678'
-      }, function(rsp) {
+          pg: "html5_inicis.INIpayTest",   // PG사
+          pay_method: "card",               // 결제 수단
+          merchant_uid: "order_" + orderId, // 가맹점 주문번호 (유니크해야 함)
+          name: "주문번호 " + orderId,       // 상품명
+          amount: totalAmount,              // 결제 금액
+          buyer_name: "[[${order.member.name}]]", // 구매자 이름
+          buyer_tel:"[[${order.member.phone}]]", // 구매자 전화번호
+          buyer_email:"[[${order.member.email}]]" // 구매자 이메일
+      }, function (rsp) {
           if (rsp.success) {
-              // 결제 성공 시
+              alert("결제 완료!");
+
+              // 결제 성공 시 서버로 결제 정보를 전송하여 처리
               $.ajax({
                   type: 'POST',
-                  url: 'api/v1/payment/validation/' + rsp.imp_uid
-              }).done(function(data) {
-                  console.log(data);
-                  if (order.price == data.response.amount) {
-                      order.impUid = rsp.imp_uid;
-                      order.merchantUid = rsp.merchant_uid;
-                      // 결제 금액 일치. 결제 성공 처리
-                      $.ajax({
-                          url: "api/v1/payment/order",
-                          method: "post",
-                          data: JSON.stringify(order),
-                          contentType: "application/json"
-                      }).then(function(res) {
-                          console.log("res", res);
-                          console.log("rsp", rsp);
-                          var msg = '결제가 완료되었습니다.';
-                          msg += '고유ID : ' + rsp.imp_uid;
-                          msg += '상점 거래ID : ' + rsp.merchant_uid;
-                          msg += '결제 금액 : ' + rsp.paid_amount;
-                          msg += '카드 승인번호 : ' + rsp.apply_num;
-                          alert(msg);
-                      }).catch(function(error) {
-                          alert("주문정보 저장을 실패 했습니다.");
-                      });
+                  url: '/payments/validation/' + rsp.imp_uid, // 아임포트 결제 검증 API 호출
+                  success: function(response) {
+                      if (response.success) {
+                          alert("주문이 성공적으로 처리되었습니다.");
+                          location.href = "/payments/paymentP?orderId=" + orderId;  // 결제 후 주문 상세 페이지로 리다이렉트
+                      } else {
+                          alert("결제 검증 실패");
+                      }
+                  },
+                  error: function() {
+                      alert("주문 정보 저장에 실패했습니다.");
                   }
-              }).catch(function(error) {
-                  alert('결제에 실패하였습니다. ' + rsp.error_msg);
               });
           } else {
-              alert(rsp.error_msg);
+              alert("결제 실패: " + rsp.error_msg);
           }
       });
-  }
+  });
 </script>
-
 </body>
 </html>

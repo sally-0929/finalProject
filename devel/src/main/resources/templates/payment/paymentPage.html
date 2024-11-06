@@ -13,7 +13,7 @@
   <p>주문 금액: <span th:text="${order.totalPrice}"></span></p>
 
   <!-- 결제 버튼 -->
-  <form action="/api/v1/payment" method="post">
+  <form action="/api/v1/paymentEntity" method="post">
     <input type="hidden" name="order_idx" th:value="${order.id}" />
     <input type="hidden" name="order_amount" th:value="${order.totalPrice}" />
     <button type="submit">결제 진행</button>
