@@ -36,4 +36,7 @@ public interface ItemRepository extends JpaRepository<Item, Long>,
 
     List<Item> findBySeller(Member seller, Pageable pageable);
 
+
+    List<Item> findBySellerMid(String mid);
+
 }

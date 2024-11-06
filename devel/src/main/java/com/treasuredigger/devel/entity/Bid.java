@@ -1,18 +1,14 @@
 package com.treasuredigger.devel.entity;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "bids_tbl")
-@Getter
-@Setter
-@ToString
-public class Bid extends BaseEntity{
+@Getter @Setter
+public class Bid extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +24,6 @@ public class Bid extends BaseEntity{
     private BidItem bidItem;
 
     @ManyToOne
-    @JoinColumn(name="member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
-
 }

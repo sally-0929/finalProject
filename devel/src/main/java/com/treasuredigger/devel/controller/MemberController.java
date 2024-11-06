@@ -6,7 +6,9 @@ import com.treasuredigger.devel.dto.MemberFormDto;
 import com.treasuredigger.devel.dto.MemberGradeDto;
 import com.treasuredigger.devel.dto.WishlistDto;
 import com.treasuredigger.devel.entity.Inquiry;
+import com.treasuredigger.devel.entity.Item;
 import com.treasuredigger.devel.entity.Wishlist;
+import com.treasuredigger.devel.service.DeleteService;
 import com.treasuredigger.devel.service.MemberGradeService;
 import com.treasuredigger.devel.service.MemberService;
 import com.treasuredigger.devel.service.WishlistService;
@@ -42,6 +44,7 @@ public class MemberController {
     private final MemberGradeService memberGradeService;
     private final PasswordEncoder passwordEncoder;
 
+    private final DeleteService deleteService;
     private final WishlistService wishlistService;
 
     @GetMapping(value = "/new")
@@ -143,7 +146,10 @@ public class MemberController {
 
     @PostMapping("/memberDeleteConfirm")
     public String deleteMember(@RequestParam("mid") String mid, HttpServletRequest request, HttpServletResponse response)
-    { // 회원 탈퇴 로직
+    { // 회원 탈퇴
+        boolean isDelete =  deleteService.deleteItem(mid); //item 삭제
+        System.out.println("delete ?" + isDelete);
+
        memberService.deleteMember(mid);
         // 로그아웃 처리
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
