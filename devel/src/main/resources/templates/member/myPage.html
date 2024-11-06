@@ -45,14 +45,6 @@
         .move-right {
             transform: translateX(5px); /* 오른쪽으로 10px 이동 */
         }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 10px 0; /* 위아래 패딩 추가 */
-            text-align: center; /* 텍스트 중앙 정렬 */
-        }
         @media (max-width: 768px) {
             .my-card {
                 width: 150px;
@@ -62,7 +54,7 @@
     </style>
 </head>
 <body>
-<div layout:fragment="content" style="padding-top:180px; padding-bottom:700px;">
+<div layout:fragment="content" style="padding-top:180px;">
     <div style="position: relative;" sec:authorize="isAuthenticated()">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <table>
@@ -91,9 +83,10 @@
             </div>
         </div>
 
-        <form th:action="@{/members/{mid}/delete(mid=${member.mid})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-            <button type="submit" class="btn btn-danger btn-sm" sec:authorize="isAuthenticated()">회원 탈퇴</button>
-        </form>
+<!--        memberUpdate.html로 옮김
+ <form th:action="@{/members/{mid}/delete(mid=${member.mid})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">-->
+<!--            <button type="submit" class="btn btn-danger btn-sm" sec:authorize="isAuthenticated()">회원 탈퇴</button>-->
+<!--        </form>-->
 
         <div class="my-card-container">
             <div class="my-card" th:if="${member.provider != null}">

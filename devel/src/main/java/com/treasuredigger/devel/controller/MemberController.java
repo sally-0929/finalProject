@@ -130,16 +130,26 @@ public class MemberController {
         return "redirect:/members/myPage";
     }
 
-    @PostMapping(value = "/{mid}/delete")
-    public String deleteMember(@PathVariable String mid, HttpServletRequest request, HttpServletResponse response) {
-        memberService.deleteMember(mid);
+    @GetMapping(value = "/memberDelete")
+    public String memberDeleteForm(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String mid = authentication.getName(); // 현재 로그인한 사용자의 아이디
 
+        // 회원 정보를 가져오기
+        Member member = memberService.findMemberByMid(mid);
+        model.addAttribute("member", member);
+        return "member/memberDeleteConfirm";
+    }
+
+    @PostMapping("/memberDeleteConfirm")
+    public String deleteMember(@RequestParam("mid") String mid, HttpServletRequest request, HttpServletResponse response)
+    { // 회원 탈퇴 로직
+       memberService.deleteMember(mid);
         // 로그아웃 처리
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
-
         return "redirect:/";
     }
 
