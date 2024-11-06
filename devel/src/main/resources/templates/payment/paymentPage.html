@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>결제 페이지</title>
+</head>
+<body>
+<h1>결제 페이지</h1>
+
+<div>
+  <h2>주문 정보</h2>
+  <p>주문 번호: <span th:text="${order.id}"></span></p>
+  <p>주문 상태: <span th:text="${order.orderStatus}"></span></p>
+  <p>주문 금액: <span th:text="${order.totalPrice}"></span></p>
+
+  <!-- 결제 버튼 -->
+  <form action="/api/v1/payment" method="post">
+    <input type="hidden" name="order_idx" th:value="${order.id}" />
+    <input type="hidden" name="order_amount" th:value="${order.totalPrice}" />
+    <button type="submit">결제 진행</button>
+  </form>
+</div>
+</body>
+</html>
