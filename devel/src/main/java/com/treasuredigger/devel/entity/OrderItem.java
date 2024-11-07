@@ -3,9 +3,11 @@ package com.treasuredigger.devel.entity;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
+import lombok.ToString;
 
 @Entity
 @Getter @Setter
+@ToString
 public class OrderItem extends BaseEntity {
 
     @Id @GeneratedValue
@@ -15,6 +17,10 @@ public class OrderItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bid_item_id")
+    private BidItem biditem;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -33,12 +39,26 @@ public class OrderItem extends BaseEntity {
         return orderItem;
     }
 
+    public static OrderItem createOrderBidItem(BidItem bidItem) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setBiditem(bidItem);
+        orderItem.setCount(1);
+        orderItem.setOrderPrice((int) bidItem.getMaxPrice());
+
+        return orderItem;
+    }
+
     public int getTotalPrice(){
         return orderPrice*count;
     }
 
     public void cancel() {
-        this.getItem().addStock(count);
+        if(this.getItem() != null){
+            getItem().addStock(count);
+        }else if(this.getBiditem() != null){
+
+        }
+
     }
 
 }

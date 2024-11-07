@@ -3,11 +3,13 @@ package com.treasuredigger.devel.dto;
 import com.treasuredigger.devel.constant.PaymentStatus;
 import com.treasuredigger.devel.entity.Order;
 import com.treasuredigger.devel.entity.PaymentEntity;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 public class PaymentDto {
 
     private Long paymentId;

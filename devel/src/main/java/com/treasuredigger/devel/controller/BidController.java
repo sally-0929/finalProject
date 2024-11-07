@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,8 @@ public class BidController {
     private final WishlistService wishlistService;
 
     private final MemberGradeService memberGradeService;
+
+    private final OrderService orderService;
 
     @GetMapping("/list")
     public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -125,15 +128,20 @@ public class BidController {
     }
 
     @PostMapping("/placeBid")
-    public ResponseEntity<String> placeBid(@RequestParam("bidNowPrice") int bidNowPrice, @RequestParam("bidItemId") String bidItemId,
+    public ResponseEntity<?> placeBid(@RequestParam("bidNowPrice") int bidNowPrice, @RequestParam("bidItemId") String bidItemId,
                                            @RequestParam("buyNowCheck") String buyNowCheck,Principal principal) {
         System.out.println("buyNowCheck + " + buyNowCheck + bidNowPrice);
         Member member =  memberService.findMemberByMid(principal.getName());
+
+
         Long mid = member.getId();
         log.info("mid " + mid);
-        bidService.saveBid(bidItemId,mid,bidNowPrice, buyNowCheck);
+       Long orderId =  orderService.orderBidItem(bidItemId, principal.getName());
 
-        return ResponseEntity.ok("Success");
+        //결재가 완료 되어야 그 후에 즉시구매한 값으로 수정 (선수작업 결재)
+//        bidService.saveBid(bidItemId,mid,bidNowPrice, buyNowCheck);
+
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 
 

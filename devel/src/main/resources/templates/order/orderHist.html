@@ -200,13 +200,33 @@
                     <img th:src="${orderItem.imgUrl}" class = "rounded repImg" th:alt="${orderItem.itemNm}">
                 </div>
                 <div class="align-self-center w-75">
-                    <a th:href="@{'/item/' + ${orderItem.itemId}}" style="text-decoration: none; color: inherit;">
-                        <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold" style="font-size:18px"></span>
-                        <div class="fs18 font-weight-bold">
-                            <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
-                            <span th:text="${orderItem.count} +'개'"></span>
+                    <div th:if="${orderItem.itemId != null}">
+                        <div>
+                            <span th:text="일반상품"></span>
                         </div>
-                    </a>
+                        <a th:href="@{'/item/' + ${orderItem.itemId}}" style="text-decoration: none; color: inherit;">
+
+                            <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold" style="font-size:18px"></span>
+                            <div class="fs18 font-weight-bold">
+
+                                <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
+                                <span th:text="${orderItem.count} +'개'"></span>
+                            </div>
+                        </a>
+                    </div>
+                    <div th:if="${orderItem.itemId == null}">
+                        <div>
+                            <span th:text="경매상품"></span>
+                        </div>
+                        <a th:href="@{'/biditem/view/' + ${orderItem.bidItemId}}" style="text-decoration: none; color: inherit;">
+                            <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold" style="font-size:18px"></span>
+                            <div class="fs18 font-weight-bold">
+                                <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
+                                <span th:text="${orderItem.count} +'개'"></span>
+                            </div>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>

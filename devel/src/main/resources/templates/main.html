@@ -7,6 +7,7 @@
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
@@ -204,7 +205,6 @@
                 <a th:href="@{/(cid=${category.cid})}" class="btn rounded-circle category-btn" th:text="${category.cname}">카테고리</a>
             </div>
         </div>
-        <a th:href="@{/payments/paymentP}">결제 페이지로 이동</a>
     </div>
     <div class="scroll-button-container">
         <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">
@@ -265,6 +265,12 @@
 
         function scrollToFooter() {
             document.querySelector('.footer').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+    <script>
+        var message ="[[${message}]]";
+        if (message && message.trim().length > 0) {
+            alert(message);  // 유효한 메시지가 있을 경우만 알림을 띄움
         }
     </script>
     <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})" >
