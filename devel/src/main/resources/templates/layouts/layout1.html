@@ -3,6 +3,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <title>Title</title>
 
     <!-- CSS only -->
@@ -33,7 +36,6 @@
     if (amountNeededElement) {
         const amountNeededText = amountNeededElement.textContent; // 원래 텍스트 가져오기
         const amountNeededValue = parseInt(amountNeededText.replace(/[^0-9]/g, '')); // 숫자만 추출
-        console.log("Amount Needed Value:", amountNeededValue); // 값 확인
 
         if (!isNaN(amountNeededValue)) {
             // 콤마 추가

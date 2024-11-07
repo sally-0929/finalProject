@@ -117,6 +117,7 @@ public class BidController {
     @GetMapping(value = "/view/{bidItemId}")
     public String itemDtl(Model model, @PathVariable("bidItemId") String bidItemId, Authentication authentication){
         BidItemDto bidItemDto =  bidItemService.viewDtl(bidItemId);
+        bidItemService.updateItemStatuses();
         model.addAttribute("biditem", bidItemDto);
         model.addAttribute("minPrice", bidItemDto.getBidNowPrice() + 1);
         if (authentication != null && authentication.isAuthenticated()) {

@@ -19,16 +19,20 @@
         }
 
         .form-container {
-            max-width: 450px;
+            max-width: 550px;
             margin: 2rem auto;
-            padding: 20px;
+            padding: 70px;
             background-color: #fff;
             box-shadow: 0 8px 16px var(--shadow-color), 0 -8px 16px var(--shadow-color), 8px 0 16px var(--shadow-color), -8px 0 16px var(--shadow-color);
             border-radius: var(--border-radius);
+            text-align: center;
         }
-
+        .form-group input{
+            height:40px;
+        }
         .form-group {
             margin-bottom: 15px;
+            text-align: left;
         }
 
         .form-group label {
@@ -89,7 +93,7 @@
             font-weight: bold;
             font-size: 0.9rem;
             transition: background-color var(--transition);
-            height: 36px;
+            height: 39px;
         }
 
         .a_search:hover {
@@ -111,6 +115,12 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
         }
+
+        .form-container img{
+            width:150px;
+            margin-bottom:50px;
+            display: inline-block;
+        }
     </style>
 </th:block>
 
@@ -131,6 +141,7 @@
 <div layout:fragment="content">
     <div class="form-container">
         <form action="/members/new" role="form" method="post"  th:object="${memberFormDto}">
+            <img src="/images/Logo2.png">
             <div class="form-group">
                 <label th:for="name">이름</label>
                 <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력해주세요">
