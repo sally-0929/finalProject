@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface BidItemRepository extends JpaRepository<BidItem, String> {
 
     long countByBidItemIdStartingWith(String prefix);
+
+    BidItem findByBidItemId(String bidItemId);
 }

@@ -6,10 +6,7 @@ import com.treasuredigger.devel.dto.*;
 
 import com.treasuredigger.devel.entity.*;
 import com.treasuredigger.devel.mapper.BidItemMapper;
-import com.treasuredigger.devel.repository.BidItemImgRepository;
-import com.treasuredigger.devel.repository.BidItemRepository;
-import com.treasuredigger.devel.repository.CategoryRepository;
-import com.treasuredigger.devel.repository.MemberRepository;
+import com.treasuredigger.devel.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +38,14 @@ public class BidItemService {
 
     @Autowired
     private BidItemMapper bidItemMapper;
+    @Autowired
+    private BidRepository bidRepository;
 
 
 //    @Transactional
     public void updateItemStatuses() {
+
+        // 시간에 따라 update
         System.out.print("updateStatus 메서드 실행");
         LocalDateTime now = LocalDateTime.now();
         List<BidItem> bidItems = bidItemRepository.findAll();
@@ -59,6 +60,17 @@ public class BidItemService {
             }
             bidItemRepository.save(bidItem);
         }
+
+        //즉시 구매 이벤트 발생했을 경우 업데이트
+        List<Bid> bids = bidRepository.findAll();
+        for (Bid bid : bids) {
+            if ("Y".equals(bid.getBuyNowCheck())) {
+                BidItem bidItem = bidItemRepository.findByBidItemId(bid.getBidItemId());
+                bidItem.setItemStatus(ItemStatus.END);
+                bidItemRepository.save(bidItem);
+            } 
+        }
+
     }
 
 
