@@ -33,6 +33,7 @@
   </tr>
   </thead>
   <tbody>
+
   <tr th:each="orderItem : ${orderItems}">
     <td th:text="${orderItem.orderPrice}"></td> <!-- 상품 가격 -->
     <td th:text="${orderItem.count}"></td> <!-- 수량 -->
@@ -87,7 +88,7 @@
                   success: function(response) {
                       if (response.success) {
                           alert("주문이 성공적으로 처리되었습니다.");
-                          location.href = "/payments/paymentP?orderId=" + orderId;
+                          location.href = "/payments/confirmation?orderId=" + orderId;
                       } else {
                           alert("결제 검증 실패");
                       }

@@ -37,7 +37,9 @@ public class PaymentService {
     public IamportResponse<Payment> validateIamport(String imp_uid) {
         try {
             IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
-            log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}", payment.getResponse());
+            Payment paymentResponse = payment.getResponse();
+            log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}, 상태: {}, 금액: {}",
+                    paymentResponse.getImpUid(), paymentResponse.getStatus(), paymentResponse.getAmount());
             return payment;
         } catch (Exception e) {
             log.error("결제 확인 중 에러 발생: {}", e.getMessage());
