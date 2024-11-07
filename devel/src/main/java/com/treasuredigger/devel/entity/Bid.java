@@ -28,4 +28,7 @@ public class Bid extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+    public String getBidItemId() { 
+        return this.bidItem != null ? this.bidItem.getBidItemId() : null; 
+    }
 }
