@@ -80,8 +80,10 @@ public class PaymentService {
             // 결제 정보 설정
             PaymentEntity payment = paymentDto.toEntity();
             payment.setOrder(order);  // 주문 정보 연결
-            payment.setStatus(PaymentStatus.SUCCESS);  // 결제 상태 설정 (성공)
+            payment.setStatus(PaymentStatus.PAID);  // 결제 상태 설정 (성공)
             payment.setPaidAt(LocalDateTime.now());  // 결제 완료 시간
+
+            System.out.println("uuuuuuuuuuuuuuuuuu" + payment);
 
             // 결제 저장
             paymentRepository.save(payment);
