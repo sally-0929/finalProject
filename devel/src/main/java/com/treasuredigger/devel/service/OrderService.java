@@ -2,9 +2,7 @@ package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.dto.OrderDto;
 import com.treasuredigger.devel.entity.*;
-import com.treasuredigger.devel.repository.ItemRepository;
-import com.treasuredigger.devel.repository.MemberRepository;
-import com.treasuredigger.devel.repository.OrderRepository;
+import com.treasuredigger.devel.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +13,6 @@ import java.util.List;
 
 import com.treasuredigger.devel.dto.OrderHistDto;
 import com.treasuredigger.devel.dto.OrderItemDto;
-import com.treasuredigger.devel.repository.ItemImgRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +34,8 @@ public class OrderService {
 
     private final MemberGradeService memberGradeService;
 
+    private final BidItemRepository bidItemRepository;
+
     public Long order(OrderDto orderDto, String mid){
 
         Item item = itemRepository.findById(orderDto.getItemId())
@@ -53,6 +52,21 @@ public class OrderService {
         memberGradeService.incrementMgdesc(member);
         return order.getId();
     }
+
+    public Long orderBidItem(String bidItemId, String mid) {
+        BidItem bidItem = bidItemRepository.findById(bidItemId) .orElseThrow(EntityNotFoundException::new);
+        Member member = memberRepository.findByMid(mid);
+        List<OrderItem> orderItemList = new ArrayList<>();
+        OrderItem orderItem = OrderItem.createOrderBidItem(bidItem);
+        orderItemList.add(orderItem);
+        Order order = Order.createOrder(member, orderItemList);
+        orderRepository.save(order);
+        // 주문 후 회원 등급 갱신
+         memberGradeService.incrementMgdesc(member);
+         return order.getId();
+
+        }
+
 
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getOrderList(String email, Pageable pageable) {
