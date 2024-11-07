@@ -31,7 +31,7 @@
         bit.bid_item_name as bidItemName,
         (SELECT MAX(bt.bid_reg_price)
         FROM bids_tbl bt
-        WHERE bt.bid_item_id = bt.bid_item_id) AS bidNowPrice,
+        WHERE wt.bid_item_id = bt.bid_item_id) AS bidNowPrice,
         bit.max_price as maxPrice,
         bit.item_status as itemStatus,
         i.item_nm as itemNm,
