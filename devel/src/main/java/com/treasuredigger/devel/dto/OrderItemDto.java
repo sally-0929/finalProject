@@ -8,6 +8,7 @@ import lombok.Setter;
 public class OrderItemDto {
 
     public OrderItemDto(OrderItem orderItem, String imgUrl) {
+        System.out.println("Order Item" + orderItem);
         if (orderItem.getItem() != null) {
             this.itemId = orderItem.getItem().getId();
             this.itemNm = orderItem.getItem().getItemNm();

@@ -96,6 +96,7 @@ public class OrderService {
                 }
             }
             orderHistDtos.add(orderHistDto);
+            System.out.println("orderHistDto" + orderHistDto.toString());
         }
 
         return new PageImpl<>(orderHistDtos, pageable, totalCount);

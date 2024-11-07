@@ -4,12 +4,13 @@ import com.treasuredigger.devel.constant.OrderStatus;
 import com.treasuredigger.devel.entity.Order;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
+@Getter @Setter @ToString
 public class OrderHistDto {
 
     public OrderHistDto(Order order){

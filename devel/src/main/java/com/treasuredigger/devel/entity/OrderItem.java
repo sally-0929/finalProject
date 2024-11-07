@@ -3,9 +3,11 @@ package com.treasuredigger.devel.entity;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
+import lombok.ToString;
 
 @Entity
 @Getter @Setter
+@ToString
 public class OrderItem extends BaseEntity {
 
     @Id @GeneratedValue
@@ -51,7 +53,12 @@ public class OrderItem extends BaseEntity {
     }
 
     public void cancel() {
-        this.getItem().addStock(count);
+        if(this.getItem() != null){
+            getItem().addStock(count);
+        }else if(this.getBiditem() != null){
+
+        }
+
     }
 
 }
