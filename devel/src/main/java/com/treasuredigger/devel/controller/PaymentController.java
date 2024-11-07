@@ -1,52 +1,92 @@
 package com.treasuredigger.devel.controller;
 
-
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.treasuredigger.devel.dto.PaymentDto;
+import com.treasuredigger.devel.entity.Item;
+import com.treasuredigger.devel.entity.Member;
+import com.treasuredigger.devel.entity.Order;
+import com.treasuredigger.devel.entity.OrderItem;  // OrderItem 추가
+import com.treasuredigger.devel.repository.ItemRepository;
+import com.treasuredigger.devel.repository.MemberRepository;
+import com.treasuredigger.devel.repository.OrderRepository;
 import com.treasuredigger.devel.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/payments")
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentController {
-    private final PaymentService paymentService;
 
+    private final PaymentService paymentService;
+    private final OrderRepository orderRepository;
+    private final MemberRepository memberRepository;
+    private final ItemRepository itemRepository;
+
+    /**
+     * 아임포트 결제 검증
+     */
     @PostMapping("/validation/{imp_uid}")
     public IamportResponse<Payment> validateIamport(@PathVariable String imp_uid) throws IamportResponseException, IOException {
         log.info("imp_uid: {}", imp_uid);
-        log.info("validateIamport");
         return paymentService.validateIamport(imp_uid);
     }
 
+    /**
+     * 주문 처리
+     */
     @PostMapping("/order")
     public ResponseEntity<String> processOrder(@RequestBody PaymentDto paymentDto) {
-        // 주문 정보를 로그에 출력
-        log.info("Received orders: {}", paymentDto.toString());
-        // 성공적으로 받아들였다는 응답 반환
-        return ResponseEntity.ok(paymentService.saveOrder(paymentDto));
+        log.info("Received order: {}", paymentDto.toString());
+        return ResponseEntity.ok(paymentService.saveOrder(paymentDto));  // 주문 저장 후 응답
     }
 
+    /**
+     * 결제 취소
+     */
     @PostMapping("/cancel/{imp_uid}")
     public IamportResponse<Payment> cancelPayment(@PathVariable String imp_uid) throws IamportResponseException, IOException {
         return paymentService.cancelPayment(imp_uid);
     }
 
+    /**
+     * 결제 페이지로 이동
+     */
     @GetMapping("/paymentP")
-    public String showPaymentPage() {
-        System.out.println("여기 왜 안옴");
-        return "payment/paymentP";
+    public String showPaymentPage(@RequestParam Long orderId, Model model) {
+        log.info("Received orderId: {}", orderId); // 전달된 orderId 로그 출력
+
+        try {
+            Optional<Order> orderOptional = orderRepository.findById(orderId);
+            log.info("Found order: {}", orderOptional.isPresent() ? "Yes" : "No");
+
+            // 주문 정보 조회
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("주문 정보가 없습니다. orderId: " + orderId));
+            // 주문에 포함된 상품 목록 조회 (OrderItem을 통해 Item을 조회)
+            List<OrderItem> orderItems = order.getOrderItems();
+
+            // 모델에 데이터 추가
+            model.addAttribute("order", order);
+            model.addAttribute("orderItems", orderItems);
+
+            return "payment/paymentP";  // 결제 페이지 반환
+        } catch (Exception e) {
+            log.error("결제 페이지 로드 중 에러 발생: {}", e.getMessage(), e);
+            // 에러 페이지로 리디렉션하거나 에러 메시지를 전달
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error"; // 에러 페이지
+        }
     }
 }
-

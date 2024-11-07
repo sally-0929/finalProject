@@ -92,6 +92,10 @@
     <div class="tab"><a th:href="@{/customer-service/faqs}">자주 묻는 질문</a></div>
     <div class="tab"><a th:href="@{/customer-service/notices}">공지사항</a></div>
   </div>
+  <div class="mb-3" style="background:lightgray; padding:5px;border-radius:5px;">
+    <img src="/images/handWait.png" alt="wait" style="width:30px;">
+    잠깐! <a th:href="@{/customer-service/faqs}">자주 묻는 질문</a>을 통해 빠르게 해결해보세요!
+  </div>
   <h4 style="margin-bottom:20px;">문의하기</h4>
   <form th:action="@{/customer-service/inquiries}" th:object="${inquiry}" method="post">
     <div class="form-group">

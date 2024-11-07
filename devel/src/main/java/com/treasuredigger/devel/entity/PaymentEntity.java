@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class Payment {
+@Table(name = "Payment")
+public class PaymentEntity {
 
     @Id
     @GeneratedValue

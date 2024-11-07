@@ -15,4 +15,5 @@ public class ItemSearchDto {
 
     private String searchQuery = "";
 
+    private String cid;
 }

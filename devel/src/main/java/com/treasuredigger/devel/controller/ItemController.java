@@ -14,22 +14,19 @@ import com.treasuredigger.devel.service.WishlistService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.ui.Model;
 import com.treasuredigger.devel.dto.ItemFormDto;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import jakarta.persistence.EntityNotFoundException;
 
 import com.treasuredigger.devel.dto.ItemSearchDto;
@@ -124,15 +121,14 @@ public class ItemController {
     }
 
     @GetMapping(value = {"/admin/items", "/admin/items/{page}"})
-    public String itemManage(ItemSearchDto itemSearchDto, @PathVariable("page") Optional<Integer> page, Model model){
+    public String itemManage(@ModelAttribute("itemSearchDto") ItemSearchDto itemSearchDto,
+                             @PathVariable("page") Optional<Integer> page, Model model) {
 
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
-        Page<Item> items = itemService.getAdminItemPage(itemSearchDto, pageable);
-
+        Pageable pageable = PageRequest.of(page.orElse(0), 10);
+        Page<ItemDto> items = itemService.getAdminItemDtos(pageable, itemSearchDto); // 검색 조건 추가
         model.addAttribute("items", items);
-        model.addAttribute("itemSearchDto", itemSearchDto);
         model.addAttribute("maxPage", 5);
-
+        model.addAttribute("categories", categoryService.list());
         return "item/itemMng";
     }
 

@@ -77,7 +77,8 @@
                 cache: false,
                 success: function(result, status){
                     alert("주문이 완료 되었습니다.");
-                    location.href = '/payments/paymentP';
+                    var orderId = result;
+                    location.href = '/payments/paymentP?orderId=' + orderId;
                 },
                 error: function(jqXHR, status, error){
                     if (jqXHR.status === 400) {
@@ -302,7 +303,7 @@
 
             <!-- 상품 정보 -->
             <div class="flex-item" style="position: relative;">
-                <div class="d-flex justify-content-between mb-2">
+                <div class="d-flex justify-content-between">
                     <span th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="badge badge-primary mgb-15">
                         판매중
                     </span>
@@ -321,7 +322,7 @@
                          var ItemId = $('#itemId').val();
                          var heartIcon = $('#heartIcon');
 
-                         // 페이지 로드 시 찜 여부 확인
+                         // 페이지 로드 시 관심상품 여부 확인
                          $.ajax({
                              url: '/wishlist/check',
                              type: 'GET',
@@ -340,11 +341,11 @@
                                  console.log('Status:', status);
                                  console.log('Error:', error);
                                  console.log('ResponseText:', xhr.responseText);
-                                 alert('찜 여부 확인에 실패했습니다.');
+                                 alert('관심상품 여부 확인에 실패했습니다.');
                              }
                          });
 
-                         // 찜 버튼 클릭 시 토글
+                         // 관심상품 버튼 클릭 시 토글
                          $('#wishlistButton').click(function() {
                              $.ajax({
                                  url: '/wishlist/toggle',
@@ -357,17 +358,17 @@
                                  success: function(response) {
                                      if (heartIcon.hasClass('red')) {
                                          heartIcon.removeClass('red');
-                                         alert('찜 해제되었습니다.');
+                                         alert('관심상품이 해제되었습니다.');
                                      } else {
                                          heartIcon.addClass('red');
-                                         alert('찜 등록되었습니다.');
+                                         alert('관심상품으로 등록되었습니다.');
                                      }
                                  },
                                  error: function(xhr, status, error) {
                                      console.log('Status:', status);
                                      console.log('Error:', error);
                                      console.log('ResponseText:', xhr.responseText);
-                                     alert('찜 기능에 실패했습니다.');
+                                     alert('관심상품 기능에 실패했습니다.');
                                  }
                              });
                          });
@@ -405,13 +406,13 @@
 
                 <div th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()">장바구니 담기</button>
-                    <button type="button" class="btn btn-primary btn-lg" onclick="order()">주문하기</button>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="order()">구매</button>
                 </div>
                 <div class="text-right" style="margin-top:10px;">
-                    <button type="button" class="btn btn-primary btn-lg" onclick="history.back();">목록으로</button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="history.back();">목록으로 돌아가기</button>
                 </div>
-                <div th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
-                    <button type="button" class="btn btn-danger btn-lg">품절</button>
+                <div th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right mt-2">
+                    <button type="button" class="btn btn-danger btn-lg">품절 상품입니다</button>
                 </div>
             </div>
         </div>
@@ -419,13 +420,13 @@
             <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">
                 <!-- 로그인한 사용자에게만 콘텐츠 표시 -->
                 <a href="/members/wishlist" class="scroll-label link-hover">
-                    <h6>찜목록보러가기</h6>
+                    <h6><i class="far fa-heart red" style="color:red;"></i> 관심상품</h6>
                 </a>
                 <ul style="list-style-type: none; padding: 0;">
                     <li th:each="wishlistItem : ${recentItemWishlist}" style="margin-bottom: 15px;">
                         <a th:href="'/item/' + ${wishlistItem.itemId}" class="text-dark d-flex flex-column align-items-center" style="text-decoration: none !important;">
                             <img th:src="${wishlistItem.imgUrl}" style="width: 95px; height: 95px; object-fit: contain; object-position: center;margin-bottom: 5px; border:1px solid lightgray; border-radius:10px;">
-                            <span th:text="${wishlistItem.itemNm}" style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; display: block; width: 90px;"></span>
+                            <span th:text="${wishlistItem.itemNm}" style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; display: block; width: 130px;"></span>
                         </a>
                     </li>
                 </ul>
@@ -439,8 +440,8 @@
         </div>
         <div>
             <hr class="my-4">
-            <div class="itemDesc-container" style="margin-bottom:50px;">
-                <h4>상품 상세 설명</h4>
+            <div class="itemDesc-container" style="margin: 0 auto 50px auto; width:90%">
+                <h4>상품상세설명</h4>
                 <p style="white-space: pre-wrap; margin-top:30px" th:text="${item.itemDetail}"></p>
             </div>
         </div>

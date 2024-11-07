@@ -17,7 +17,7 @@
         }
         .my-card {
             width: 200px;
-            height: 220px;
+            height: 200px;
             background-color: rgba(0, 0, 0, 0.2);
             border-radius: 50%;
             display: flex;
@@ -103,21 +103,21 @@
             </div>
             <div class="my-card">
                 <a href="/orders">
-                    <img th:src="@{/images/buy.png}" alt="구매현황" style="width: 80px;">
+                    <img th:src="@{/images/buy.png}" alt="구매내역" style="width: 80px;">
                 </a>
-                <p>구매현황</p>
+                <p>구매내역</p>
             </div>
             <div class="my-card">
-                <a href="/sale">
-                    <img th:src="@{/images/sell.png}" alt="판매현황" style="width: 80px;">
+                <a href="/cart" class="move-right">
+                    <img th:src="@{/images/cart.png}" alt="장바구니" style="width: 80px;">
                 </a>
-                <p>판매현황</p>
+                <p>장바구니</p>
             </div>
             <div class="my-card">
                 <a href="/members/wishlist">
-                    <img th:src="@{/images/wishlist.png}" alt="내가 찜한 물품" style="width: 80px;">
+                    <img th:src="@{/images/wishlist.png}" alt="관심상품" style="width: 80px;">
                 </a>
-                <p>내가 찜한 물품</p>
+                <p>관심상품</p>
             </div>
             <div class="my-card">
                 <a href="/members/memberUpdate">
@@ -126,10 +126,10 @@
                 <p>계좌관리</p>
             </div>
             <div class="my-card">
-                <a href="/cart" class="move-right">
-                    <img th:src="@{/images/cart.png}" alt="장바구니" style="width: 80px;">
+                <a href="/sale">
+                    <img th:src="@{/images/sell.png}" alt="판매현황" style="width: 80px;">
                 </a>
-                <p>장바구니</p>
+                <p>판매현황</p>
             </div>
             <div class="my-card">
                 <a href="/customer-service/notices">

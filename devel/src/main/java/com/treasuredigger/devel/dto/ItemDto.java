@@ -1,5 +1,6 @@
 package com.treasuredigger.devel.dto;
 
+import com.treasuredigger.devel.constant.ItemSellStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,5 +27,11 @@ public class ItemDto {
     private String cname;
 
     private String itemCategoryId;
+
+    private String imgUrl;
+
+    private Integer stockNumber;
+
+    private ItemSellStatus itemSellStatus;
 
 }

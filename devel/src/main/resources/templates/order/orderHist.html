@@ -180,7 +180,7 @@
 
 <div layout:fragment="content" class="content">
     <div style="width: 800px; text-align: left;">
-        <h2 class="mb-4">구매 현황</h2>
+        <h2 class="mb-4">구매내역</h2>
     </div>
     <div th:each="order : ${orders.getContent()}">
         <div class="d-flex align-self-center">
@@ -200,11 +200,13 @@
                     <img th:src="${orderItem.imgUrl}" class = "rounded repImg" th:alt="${orderItem.itemNm}">
                 </div>
                 <div class="align-self-center w-75">
-                    <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold" style="font-size:18px"></span>
-                    <div class="fs18 font-weight-light">
-                        <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
-                        <span th:text="${orderItem.count} +'개'"></span>
-                    </div>
+                    <a th:href="@{'/item/' + ${orderItem.itemId}}" style="text-decoration: none; color: inherit;">
+                        <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold" style="font-size:18px"></span>
+                        <div class="fs18 font-weight-bold">
+                            <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
+                            <span th:text="${orderItem.count} +'개'"></span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>

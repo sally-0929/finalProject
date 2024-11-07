@@ -80,12 +80,13 @@
             background-color: #fafafa;
             color: black;
             border: 3px solid #ebebeb;
-            transition: background 0.5s, border 0.5s;
+            transition: background 0.5s, border 0.5s, transform 0.2s ease;
         }
 
         .category-btn:hover {
             background-color: white;
             border: 3px solid black;
+            transform: translateY(-5px);
         }
 
         .scroll-button-container {
@@ -188,15 +189,20 @@
 
     <div class="container">
         <h2 class="text-center" style="margin-top:50px">카테고리</h2>
-        <div class="row justify-content-center flex-nowrap" style="margin:40px 0 50px 0;">
-            <div class="col-auto">
+
+        <!-- 카테고리 버튼 컨테이너 -->
+        <div class="d-flex flex-wrap justify-content-center" style="max-width: 900px; margin: 40px auto 50px auto; gap: 10px; letter-spacing:1.5px; font-weight:500">
+            <div class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
                 <a th:href="@{/biditem/list(auctionStatus=${auctionStatus})}" class="btn rounded-circle category-btn" data-cid="">전체보기</a>
             </div>
-            <div th:each="category : ${categories}" class="col-auto">
+            <div th:each="category, stat : ${categories}" th:if="${stat.index < 4}" class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
                 <a th:href="@{/biditem/list(cid=${category.cid}, auctionStatus=${auctionStatus})}"
                    class="btn rounded-circle category-btn"
                    data-cid="${category.cid}"
                    th:text="${category.cname}">카테고리</a>
+            </div>
+            <div th:each="category, stat : ${categories}" th:if="${stat.index >= 4 && stat.index < 9}" class="d-flex justify-content-center mb-3" style="flex: 0 0 calc(20% - 10px);">
+                <a th:href="@{/biditem/list(cid=${category.cid}, auctionStatus=${auctionStatus})}" class="btn rounded-circle category-btn" th:text="${category.cname}">카테고리</a>
             </div>
         </div>
 
@@ -204,7 +210,7 @@
     <div class="scroll-button-container">
         <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">
             <a href="/members/wishlist" class="scroll-label link-hover">
-                <h6>찜목록보러가기</h6>
+                <h6><i class="far fa-heart red" style="color:red;"></i> 관심상품</h6>
             </a>
             <ul style="list-style-type: none; padding: 0;">
                 <li th:each="wishlistItem : ${recentBidWishlist}" style="margin-bottom: 15px;">
@@ -253,11 +259,16 @@
 
     <form id="auctionForm" action="/biditem/list" method="GET">
 
-        <select id="auctionStatus" name="auctionStatus" onchange="changeAuctionStatus()">
-            <option value="">---경매 상태---</option>
-            <option value="WAIT" th:selected="${auctionStatus == 'WAIT'}">경매 예정</option>
-            <option value="ING" th:selected="${auctionStatus == 'ING'}">경매 중</option>
-            <option value="END" th:selected="${auctionStatus == 'END'}">경매 완료</option>
+        <select id="auctionStatus" name="auctionStatus" onchange="changeAuctionStatus()"
+                style="display: inline-block; text-align: center; text-align-last: center;
+                   vertical-align: middle; height: 40px; padding: 5px 0;
+                   font-size: 16px; color: #333;
+                   border: 2px solid #ddd; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+                   transition: border-color 0.3s ease, box-shadow 0.3s ease; margin-bottom:10px;">
+            <option value="" style="color: #888;"> -- 경매상태 -- </option>
+            <option value="WAIT" th:selected="${auctionStatus == 'WAIT'}">경매대기중</option>
+            <option value="ING" th:selected="${auctionStatus == 'ING'}">경매중</option>
+            <option value="END" th:selected="${auctionStatus == 'END'}">경매종료</option>
         </select>
 
     </form>

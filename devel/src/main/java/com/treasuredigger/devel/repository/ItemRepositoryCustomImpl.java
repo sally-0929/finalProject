@@ -31,6 +31,10 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
         return searchSellStatus == null ? null : QItem.item.itemSellStatus.eq(searchSellStatus);
     }
 
+    private BooleanExpression categoryEq(String cid) {
+        return StringUtils.isEmpty(cid) ? null : QItem.item.itemCategory.cid.eq(cid);
+    }
+
     private BooleanExpression regDtsAfter(String searchDateType){
 
         LocalDateTime dateTime = LocalDateTime.now();
@@ -51,25 +55,27 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     }
 
     private BooleanExpression searchByLike(String searchBy, String searchQuery){
-
-        if(StringUtils.equals("itemNm", searchBy)){
+        if (StringUtils.isEmptyOrWhitespace(searchQuery)) {
+            return null;
+        }
+        if ("itemNm".equals(searchBy)) {
             return QItem.item.itemNm.like("%" + searchQuery + "%");
-        } else if(StringUtils.equals("createdBy", searchBy)){
+        } else if ("createdBy".equals(searchBy)) {
             return QItem.item.createdBy.like("%" + searchQuery + "%");
         }
-
         return null;
     }
 
     @Override
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
-
+        System.out.println(itemSearchDto);
         List<Item> content = queryFactory
                 .selectFrom(QItem.item)
                 .where(regDtsAfter(itemSearchDto.getSearchDateType()),
                         searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
                         searchByLike(itemSearchDto.getSearchBy(),
-                                itemSearchDto.getSearchQuery()))
+                        itemSearchDto.getSearchQuery()),
+                        categoryEq(itemSearchDto.getCid()))
                 .orderBy(QItem.item.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -78,7 +84,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
         long total = queryFactory.select(Wildcard.count).from(QItem.item)
                 .where(regDtsAfter(itemSearchDto.getSearchDateType()),
                         searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
-                        searchByLike(itemSearchDto.getSearchBy(), itemSearchDto.getSearchQuery()))
+                        searchByLike(itemSearchDto.getSearchBy(), itemSearchDto.getSearchQuery()),
+                        categoryEq(itemSearchDto.getCid()))
                 .fetchOne()
                 ;
 

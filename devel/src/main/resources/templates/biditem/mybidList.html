@@ -28,6 +28,7 @@
         .table thead {
             background-color: #E9ECEF;
         }
+
         .table-striped tbody tr:hover {
             background-color: lightgray !important; /* 모든 행에 동일하게 hover 색상 적용 */
             cursor: pointer;
@@ -70,19 +71,19 @@
       });
   </script>
 
-    <h2>나의 경매 판매 List </h2>
+    <h2>경매상품 판매목록</h2>
 
     <table id="bidTable" class="table table-striped">
         <thead>
         <tr>
             <th scope="col">경매카테고리</th>
             <th scope="col">경매아이템</th>
-            <th scope="col">경매시작값</th>
-            <th scope="col">현재 경매값</th>
-            <th scope="col">현재 경매횟수</th>
-            <th scope="col">경매 시작날짜</th>
-            <th scope="col">경매 종료날짜</th>
-            <th scope="col">경매 진행상태</th>
+            <th scope="col">경매시작가</th>
+            <th scope="col">현재입찰가</th>
+            <th scope="col">입찰횟수</th>
+            <th scope="col">시작일</th>
+            <th scope="col">종료일</th>
+            <th scope="col">경매상태</th>
 <!--            <th scope="col">판매자 ID</th>-->
         </tr>
         </thead>
@@ -95,7 +96,11 @@
             <td th:text="${bid.bidCount-1}"></td>
             <td th:text="${#temporals.format(bid.bidStartDate, 'yyyy-MM-dd')}"></td>
             <td class="bid-end-date" th:attr="data-enddate=${bid.bidEndDate}"></td>
-            <td th:text="${bid.itemStatus}"></td>
+            <td th:switch="${bid.itemStatus}">
+                <span th:case="'WAIT'">경매대기중</span>
+                <span th:case="'ING'">경매중</span>
+                <span th:case="'END'">경매종료</span>
+            </td>
 <!--            <td th:text="${bid.memberId}"></td>-->
             <input type="hidden" class="bid-item-id" th:value="${bid.bidItemId}"/>
         </tr>
