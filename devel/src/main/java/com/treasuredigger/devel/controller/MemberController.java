@@ -127,10 +127,13 @@ public class MemberController {
     }
 
     @PostMapping(value = "/{mid}")
-    public String updateMember(@PathVariable String mid, @Valid @ModelAttribute Member member, RedirectAttributes redirectAttributes) {
+    public String updateMember(@PathVariable String mid, @Valid @ModelAttribute Member member, RedirectAttributes redirectAttributes, HttpServletRequest request, HttpServletResponse response) {
         memberService.updateMember(mid, member);
         redirectAttributes.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
-        return "redirect:/members/myPage";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+
+        return "redirect:/";
     }
 
     @GetMapping(value = "/memberDelete")

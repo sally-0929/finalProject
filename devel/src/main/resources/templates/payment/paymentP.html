@@ -19,7 +19,6 @@
   <p><strong>주문자:</strong> <span th:text="${order.member.name}"></span></p>
   <p><strong>주문일:</strong> <span th:text="${order.orderDate}"></span></p>
   <p><strong>주문 상태:</strong> <span th:text="${order.orderStatus}"></span></p>
-  <p><strong>주문 상태:</strong> <span th:text="${order.totalAmount}"></span></p>
 </div>
 
 <!-- 주문 항목 출력 -->
@@ -55,6 +54,10 @@
   var IMP = window.IMP;
   IMP.init("imp14351567");  // 아임포트 가맹점 코드
 
+  $(document).ready(function() {
+  var token = $("meta[name='_csrf']").attr("content");
+  var header = $("meta[name='_csrf_header']").attr("content");
+
   $('#payButton').click(function() {
       var orderId = "[[${order.id}]]"; // orderId를 여기서 처리
       var totalAmount = "[[${order.totalAmount}]]"; // 주문 총액을 여기서 처리
@@ -78,10 +81,13 @@
               $.ajax({
                   type: 'POST',
                   url: '/payments/validation/' + rsp.imp_uid, // 아임포트 결제 검증 API 호출
+                  beforeSend: function(xhr) {
+                      xhr.setRequestHeader(header, token);  // CSRF 토큰 헤더에 설정
+                  },
                   success: function(response) {
                       if (response.success) {
                           alert("주문이 성공적으로 처리되었습니다.");
-                          location.href = "/payments/paymentP?orderId=" + orderId;  // 결제 후 주문 상세 페이지로 리다이렉트
+                          location.href = "/payments/paymentP?orderId=" + orderId;
                       } else {
                           alert("결제 검증 실패");
                       }
@@ -95,6 +101,8 @@
           }
       });
   });
+});
+
 </script>
 </body>
 </html>

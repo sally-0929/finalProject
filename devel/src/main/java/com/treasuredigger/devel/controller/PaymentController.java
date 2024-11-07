@@ -4,8 +4,6 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.treasuredigger.devel.dto.PaymentDto;
-import com.treasuredigger.devel.entity.Item;
-import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.entity.Order;
 import com.treasuredigger.devel.entity.OrderItem;  // OrderItem 추가
 import com.treasuredigger.devel.repository.ItemRepository;
@@ -14,6 +12,7 @@ import com.treasuredigger.devel.repository.OrderRepository;
 import com.treasuredigger.devel.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,9 +37,22 @@ public class PaymentController {
      * 아임포트 결제 검증
      */
     @PostMapping("/validation/{imp_uid}")
-    public IamportResponse<Payment> validateIamport(@PathVariable String imp_uid) throws IamportResponseException, IOException {
+    public String validateIamport(@PathVariable String imp_uid, Model model) throws IamportResponseException, IOException {
         log.info("imp_uid: {}", imp_uid);
-        return paymentService.validateIamport(imp_uid);
+
+        // 결제 정보 확인
+        IamportResponse<Payment> paymentResponse = paymentService.validateIamport(imp_uid);
+
+        // 결제 확인 결과를 모델에 추가
+        if (paymentResponse != null && paymentResponse.getCode() == 0) {
+            // 결제 성공 시
+            model.addAttribute("payment", paymentResponse.getResponse());
+            return "payment/paymentSuccess";  // 결제 성공 템플릿
+        } else {
+            // 결제 실패 시
+            model.addAttribute("errorMessage", "결제 실패 또는 결제 정보가 유효하지 않습니다.");
+            return "payment/paymentFailure";  // 결제 실패 템플릿
+        }
     }
 
     /**
@@ -87,6 +99,25 @@ public class PaymentController {
             // 에러 페이지로 리디렉션하거나 에러 메시지를 전달
             model.addAttribute("errorMessage", e.getMessage());
             return "error"; // 에러 페이지
+        }
+    }
+
+    @GetMapping("/confirmation")
+    public String viewOrderConfirmation(@RequestParam Long orderId, Model model) {
+        try {
+            // 주문 정보 조회
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("주문 정보가 없습니다. orderId: " + orderId));
+
+            // 모델에 주문 정보 추가
+            model.addAttribute("order", order);
+
+            // 주문 확인 페이지로 이동
+            return "payment/paymentSuccess";  // 주문 확인 페이지
+        } catch (Exception e) {
+            log.error("주문 확인 중 에러 발생: {}", e.getMessage(), e);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";  // 에러 페이지
         }
     }
 }
