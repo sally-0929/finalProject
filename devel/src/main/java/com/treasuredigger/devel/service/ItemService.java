@@ -99,6 +99,7 @@ public class ItemService {
 
         if (item.getItemCategory() != null) {
             itemFormDto.setCid(item.getItemCategory().getCid());
+            itemFormDto.setCname(item.getItemCategory().getCname());
         }
 
         Member seller = item.getSeller();

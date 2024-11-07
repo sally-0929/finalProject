@@ -42,6 +42,8 @@ public class ItemFormDto{
     private LocalDateTime regTime;
     private LocalDateTime updateTime;
 
+    private String cname;
+
     private ItemSellStatus itemSellStatus = ItemSellStatus.SELL;
     //private ItemSellStatus itemSellStatus;
 

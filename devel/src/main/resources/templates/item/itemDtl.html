@@ -289,6 +289,7 @@
 <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%;">
     <input type="hidden" id="itemId" th:value="${item.id}">
     <div style="width: 80%; margin: 0 auto;">
+        <div class="h6" th:text="'> ' + ${item.cname}"></div>
         <div class="flex-container mb-4">
             <!-- 큰 이미지 -->
             <div class="flex-item">
@@ -399,7 +400,7 @@
                 </div>
 
                 <div th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
-                    <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()"><img src="/images/cartAdd.png" style="width:33px"> 장바구니 담기</button>
+                    <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()"><img src="/images/cartAdd.png" style="width:30px"> 장바구니 담기</button>
                     <button type="button" class="btn btn-primary btn-lg" onclick="order()">구매</button>
                 </div>
                 <div class="text-right" style="margin-top:10px;">
