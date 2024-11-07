@@ -36,6 +36,8 @@ public class OrderService {
 
     private final BidItemRepository bidItemRepository;
 
+    private final BidItemImgRepository bidItemImgRepository;
+
     public Long order(OrderDto orderDto, String mid){
 
         Item item = itemRepository.findById(orderDto.getItemId())
@@ -70,7 +72,6 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getOrderList(String email, Pageable pageable) {
-
         List<Order> orders = orderRepository.findOrders(email, pageable);
         Long totalCount = orderRepository.countOrder(email);
 
@@ -80,17 +81,24 @@ public class OrderService {
             OrderHistDto orderHistDto = new OrderHistDto(order);
             List<OrderItem> orderItems = order.getOrderItems();
             for (OrderItem orderItem : orderItems) {
-                ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn
-                        (orderItem.getItem().getId(), "Y");
-                OrderItemDto orderItemDto =
-                        new OrderItemDto(orderItem, itemImg.getImgUrl());
-                orderHistDto.addOrderItemDto(orderItemDto);
+                if (orderItem.getItem() != null) {
+                    ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn(orderItem.getItem().getId(), "Y");
+                    OrderItemDto orderItemDto = new OrderItemDto(orderItem, itemImg.getImgUrl());
+                    orderHistDto.addOrderItemDto(orderItemDto);
+                } else if (orderItem.getBiditem() != null) {
+                    BidItemImg bidItemImg = bidItemImgRepository.findByBidItem_BidItemIdAndBidRepimgYn(orderItem.getBiditem().getBidItemId(), "Y");
+                    OrderItemDto orderItemDto = new OrderItemDto(orderItem, bidItemImg != null ? bidItemImg.getBidImgUrl() : null);
+                    orderHistDto.addOrderItemDto(orderItemDto);
+                } else {
+                    // 둘 다 null인 경우 처리 (필요에 따라 로깅 또는 예외 처리 추가 가능)
+                    // 예를 들어, 로깅
+                    // log.warn("OrderItem has neither Item nor BidItem: " + orderItem.getId());
+                }
             }
-
             orderHistDtos.add(orderHistDto);
         }
 
-        return new PageImpl<OrderHistDto>(orderHistDtos, pageable, totalCount);
+        return new PageImpl<>(orderHistDtos, pageable, totalCount);
     }
 
     @Transactional(readOnly = true)
