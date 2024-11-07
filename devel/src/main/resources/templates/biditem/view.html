@@ -590,11 +590,14 @@
                     beforeSend: function(xhr) {
                         xhr.setRequestHeader(csrfHeader, csrfToken);
                     },
-                    success: function(response) {
-                        var responseText = JSON.stringify(response);
-                        console.log('response: ' + responseText);
-                        alert('즉시구매 성공');
-                        location.reload();
+                    success: function(result, response) {
+                        var orderId = result;
+                        location.href = '/payments/paymentP?orderId=' + orderId;
+
+<!--                        var responseText = JSON.stringify(response);-->
+<!--                        console.log('response: ' + responseText);-->
+<!--                        alert('즉시구매 성공');-->
+<!--                        location.reload();-->
                     },
                     error: function(error) {
                         console.log('error: ' + JSON.stringify(error));

@@ -2,9 +2,7 @@ package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.dto.OrderDto;
 import com.treasuredigger.devel.entity.*;
-import com.treasuredigger.devel.repository.ItemRepository;
-import com.treasuredigger.devel.repository.MemberRepository;
-import com.treasuredigger.devel.repository.OrderRepository;
+import com.treasuredigger.devel.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +13,6 @@ import java.util.List;
 
 import com.treasuredigger.devel.dto.OrderHistDto;
 import com.treasuredigger.devel.dto.OrderItemDto;
-import com.treasuredigger.devel.repository.ItemImgRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +34,10 @@ public class OrderService {
 
     private final MemberGradeService memberGradeService;
 
+    private final BidItemRepository bidItemRepository;
+
+    private final BidItemImgRepository bidItemImgRepository;
+
     public Long order(OrderDto orderDto, String mid){
 
         Item item = itemRepository.findById(orderDto.getItemId())
@@ -54,9 +55,23 @@ public class OrderService {
         return order.getId();
     }
 
+    public Long orderBidItem(String bidItemId, String mid) {
+        BidItem bidItem = bidItemRepository.findById(bidItemId) .orElseThrow(EntityNotFoundException::new);
+        Member member = memberRepository.findByMid(mid);
+        List<OrderItem> orderItemList = new ArrayList<>();
+        OrderItem orderItem = OrderItem.createOrderBidItem(bidItem);
+        orderItemList.add(orderItem);
+        Order order = Order.createOrder(member, orderItemList);
+        orderRepository.save(order);
+        // 주문 후 회원 등급 갱신
+         memberGradeService.incrementMgdesc(member);
+         return order.getId();
+
+        }
+
+
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getOrderList(String email, Pageable pageable) {
-
         List<Order> orders = orderRepository.findOrders(email, pageable);
         Long totalCount = orderRepository.countOrder(email);
 
@@ -66,17 +81,24 @@ public class OrderService {
             OrderHistDto orderHistDto = new OrderHistDto(order);
             List<OrderItem> orderItems = order.getOrderItems();
             for (OrderItem orderItem : orderItems) {
-                ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn
-                        (orderItem.getItem().getId(), "Y");
-                OrderItemDto orderItemDto =
-                        new OrderItemDto(orderItem, itemImg.getImgUrl());
-                orderHistDto.addOrderItemDto(orderItemDto);
+                if (orderItem.getItem() != null) {
+                    ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn(orderItem.getItem().getId(), "Y");
+                    OrderItemDto orderItemDto = new OrderItemDto(orderItem, itemImg.getImgUrl());
+                    orderHistDto.addOrderItemDto(orderItemDto);
+                } else if (orderItem.getBiditem() != null) {
+                    BidItemImg bidItemImg = bidItemImgRepository.findByBidItem_BidItemIdAndBidRepimgYn(orderItem.getBiditem().getBidItemId(), "Y");
+                    OrderItemDto orderItemDto = new OrderItemDto(orderItem, bidItemImg != null ? bidItemImg.getBidImgUrl() : null);
+                    orderHistDto.addOrderItemDto(orderItemDto);
+                } else {
+                    // 둘 다 null인 경우 처리 (필요에 따라 로깅 또는 예외 처리 추가 가능)
+                    // 예를 들어, 로깅
+                    // log.warn("OrderItem has neither Item nor BidItem: " + orderItem.getId());
+                }
             }
-
             orderHistDtos.add(orderHistDto);
         }
 
-        return new PageImpl<OrderHistDto>(orderHistDtos, pageable, totalCount);
+        return new PageImpl<>(orderHistDtos, pageable, totalCount);
     }
 
     @Transactional(readOnly = true)

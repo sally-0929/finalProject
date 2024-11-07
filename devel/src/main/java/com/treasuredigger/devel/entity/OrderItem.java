@@ -17,6 +17,10 @@ public class OrderItem extends BaseEntity {
     private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bid_item_id")
+    private BidItem biditem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
@@ -30,6 +34,15 @@ public class OrderItem extends BaseEntity {
         orderItem.setCount(count);
         orderItem.setOrderPrice(item.getPrice());
         item.removeStock(count);
+        return orderItem;
+    }
+
+    public static OrderItem createOrderBidItem(BidItem bidItem) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setBiditem(bidItem);
+        orderItem.setCount(1);
+        orderItem.setOrderPrice((int) bidItem.getMaxPrice());
+
         return orderItem;
     }
 
