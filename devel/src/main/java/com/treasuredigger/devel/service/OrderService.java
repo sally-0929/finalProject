@@ -147,4 +147,13 @@ public class OrderService {
         return order.getId();
     }
 
+    public BidItem getBidItemByOrderId(Long orderId) {
+        Order order = orderRepository.findById(orderId) .orElseThrow(() -> new EntityNotFoundException("Order not found with id " + orderId));
+        for (OrderItem orderItem : order.getOrderItems()) {
+            if (orderItem.getBiditem() != null) {
+                return orderItem.getBiditem();
+            }
+        } throw new EntityNotFoundException("No BidItem found for order id " + orderId);
+    }
+
 }
