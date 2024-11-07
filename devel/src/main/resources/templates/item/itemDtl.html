@@ -393,26 +393,20 @@
                 </div>
                 <hr class="my-4">
                 남은 수량 : <span id="stockDisplay" th:text="${item.stockNumber}"></span>개 <br>
-                    판매자 <span style="font-weight:bold" th:text="${item.sellerId}"></span>
-                    <img style="width:20px;" th:if="${item.sellerRole == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
-                    <img style="width:20px;" th:if="${item.sellerRole == 'SILVER'}" th:src="@{/images/silver.png}" alt="Silver" />
-                    <img style="width:20px;" th:if="${item.sellerRole == 'GOLD'}" th:src="@{/images/gold.png}" alt="Gold" />
-                    <img style="width:20px;" th:if="${item.sellerRole == 'VIP'}" th:src="@{/images/gold.png}" alt="VIP" />
-                    <img style="width:20px;" th:if="${item.sellerRole == 'VVIP'}" th:src="@{/images/gold.png}" alt="VVIP" />
                 <div th:if="${item.stockNumber > 0}" class="text-right mgt-120">
                     <h5>결제 금액</h5>
                     <h3 id="totalPrice" class="font-weight-bold"></h3>
                 </div>
 
                 <div th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right">
-                    <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()">장바구니 담기</button>
+                    <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()"><img src="/images/cartAdd.png" style="width:33px"> 장바구니 담기</button>
                     <button type="button" class="btn btn-primary btn-lg" onclick="order()">구매</button>
                 </div>
                 <div class="text-right" style="margin-top:10px;">
                     <button type="button" class="btn btn-success btn-lg" onclick="history.back();">목록으로 돌아가기</button>
                 </div>
                 <div th:unless="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" class="text-right mt-2">
-                    <button type="button" class="btn btn-danger btn-lg">품절 상품입니다</button>
+                    <button type="button" class="btn btn-danger btn-lg">품절된 상품입니다</button>
                 </div>
             </div>
         </div>

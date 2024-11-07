@@ -209,6 +209,9 @@
             text-align: center; /* 모달 테이블 내용 중앙 정렬 */
             vertical-align: middle;
         }
+        #bidNowPrice {
+            width: 200px;
+        }
     </style>
 </th:block>
 
@@ -216,7 +219,7 @@
 
     <input type="hidden" id="biditemId" th:value="${biditem.bidItemId}">
     <div style="width: 80%; margin: 0 auto;">
-        <div class="h4" th:text="${biditem.cname}"></div>
+        <div class="h6" th:text="'> '+${biditem.cname}"></div>
         <div class="flex-container mb-4">
 
             <!-- 큰 이미지 -->
@@ -479,6 +482,7 @@
                             btn100000.className = "btn btn-secondary";
                             btn100000.onclick = function() { addBidPrice(100000); };
                             btn100000.textContent = "100,000원";
+                            btn100000.style.marginLeft = "5px";
                             priceButtonsDiv.appendChild(btn100000);
                         }
                     });
@@ -572,11 +576,17 @@
         <button type="button" class="btn btn-primary btn-lg" onclick="onClickBuyNow()">즉시구매</button>
         <script>
             function onClickBuyNow() {
-              var csrfToken = $('meta[name="_csrf"]').attr('content');
-            var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
-            var bidItemId = $('#biditemId').val();
-            var bidNowPrice = document.getElementById('buyNowPrice').value;
+                var csrfToken = $('meta[name="_csrf"]').attr('content');
+                var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+                var bidItemId = $('#biditemId').val();
+                var bidNowPrice = document.getElementById('buyNowPrice').value;
+                var currentBidPrice = parseInt($('#bidNowPrice').val(), 10);
 
+                // 즉시구매가가 현재 입찰가보다 낮을 경우
+                if (bidNowPrice < currentBidPrice) {
+                    alert('현재 입찰가보다 즉시구매가 낮습니다. 즉시구매가 불가합니다.');
+                    return; // 페이지 이동 막기
+                }
                 $.ajax({
                     url: '/biditem/placeBid',
                     type: 'POST',
@@ -649,12 +659,12 @@
                         success: function(response) {
                             var responseText = JSON.stringify(response);
                             console.log('response: ' + responseText);
-                            alert('입찰 성공 ');
+                            alert('입찰이 완료되었습니다.');
                             location.reload();
                         },
                         error: function(error) {
                             console.log('error: ' + JSON.stringify(error));
-                            alert('입찰 실패');
+                            alert('입찰이 실패했습니다.');
                         }
                     });
                 } else {
