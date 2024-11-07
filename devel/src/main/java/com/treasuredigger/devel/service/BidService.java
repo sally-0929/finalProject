@@ -29,7 +29,7 @@ public class BidService {
     private final BidItemMapper bidItemMapper;
 
     @Transactional
-    public Bid saveBid(String bidItemId, Long memberId, long bidRegPrice) {
+    public Bid saveBid(String bidItemId, Long memberId, long bidRegPrice, String buyNowCheck) {
         Bid bid = new Bid();
         bid.setBidRegPrice(bidRegPrice);
         bid.setBidRegTime(LocalDateTime.now());
@@ -41,6 +41,7 @@ public class BidService {
 
         bid.setBidItem(bidItem);
         bid.setMember(member);
+        bid.setBuyNowCheck(buyNowCheck);
 
         return bidRepository.save(bid);
     }

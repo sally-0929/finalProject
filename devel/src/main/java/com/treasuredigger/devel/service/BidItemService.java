@@ -100,7 +100,7 @@ public class BidItemService {
 
         BidDto bidDto = new BidDto();
 
-        bidService.saveBid(bidItem.getBidItemId(), member.getId(), bidItemFormDto.getStartPrice());
+        bidService.saveBid(bidItem.getBidItemId(), member.getId(), bidItemFormDto.getStartPrice(), "N");
     }
 
     @Transactional(readOnly = true)

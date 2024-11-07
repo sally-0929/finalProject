@@ -470,6 +470,8 @@
                 <hr class="my-3">
                 즉시구매가 <div class="h4" id="formattedMaxPrice" th:text="${biditem.maxPrice}"></div>
 
+                <input type="hidden" id="buyNowPrice" th:value="${biditem.maxPrice}">
+
 
                 <h3 class="card-title text-danger" th:attr="data-enddate=${biditem.bidEndDate}"></h3>
                 남은시간<p th:id="'remainingTime-' + ${biditem.bidItemId}">남은 시간 계산 중...</p>
@@ -539,12 +541,39 @@
     <!-- 입찰 버튼 표시 조건 -->
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
         <button type="button" class="btn btn-light border border-primary btn-lg" id="bidButton" sec:authorize="isAuthenticated()">입찰하기</button>
-        <button type="button" class="btn btn-primary btn-lg" onclick="onClickBuyNow('[[${biditem.bidItemId}]]')">즉시구매하기</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="onClickBuyNow()">즉시구매하기</button>
         <script>
-            function onClickBuyNow(itemId) {
-            alert('공사중입니다');
+            function onClickBuyNow() {
+              var csrfToken = $('meta[name="_csrf"]').attr('content');
+            var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+            var bidItemId = $('#biditemId').val();
+            var bidNowPrice = document.getElementById('buyNowPrice').value;
 
-    }
+                $.ajax({
+                    url: '/biditem/placeBid',
+                    type: 'POST',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    dataType: 'text',
+                    data: {
+                        bidNowPrice: bidNowPrice,
+                        bidItemId: bidItemId,
+                        buyNowCheck: 'Y'
+                    },
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader(csrfHeader, csrfToken);
+                    },
+                    success: function(response) {
+                        var responseText = JSON.stringify(response);
+                        console.log('response: ' + responseText);
+                        alert('즉시구매 성공');
+                        location.reload();
+                    },
+                    error: function(error) {
+                        console.log('error: ' + JSON.stringify(error));
+                        alert('즉시 구매 실패');
+                    }
+                });
+            }
         </script>
 <!--        <div sec:authorize="isAuthenticated()">-->
 <!--            <div th:if="${#authentication.getPrincipal()?.username == biditem.memberId}">-->
@@ -582,7 +611,9 @@
                         dataType: 'text',
                         data: {
                             bidNowPrice: bidNowPrice,
-                            bidItemId: bidItemId
+                            bidItemId: bidItemId,
+                             buyNowCheck : 'N'
+
                         },
                         beforeSend: function(xhr) {
                             xhr.setRequestHeader(csrfHeader, csrfToken);

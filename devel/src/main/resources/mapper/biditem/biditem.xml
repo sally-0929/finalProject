@@ -27,11 +27,16 @@
         FROM bids_tbl bt
         WHERE bt.bid_item_id = btt.bid_item_id) AS bidcount,
         mg.mgid AS mgId,
-        mg.member_grade_status AS mgst
+        mg.member_grade_status AS mgst,
+        (SELECT bt.buy_now_check
+        FROM bids_tbl bt
+        WHERE bt.bid_item_id = btt.bid_item_id
+        ORDER BY bt.bid_reg_time DESC
+        LIMIT 1) AS buyNowCheck
         FROM bid_items_tbl btt
         JOIN bid_item_img bii ON btt.bid_item_id = bii.bid_item_id
         LEFT JOIN member_grade_tbl mg ON btt.member_id = mg.member_id
-        join category_tbl ct on btt.cid = ct.cid
+        JOIN category_tbl ct ON btt.cid = ct.cid
         WHERE bii.bid_repimg_yn = 'Y'
 
 

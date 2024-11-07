@@ -125,12 +125,13 @@ public class BidController {
     }
 
     @PostMapping("/placeBid")
-    public ResponseEntity<String> placeBid(@RequestParam("bidNowPrice") int bidNowPrice, @RequestParam("bidItemId") String bidItemId, Principal principal) {
-
+    public ResponseEntity<String> placeBid(@RequestParam("bidNowPrice") int bidNowPrice, @RequestParam("bidItemId") String bidItemId,
+                                           @RequestParam("buyNowCheck") String buyNowCheck,Principal principal) {
+        System.out.println("buyNowCheck + " + buyNowCheck + bidNowPrice);
         Member member =  memberService.findMemberByMid(principal.getName());
         Long mid = member.getId();
         log.info("mid " + mid);
-        bidService.saveBid(bidItemId,mid,bidNowPrice);
+        bidService.saveBid(bidItemId,mid,bidNowPrice, buyNowCheck);
 
         return ResponseEntity.ok("Success");
     }

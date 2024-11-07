@@ -35,6 +35,7 @@ public class BidItemDto {
     private String bino;
 
     private String cname;
+    private String buyNowCheck;
 
     private LocalDateTime regTime;
     private String createBy;
