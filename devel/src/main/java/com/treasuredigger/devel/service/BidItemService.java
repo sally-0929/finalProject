@@ -68,7 +68,7 @@ public class BidItemService {
                 BidItem bidItem = bidItemRepository.findByBidItemId(bid.getBidItemId());
                 bidItem.setItemStatus(ItemStatus.END);
                 bidItemRepository.save(bidItem);
-            } 
+            }
         }
 
     }
