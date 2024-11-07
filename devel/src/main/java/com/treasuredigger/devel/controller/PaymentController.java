@@ -4,21 +4,29 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.treasuredigger.devel.dto.PaymentDto;
+import com.treasuredigger.devel.entity.BidItem;
+import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.entity.Order;
 import com.treasuredigger.devel.entity.OrderItem;  // OrderItem 추가
 import com.treasuredigger.devel.repository.ItemRepository;
 import com.treasuredigger.devel.repository.MemberRepository;
 import com.treasuredigger.devel.repository.OrderRepository;
+import com.treasuredigger.devel.service.BidService;
+import com.treasuredigger.devel.service.MemberService;
+import com.treasuredigger.devel.service.OrderService;
 import com.treasuredigger.devel.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,12 +40,15 @@ public class PaymentController {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
+    private final BidService bidService;
+    private final OrderService orderService;
+    private final MemberService memberService;
 
     /**
      * 아임포트 결제 검증
      */
     @PostMapping("/validation/{imp_uid}")
-    public String validateIamport(@PathVariable String imp_uid, Model model) throws IamportResponseException, IOException {
+    public String validateIamport(@PathVariable String imp_uid, Model model, Principal principal) throws IamportResponseException, IOException {
         log.info("imp_uid: {}", imp_uid);
 
         // 결제 정보 확인
@@ -46,6 +57,13 @@ public class PaymentController {
         // 결제 확인 결과를 모델에 추가
         if (paymentResponse != null && paymentResponse.getCode() == 0) {
             // 결제 성공 시
+            BidItem bidItem = orderService.getBidItemByOrderId(902L);
+            String bidItemId = bidItem.getBidItemId();
+            long bidNowPrice = bidItem.getMaxPrice();
+            Member member =  memberService.findMemberByMid(principal.getName());
+            Long mid = member.getId();
+
+            bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
             model.addAttribute("payment", paymentResponse.getResponse());
             return "payment/paymentSuccess";  // 결제 성공 템플릿
         } else {

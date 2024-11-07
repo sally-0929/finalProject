@@ -139,7 +139,7 @@ public class BidController {
        Long orderId =  orderService.orderBidItem(bidItemId, principal.getName());
 
         //결재가 완료 되어야 그 후에 즉시구매한 값으로 수정 (선수작업 결재)
-        bidService.saveBid(bidItemId,mid,bidNowPrice, buyNowCheck);
+//        bidService.saveBid(bidItemId,mid,bidNowPrice, buyNowCheck);
 
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
