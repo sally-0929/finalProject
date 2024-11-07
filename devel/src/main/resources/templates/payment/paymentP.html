@@ -33,9 +33,10 @@
   </tr>
   </thead>
   <tbody>
-
   <tr th:each="orderItem : ${orderItems}">
-    <td th:text="${orderItem.orderPrice}"></td> <!-- 상품 가격 -->
+    <td th:text="${orderItem.biditem.bidItemName}"></td> <!-- 상품명 -->
+<!--    <td th:text="${orderItem.item.itemNm}"></td> &lt;!&ndash; 상품명 &ndash;&gt;-->
+    <td th:text="${orderItem.orderPrice}"></td> <!-- 가격 -->
     <td th:text="${orderItem.count}"></td> <!-- 수량 -->
     <td th:text="${orderItem.getTotalPrice()}"></td> <!-- 총 금액 -->
   </tr>
@@ -56,54 +57,53 @@
   IMP.init("imp14351567");  // 아임포트 가맹점 코드
 
   $(document).ready(function() {
-  var token = $("meta[name='_csrf']").attr("content");
-  var header = $("meta[name='_csrf_header']").attr("content");
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
 
-  $('#payButton').click(function() {
+    $('#payButton').click(function() {
       var orderId = "[[${order.id}]]"; // orderId를 여기서 처리
       var totalAmount = "[[${order.totalAmount}]]"; // 주문 총액을 여기서 처리
       totalAmount = Number(totalAmount);
 
       // 결제 요청
       IMP.request_pay({
-          pg: "html5_inicis.INIpayTest",   // PG사
-          pay_method: "card",               // 결제 수단
-          merchant_uid: "order_" + orderId, // 가맹점 주문번호 (유니크해야 함)
-          name: "주문번호 " + orderId,       // 상품명
-          amount: totalAmount,              // 결제 금액
-          buyer_name: "[[${order.member.name}]]", // 구매자 이름
-          buyer_tel:"[[${order.member.phone}]]", // 구매자 전화번호
-          buyer_email:"[[${order.member.email}]]" // 구매자 이메일
+        pg: "html5_inicis.INIpayTest",   // PG사
+        pay_method: "card",               // 결제 수단
+        merchant_uid: "order_" + orderId, // 가맹점 주문번호 (유니크해야 함)
+        name: "주문번호 " + orderId,       // 상품명
+        amount: totalAmount,              // 결제 금액
+        buyer_name: "[[${order.member.name}]]", // 구매자 이름
+        buyer_tel:"[[${order.member.phone}]]", // 구매자 전화번호
+        buyer_email:"[[${order.member.email}]]" // 구매자 이메일
       }, function (rsp) {
-          if (rsp.success) {
-              alert("결제 완료!");
+        if (rsp.success) {
+          alert("결제 완료!");
 
-              // 결제 성공 시 서버로 결제 정보를 전송하여 처리
-              $.ajax({
-                  type: 'POST',
-                  url: '/payments/validation/' + rsp.imp_uid, // 아임포트 결제 검증 API 호출
-                  beforeSend: function(xhr) {
-                      xhr.setRequestHeader(header, token);  // CSRF 토큰 헤더에 설정
-                  },
-                  success: function(response) {
-                      if (response.success) {
-                          alert("주문이 성공적으로 처리되었습니다.");
-                          location.href = "/payments/confirmation?orderId=" + orderId;
-                      } else {
-                          alert("결제 검증 실패");
-                      }
-                  },
-                  error: function() {
-                      alert("주문 정보 저장에 실패했습니다.");
-                  }
-              });
-          } else {
-              alert("결제 실패: " + rsp.error_msg);
-          }
+          // 결제 성공 시 서버로 결제 정보를 전송하여 처리
+          $.ajax({
+            type: 'POST',
+            url: '/payments/validation/' + rsp.imp_uid, // 아임포트 결제 검증 API 호출
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader(header, token);  // CSRF 토큰 헤더에 설정
+            },
+            success: function(response) {
+              if (response) {
+                alert("주문이 성공적으로 처리되었습니다.");
+                location.href = "/payments/confirmation?orderId=" + orderId;
+              } else {
+                alert("결제 검증 실패");
+              }
+            },
+            error: function() {
+              alert("주문 정보 저장에 실패했습니다.");
+            }
+          });
+        } else {
+          alert("결제 실패: " + rsp.error_msg);
+        }
       });
+    });
   });
-});
-
 </script>
 </body>
 </html>
