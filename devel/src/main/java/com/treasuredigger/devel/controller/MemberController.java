@@ -68,7 +68,7 @@ public class MemberController {
             return "member/memberForm";
         }
 
-        return "redirect:/";
+        return "redirect:/members/login";
     }
 
     @GetMapping(value = "/login")
@@ -133,7 +133,7 @@ public class MemberController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         new SecurityContextLogoutHandler().logout(request, response, authentication);
 
-        return "redirect:/";
+        return "redirect:/members/login";
     }
 
     @GetMapping(value = "/memberDelete")

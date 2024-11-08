@@ -123,13 +123,13 @@
                 <a href="/members/memberUpdate">
                     <img th:src="@{/images/account.png}" alt="계좌관리" style="width: 80px;">
                 </a>
-                <p>계좌관리</p>
+                <p>포인트관리</p>
             </div>
-            <div class="my-card">
-                <a href="/sale">
-                    <img th:src="@{/images/sell.png}" alt="판매현황" style="width: 80px;">
+            <div class="my-card" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                <a href="/admin/items">
+                    <img th:src="@{/images/sell.png}" alt="일반상품관리" style="width: 80px;">
                 </a>
-                <p>판매현황</p>
+                <p>일반상품관리</p>
             </div>
             <div class="my-card">
                 <a href="/customer-service/notices">
@@ -137,7 +137,7 @@
                 </a>
                 <p>공지사항</p>
             </div>
-            <div class="my-card">
+            <div class="my-card" sec:authorize="hasAnyAuthority('ROLE_MEMBER', 'ROLE_ADMIN')">
                 <a href="/biditem/mybidlist">
                     <img th:src="@{/images/review.png}" alt="내가 쓴 리뷰" style="width: 80px;">
                 </a>
