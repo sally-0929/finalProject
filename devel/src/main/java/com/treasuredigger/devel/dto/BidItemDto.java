@@ -40,6 +40,7 @@ public class BidItemDto {
     private LocalDateTime regTime;
     private String createBy;
     private long bidRegPrice;
+    private boolean wishlisted = false;
 
     private List<BIdItemImgDto> biditemImgDtoList = new ArrayList<>();
 

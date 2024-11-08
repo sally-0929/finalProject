@@ -212,7 +212,7 @@
         }
         .scroll-button-container {
             position: fixed;
-            top: 52%;
+            top: 50%;
             right: 50px;
             transform: translateY(-50%);
             display: flex;
@@ -222,11 +222,11 @@
         }
 
         .scroll-button {
-            background-color: #007bff;
+            background-color: #5D9BD6;
             color: white;
             border: none;
-            width: 50px;
-            height: 50px;
+            width: 57px;
+            height: 57px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -246,9 +246,13 @@
         }
 
         .scroll-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             font-size: 14px;
             font-weight: bold;
-            color: #007bff;
+            color: #fff;
+            line-height: 1.2;
         }
         .scroll-button-container  top: 52%;
         .wishlist-container img {
@@ -333,9 +337,9 @@
                              },
                              success: function(response) {
                                  if (response) {
-                                     heartIcon.addClass('red');
+                                     heartIcon.addClass('fas red'); // 관심상품일 경우 채워진 빨간 하트
                                  } else {
-                                     heartIcon.removeClass('red');
+                                     heartIcon.addClass('fas').addClass('grey'); // 관심상품이 아닐 경우 빈 하트
                                  }
                              },
                              error: function(xhr, status, error) {
@@ -415,7 +419,7 @@
             <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">
                 <!-- 로그인한 사용자에게만 콘텐츠 표시 -->
                 <a href="/members/wishlist" class="scroll-label link-hover">
-                    <h6><i class="far fa-heart red" style="color:red;"></i> 관심상품</h6>
+                    <h6><i class="fas fa-heart red" style="color:red;"></i> 관심상품</h6>
                 </a>
                 <ul style="list-style-type: none; padding: 0;">
                     <li th:each="wishlistItem : ${recentItemWishlist}" style="margin-bottom: 15px;">
@@ -428,10 +432,20 @@
             </div>
             <!-- 로그인하지 않은 상태에서는 공간을 남겨두기 -->
             <div th:if="${!#authorization.expression('isAuthenticated()')}" style="visibility: hidden; height: 450px;"></div>
-            <span class="scroll-label">TOP</span>
-            <button class="scroll-button" onclick="scrollToHeader()"><i class="fas fa-angle-up"></i></button>
-            <button class="scroll-button" onclick="scrollToFooter()"><i class="fas fa-angle-down"></i></button>
-            <span class="scroll-label">BOTTOM</span>
+            <button class="scroll-button" onclick="scrollToHeader()">
+                <div class="scroll-label">
+                    UP<br>
+                    <i class="fas fa-angle-up"></i>
+                </div>
+            </button>
+
+            <!-- Scroll Down Button -->
+            <button class="scroll-button" onclick="scrollToFooter()">
+                <div class="scroll-label">
+                    DOWN<br>
+                    <i class="fas fa-angle-down"></i>
+                </div>
+            </button>
         </div>
         <div>
             <hr class="my-4">

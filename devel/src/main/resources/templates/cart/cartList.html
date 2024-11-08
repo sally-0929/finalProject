@@ -281,7 +281,7 @@
                                     <span aria-hidden="true" th:data-id="${cartItem.cartItemId}">&times;</span>
                                 </button>
                                 <span th:id="'stock_' + ${cartItem.cartItemId}" th:data-stock="${cartItem.stockNumber}"></span>
-                            </span>
+                            </div>
                         </div>
                     </div>
                 </td>
@@ -294,7 +294,7 @@
             </tbody>
         </table>
 
-        <h2 class="text-center">
+        <h2 class="text-center" style="margin-top:50px;">
             총 주문 금액 : <span id="orderTotalPrice" class="text-danger" th:text="${#numbers.formatInteger(0, 3, 'COMMA') + '원'}">0원</span>
         </h2>
 

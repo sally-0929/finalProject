@@ -54,25 +54,35 @@ public class BidController {
     @GetMapping("/list")
     public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                         @RequestParam(value = "searchQuery", required = false) String searchQuery,
-                        @RequestParam(value = "cid", required = false) String cid, @RequestParam(value ="auctionStatus" , required = false) String auctionStatus, Authentication authentication){
-            if(page <0 ) page = 0;
-            log.info("auctionStatus ++ " + auctionStatus);
-            bidItemService.updateItemStatuses();
-            Pageable pageable = PageRequest.of(page, 15);
-            Page<BidItemDto> bidItemPage = bidItemService.getList(searchQuery,pageable, cid, auctionStatus);
-            log.info("model value ++ " + bidItemPage);
+                        @RequestParam(value = "cid", required = false) String cid,
+                        @RequestParam(value = "auctionStatus", required = false) String auctionStatus,
+                        Authentication authentication) {
+        if (page < 0) page = 0;
+        bidItemService.updateItemStatuses();
+        Pageable pageable = PageRequest.of(page, 15);
+        Page<BidItemDto> bidItemPage = bidItemService.getList(searchQuery, pageable, cid, auctionStatus);
 
-            model.addAttribute("categories", categoryService.list());
-            model.addAttribute("bidItemList", bidItemPage.getContent());
-            model.addAttribute("currentPage", bidItemPage.getNumber());
-            model.addAttribute("totalPages", bidItemPage.getTotalPages());
-            model.addAttribute("auctionStatus", auctionStatus);
+        model.addAttribute("categories", categoryService.list());
+        model.addAttribute("bidItemList", bidItemPage.getContent());
+        model.addAttribute("currentPage", bidItemPage.getNumber());
+        model.addAttribute("totalPages", bidItemPage.getTotalPages());
+        model.addAttribute("auctionStatus", auctionStatus);
 
-            if (authentication != null && authentication.isAuthenticated()) {
-                String userId = authentication.getName();
-                List<WishlistDto> recentBidWishlist = wishlistService.getRecentBidWishlistByMember(userId, 3);
-                model.addAttribute("recentBidWishlist", recentBidWishlist);
+        // 로그인한 사용자에게 관심 목록 제공
+        if (authentication != null && authentication.isAuthenticated()) {
+            String userId = authentication.getName();
+
+            // 최근 관심 목록
+            List<WishlistDto> recentBidWishlist = wishlistService.getRecentBidWishlistByMember(userId, 3);
+            model.addAttribute("recentBidWishlist", recentBidWishlist);
+
+            // 각 BidItemDto의 wishlisted 필드 설정
+            for (BidItemDto item : bidItemPage.getContent()) {
+                boolean isWishlisted = recentBidWishlist.stream().anyMatch(wishlistItem ->
+                        wishlistItem.getBidItemId().equals(item.getBidItemId()));
+                item.setWishlisted(isWishlisted);
             }
+        }
            log.info("category List Page data +++" + categoryService.list());
 
            log.info("현재페이지 로그" + bidItemPage.getNumber());

@@ -34,13 +34,22 @@ public class WishlistService {
     @Autowired
     private BidItemImgRepository bidItemImgRepository;
 
+    @Autowired
+    private BidItemRepository bidItemRepository;
+
 
 
     public boolean isWishlisted(BidItem bidItem, Member member) {
         System.out.println("bid service");
         return wishlistRepository.findByBidItemAndMember(bidItem, member).isPresent();
     }
+    public boolean isWishlisted(String bidItemId, String userId) {
+        Member member = memberRepository.findByMid(userId);
+        if (member == null) return false;
 
+        BidItem bidItem = bidItemRepository.findByBidItemId(bidItemId);
+        return wishlistRepository.findByBidItemAndMember(bidItem, member).isPresent();
+    }
     public boolean isWishlisted(Item item, Member member) {
         System.out.println("item sservice");
         return wishlistRepository.findByItemAndMember(item, member).isPresent();
@@ -118,6 +127,16 @@ public class WishlistService {
                     }
                     return dto;
                 })
+                .collect(Collectors.toList());
+    }
+    public List<Long> getWishlistItemIdsByMember(String userId) {
+        Member member = memberRepository.findByMid(userId);
+        if (member == null) return Collections.emptyList();
+
+        return wishlistRepository.findByMember(member)
+                .stream()
+                .filter(wishlist -> wishlist.getItem() != null) // item이 null인지 확인
+                .map(wishlist -> wishlist.getItem().getId())
                 .collect(Collectors.toList());
     }
 }

@@ -28,4 +28,5 @@ public class MainItemDto {
     }
 
     private ItemSellStatus itemSellStatus; // 판매 상태 추가
+    private boolean isWishlisted;
 }
