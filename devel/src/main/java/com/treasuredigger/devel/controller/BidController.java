@@ -7,11 +7,13 @@ import com.treasuredigger.devel.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +47,9 @@ public class BidController {
     private final MemberGradeService memberGradeService;
 
     private final OrderService orderService;
+
+    @Qualifier("taskScheduler")
+    private final TaskScheduler taskScheduler;
 
     @GetMapping("/list")
     public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -103,8 +111,10 @@ public class BidController {
 
         try {
             bidItemService.saveItem(BiditemFormDto, itemImgFileList, email);
-//            Member member = memberService.findMemberByMid(email);
-//            memberGradeService.incrementMgdesc(member);
+            LocalDateTime bidEndDate = BiditemFormDto.getBidEndDate();
+            Runnable task = runTask();
+            taskScheduler.schedule(task, Instant.from(bidEndDate));
+
         } catch (Exception e){
             e.printStackTrace();
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
@@ -137,12 +147,19 @@ public class BidController {
 
         Long mid = member.getId();
         log.info("mid " + mid);
-       Long orderId =  orderService.orderBidItem(bidItemId, principal.getName());
+
 
         //결재가 완료 되어야 그 후에 즉시구매한 값으로 수정 (선수작업 결재)
-//        bidService.saveBid(bidItemId,mid,bidNowPrice, buyNowCheck);
+        if (buyNowCheck != null && buyNowCheck.trim().equals("N")) {
+            bidService.saveBid(bidItemId, mid, bidNowPrice, buyNowCheck);
+            return  new ResponseEntity<String>("Bid placed successfully", HttpStatus.OK);
+        }else {
+            Long orderId =  orderService.orderBidItem(bidItemId, principal.getName());
+            return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+        }
 
-        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+
+
     }
 
 
@@ -192,6 +209,12 @@ public class BidController {
         System.out.println("mybidList" + mylist);
         model.addAttribute("mybidList" , mylist);
 
+    }
+
+    private Runnable runTask() {
+        return () -> {
+            log.info("낙찰된 사람한테 메일 발송하는 로직 ");
+        };
     }
 
 
