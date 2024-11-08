@@ -10,15 +10,21 @@ import com.treasuredigger.devel.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,6 +39,9 @@ public class BidItemService {
     private final MemberRepository memberRepository;
     private final BidService bidService;
 
+    @Qualifier("taskScheduler")
+    private final TaskScheduler taskScheduler;
+
     @Autowired
     private GeneratedKey generatedKey;
 
@@ -41,6 +50,11 @@ public class BidItemService {
     @Autowired
     private BidRepository bidRepository;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private OrderService  orderService;
 
 //    @Transactional
     public void updateItemStatuses() {
@@ -94,6 +108,13 @@ public class BidItemService {
         BidItem bidItem = bidItemFormDto.createBidItem(member, itemCategory);
         bidItem.setBidItemId(generatedKey.itemKey(bidItemFormDto.getCid()));
         bidItemRepository.save(bidItem);
+
+        LocalDateTime bidEndDate = bidItemFormDto.getBidEndDate();
+        // LocalDateTime을 ZonedDateTime으로 변환 후 Instant로 변환
+        ZonedDateTime zonedDateTime = bidEndDate.atZone(ZoneId.systemDefault());
+        Instant instant = zonedDateTime.toInstant();
+        Runnable task = runTask(bidItem.getBidItemId());
+        taskScheduler.schedule(task, Date.from(instant));
 
 
         for(int i=0;i<itemImgFileList.size();i++){
@@ -163,5 +184,23 @@ public class BidItemService {
 //            itemImgService.updateItemImg(itemImgIds.get(i), itemImgFileList.get(i), true);
 //        }
 //    }
+
+    private Runnable runTask(String bidItemId) {
+        return () -> {
+            BidDto bidDto =  bidItemMapper.getSuccessfulBid(bidItemId);
+            //order로 옮겨주는 로직 필요
+            Long orderId =  orderService.orderBidItem(bidItemId, bidDto.getMid());
+
+
+            String htmlContent = "<html>" + "<body>" + "<h1>축하드립니다 !! 낙찰성공 안내 메시지</h1>"
+                    + "<p>아래 링크를 눌러서 확인하세요!</p>" + "<a href=\"http://localhost:8244/payments/paymentP?orderId="
+                    + orderId
+                    + "\">결제 확인</a>"
+                    + "</body>"
+                    + "</html>";
+            emailService.sendEmail(bidDto.getEmail(),"축하드립니다 !! 낙찰성공 안내 메시지 " ,htmlContent);
+
+        };
+    }
 
 }
