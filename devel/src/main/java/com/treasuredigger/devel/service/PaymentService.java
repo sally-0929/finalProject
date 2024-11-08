@@ -37,7 +37,9 @@ public class PaymentService {
     public IamportResponse<Payment> validateIamport(String imp_uid) {
         try {
             IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
-            log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}", payment.getResponse());
+            Payment paymentResponse = payment.getResponse();
+            log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}, 상태: {}, 금액: {}",
+                    paymentResponse.getImpUid(), paymentResponse.getStatus(), paymentResponse.getAmount());
             return payment;
         } catch (Exception e) {
             log.error("결제 확인 중 에러 발생: {}", e.getMessage());
@@ -67,23 +69,11 @@ public class PaymentService {
             Order order = orderRepository.findById(paymentDto.getOrderId())
                     .orElseThrow(() -> new IllegalArgumentException("주문 정보가 없습니다."));
 
-            // Member 조회
-            Member member = memberRepository.findById(paymentDto.getMemberId())
-                    .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
-
-            // 상품 정보 조회
-            Item item = itemRepository.findById(paymentDto.getProductId())
-                    .orElseThrow(() -> new IllegalArgumentException("상품 정보가 없습니다."));
-
-            log.info("주문 정보, 회원 정보, 상품 정보 확인 완료. 주문 ID: {}, 상품명: {}", order.getId(), item.getItemNm());
-
             // 결제 정보 설정
             PaymentEntity payment = paymentDto.toEntity();
             payment.setOrder(order);  // 주문 정보 연결
             payment.setStatus(PaymentStatus.PAID);  // 결제 상태 설정 (성공)
             payment.setPaidAt(LocalDateTime.now());  // 결제 완료 시간
-
-            System.out.println("uuuuuuuuuuuuuuuuuu" + payment);
 
             // 결제 저장
             paymentRepository.save(payment);

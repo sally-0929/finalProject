@@ -51,28 +51,33 @@ public class PaymentController {
     public String validateIamport(@PathVariable String imp_uid, Model model, Principal principal) throws IamportResponseException, IOException {
         log.info("imp_uid: {}", imp_uid);
 
-        // 결제 정보 확인
+        // 결제 검증 결과
         IamportResponse<Payment> paymentResponse = paymentService.validateIamport(imp_uid);
 
-        // 결제 확인 결과를 모델에 추가
+// paymentResponse가 null이 아니고, 응답 코드가 0이면 결제 검증 성공
         if (paymentResponse != null && paymentResponse.getCode() == 0) {
-            // 결제 성공 시
-            BidItem bidItem = orderService.getBidItemByOrderId(902L);
-            String bidItemId = bidItem.getBidItemId();
-            long bidNowPrice = bidItem.getMaxPrice();
-            Member member =  memberService.findMemberByMid(principal.getName());
-            Long mid = member.getId();
+            // response.getResponse()를 사용해서 Payment 객체 확인
+            Payment payment = paymentResponse.getResponse();
 
-            bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
-            model.addAttribute("payment", paymentResponse.getResponse());
-            return "payment/paymentSuccess";  // 결제 성공 템플릿
+            // 결제 상태 확인
+            if (payment != null && "paid".equals(payment.getStatus())) {
+                // 결제 성공 처리
+                log.info("결제 성공 - 주문 번호: {}, 상태: {}, 금액: {}", payment.getMerchantUid(), payment.getStatus(), payment.getAmount());
+                model.addAttribute("payment", paymentResponse.getResponse());
+                return "payment/paymentSuccess";  // 결제 성공 템플릿
+            } else {
+                // 결제 실패 처리
+                log.info("결제 실패 - 주문 번호: {}, 상태: {}", payment.getMerchantUid(), payment.getStatus());
+                model.addAttribute("errorMessage", "결제 실패 또는 결제 정보가 유효하지 않습니다.");
+                return "payment/paymentFailure";  // 결제 실패 템플릿
+            }
         } else {
-            // 결제 실패 시
-            model.addAttribute("errorMessage", "결제 실패 또는 결제 정보가 유효하지 않습니다.");
+            // 결제 검증 실패
+            log.error("결제 검증 실패: 응답 코드 {}, 응답 메시지 {}", paymentResponse.getCode(), paymentResponse.getMessage());
+            model.addAttribute("errorMessage", "결제 검증 실패");
             return "payment/paymentFailure";  // 결제 실패 템플릿
         }
     }
-
     /**
      * 주문 처리
      */
@@ -127,8 +132,10 @@ public class PaymentController {
             Order order = orderRepository.findById(orderId)
                     .orElseThrow(() -> new IllegalArgumentException("주문 정보가 없습니다. orderId: " + orderId));
 
+//            PaymentDto paymentDto = convertToPaymentDtoFromOrder(order);
             // 모델에 주문 정보 추가
             model.addAttribute("order", order);
+            paymentService.saveOrder(paymentDto);
 
             // 주문 확인 페이지로 이동
             return "payment/paymentSuccess";  // 주문 확인 페이지
@@ -138,4 +145,13 @@ public class PaymentController {
             return "error";  // 에러 페이지
         }
     }
+
+//    private PaymentDto convertToPaymentDtoFromOrder(Order order) {
+//        PaymentDto paymentDto = new PaymentDto();
+//        paymentDto.setMerchantUid(order.getMerchantUid());  // 주문 ID (결제 요청 시 사용한 ID)
+//        paymentDto.setAmount(order.getTotalAmount());  // 결제 금액
+//        paymentDto.setStatus(order.getStatus());  // 결제 상태
+//        // 필요한 다른 속성들도 추가할 수 있습니다.
+//        return paymentDto;
+//    }
 }
