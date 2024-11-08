@@ -5,7 +5,7 @@
       layout:decorate="~{layouts/layout1}">
 
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <!-- 사용자 CSS 추가 -->
@@ -161,7 +161,14 @@
         .link-hover:hover {
             text-decoration: none !important; /* 링크에 강제 밑줄 제거 */
         }
-
+        .heart-icon {
+            position: absolute;
+            bottom: 110px; /* 이미지 바깥쪽으로 반쯤 벗어나게 */
+            right: -10px;
+            font-size: 50px;
+            transition: color 0.3s;
+            color:red;
+        }
     </style>
 </th:block>
 
@@ -214,7 +221,7 @@
         <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">
             <!-- 로그인한 사용자에게만 콘텐츠 표시 -->
             <a href="/members/wishlist" class="scroll-label link-hover">
-                <h6><i class="far fa-heart red" style="color:red;"></i> 관심상품</h6>
+                <h6><i class="fas fa-heart red" style="color:red;"></i> 관심상품</h6>
             </a>
             <ul style="list-style-type: none; padding: 0;">
                 <li th:each="wishlistItem : ${recentItemWishlist}" style="margin-bottom: 15px;">
@@ -247,18 +254,21 @@
         <th:block th:each="item : ${items.getContent()}">
             <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
                 <div class="card" style="border:none">
+                    <!-- 찜 아이콘 -->
+                    <i th:if="${#authorization.expression('isAuthenticated()') and item.isWishlisted}"
+                       class="heart-icon fas fa-heart red wishlisted"></i>
                     <a th:href="'/item/' + ${item.id}" class="text-dark">
                         <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" style="height: 300px; width: 100%; object-fit: contain; object-position: center; border:1px solid lightgray; border-radius:10px;">
-                        <div class="card-body">
-                            <div>
-                                <span th:classappend="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL} ? 'badge badge-primary' : 'badge btn-danger'"
-                                      th:text="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL ? '판매중' : '품절'}">
-                                </span>
-                            </div>
-                            <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%; margin-bottom:0px">[[${item.itemNm}]]</span><br>
-                            <span class="card-title text-danger" style="font-size:18px; font-weight:bold"><span th:text="${item.price}"></span>원</span>
-                        </div>
                     </a>
+                    <div class="card-body">
+                        <div>
+                            <span th:classappend="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL} ? 'badge badge-primary' : 'badge btn-danger'"
+                                  th:text="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL ? '판매중' : '품절'}">
+                            </span>
+                        </div>
+                        <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%; margin-bottom:0px">[[${item.itemNm}]]</span><br>
+                        <span class="card-title text-danger" style="font-size:18px; font-weight:bold"><span th:text="${item.price}"></span>원</span>
+                    </div>
                 </div>
             </div>
         </th:block>

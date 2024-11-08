@@ -52,6 +52,8 @@ public class MainController {
 
         if (authentication != null && authentication.isAuthenticated()) {
             String userId = authentication.getName();
+            List<Long> wishlistItemIds = wishlistService.getWishlistItemIdsByMember(userId); // 찜한 아이템 ID 목록 가져오기
+            items.forEach(item -> item.setWishlisted(wishlistItemIds.contains(item.getId()))); // 각 아이템의 isWishlisted 설정
             List<WishlistDto> recentItemWishlist = wishlistService.getRecentItemWishlistByMember(userId, 3);
             model.addAttribute("recentItemWishlist", recentItemWishlist);
         }

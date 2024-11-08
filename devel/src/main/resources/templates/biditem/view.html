@@ -260,7 +260,7 @@
                 <div class="scroll-button-container">
                     <div class="wishlist-container mb-3" th:if="${#authorization.expression('isAuthenticated()')}">
                         <a href="/members/wishlist" class="scroll-label link-hover">
-                            <h6><i class="far fa-heart red" style="color:red;"></i> 관심상품</h6>
+                            <h6><i class="fas fa-heart" style="color:red;"></i> 관심상품</h6>
                         </a>
                         <ul style="list-style-type: none; padding: 0;">
                             <li th:each="wishlistItem : ${recentBidWishlist}" style="margin-bottom: 15px;">
@@ -320,10 +320,10 @@
                            data: { entityType: 'bidItem', entityId: bidItemId },
                             success: function(response) {
                                 if (response) {
-                                    heartIcon.addClass('red');
-                                } else {
-                                    heartIcon.removeClass('red');
-                                }
+                                     heartIcon.addClass('fas red'); // 관심상품일 경우 채워진 빨간 하트
+                                 } else {
+                                     heartIcon.addClass('fas').addClass('grey'); // 관심상품이 아닐 경우 빈 하트
+                                 }
                             }
                         });
 
