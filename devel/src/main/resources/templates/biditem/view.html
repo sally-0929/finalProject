@@ -587,7 +587,7 @@
     <!-- 입찰 버튼 표시 조건 -->
     <div th:if="${biditem.itemStatus == 'ING'}" class="text-right">
         <button type="button" class="btn btn-light border border-primary btn-lg" id="bidButton" sec:authorize="isAuthenticated()">입찰하기</button>
-        <button type="button" class="btn btn-primary btn-lg" onclick="onClickBuyNow()">즉시구매</button>
+        <button type="button" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()" onclick="onClickBuyNow()">즉시구매</button>
         <script>
             function onClickBuyNow() {
                 var csrfToken = $('meta[name="_csrf"]').attr('content');
