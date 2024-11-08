@@ -47,8 +47,9 @@ public class PaymentController {
     /**
      * 아임포트 결제 검증
      */
-    @PostMapping("/validation/{imp_uid}")
-    public String validateIamport(@PathVariable String imp_uid, Model model, Principal principal) throws IamportResponseException, IOException {
+    @RequestMapping(value="/validation/{imp_uid}",method = RequestMethod.POST )
+    @ResponseBody
+    public ResponseEntity<String> validateIamport(@PathVariable String imp_uid, Model model, Principal principal) throws IamportResponseException, IOException {
         log.info("imp_uid: {}", imp_uid);
 
         // 결제 검증 결과
@@ -74,20 +75,18 @@ public class PaymentController {
                 Long mid = member.getId();
 
                 bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
-                model.addAttribute("payment", payment);
-                System.out.println("kkkkkkkkkkkkkkkkkkkkk" + payment);
-                return "payment/paymentSuccess";  // 결제 성공 템플릿
+                return new ResponseEntity<>("success",HttpStatus.OK);  // 결제 성공 템플릿
             } else {
                 // 결제 실패 처리
                 log.info("결제 실패 - 주문 번호: {}, 상태: {}", payment.getMerchantUid(), payment.getStatus());
-                model.addAttribute("errorMessage", "결제 실패 또는 결제 정보가 유효하지 않습니다.");
-                return "payment/paymentFailure";  // 결제 실패 템플릿
+//                model.addAttribute("errorMessage", "결제 실패 또는 결제 정보가 유효하지 않습니다.");
+                return new ResponseEntity<>("fail",HttpStatus.OK);  // 결제 실패 템플릿
             }
         } else {
             // 결제 검증 실패
             log.error("결제 검증 실패: 응답 코드 {}, 응답 메시지 {}", paymentResponse.getCode(), paymentResponse.getMessage());
             model.addAttribute("errorMessage", "결제 검증 실패");
-            return "payment/paymentFailure";  // 결제 실패 템플릿
+            return new ResponseEntity<>("invalid",HttpStatus.OK);
         }
     }
     /**
@@ -147,8 +146,7 @@ public class PaymentController {
 //            PaymentDto paymentDto = convertToPaymentDtoFromOrder(order);
             // 모델에 주문 정보 추가
             model.addAttribute("order", order);
-            //paymentService.saveOrder(paymentDto);
-
+//            paymentService.saveOrder(paymentDto);
             // 주문 확인 페이지로 이동
             return "payment/paymentSuccess";  // 주문 확인 페이지
         } catch (Exception e) {
@@ -163,7 +161,6 @@ public class PaymentController {
 //        paymentDto.setMerchantUid(order.getMerchantUid());  // 주문 ID (결제 요청 시 사용한 ID)
 //        paymentDto.setAmount(order.getTotalAmount());  // 결제 금액
 //        paymentDto.setStatus(order.getStatus());  // 결제 상태
-//        // 필요한 다른 속성들도 추가할 수 있습니다.
 //        return paymentDto;
 //    }
 }
