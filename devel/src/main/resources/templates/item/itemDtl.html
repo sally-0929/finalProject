@@ -295,15 +295,35 @@
     <div style="width: 80%; margin: 0 auto;">
         <div class="h6" th:text="'🌟 ' + ${item.cname}"></div>
         <div class="flex-container mb-4">
-            <!-- 큰 이미지 -->
             <div class="flex-item">
-                <img id="largeImage" th:src="${item.itemImgDtoList[0].imgUrl}" class="rounded repImg" th:alt="${item.itemNm}">
-                <div class="thumbnail-container mb-4">
-                    <!-- 조그만 이미지 -->
-                    <img th:each="itemImg : ${item.itemImgDtoList}" th:if="${not #strings.isEmpty(itemImg.imgUrl)}"
-                         th:src="${itemImg.imgUrl}" class="thumbnail-img carousel-img" alt="썸네일 이미지">
+                <!-- 큰 이미지 -->
+                <div class="img" style="position: relative; width: 100%; margin: 0 auto;">
+                    <img id="largeImage"
+                         th:src="${item.itemImgDtoList[0].imgUrl}"
+                         class="rounded repImg"
+                         th:alt="${item.itemNm}"
+                         data-zoom="3"
+                         alt="큰 이미지"
+                         style="display: block; width: 100%;">
+
+                    <!-- 확대용 마그니파이어 -->
+                    <span class="magnifier"
+                          style="display: none; position: absolute; width: 200px; height: 200px; border-radius: 50%; z-index: 1; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);">
+                    </span>
                 </div>
-                <span style="color:gray">※ 이미지를 클릭하면 크게 볼 수 있습니다.</span>
+
+                <!-- 썸네일 이미지들 -->
+                <div class="thumbnail-container mb-4">
+                    <!-- 조그만 이미지들 -->
+                    <img th:each="itemImg : ${item.itemImgDtoList}"
+                         th:if="${not #strings.isEmpty(itemImg.imgUrl)}"
+                         th:src="${itemImg.imgUrl}"
+                         class="thumbnail-img carousel-img"
+                         alt="썸네일 이미지"
+                         style="width: 100px; height: 100px; object-fit: cover; margin-right: 10px;">
+                </div>
+
+                <span style="color:gray">※ 이미지에 마우스를 올리시면 확대하여 보실수 있습니다.</span>
             </div>
 
             <!-- 상품 정보 -->
@@ -458,5 +478,49 @@
             <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded" width="90%" style="margin-bottom:50px">
         </div>
     </div>
+
+    <script>
+        $(".img").each(function () {
+            const zoomFactor = $(this).find('img').data('zoom') || 3; // data-zoom 속성에서 확대 배율 가져오기
+            const imageTarget = $(this).find('img'); // 대상 이미지
+            const magnifierDiv = $(this).find('.magnifier'); // 돋보기 요소
+
+            // 확대 효과 함수 정의
+            function magnify(e) {
+                const mousePosX = e.pageX - $(this).offset().left; // 마우스 X 좌표
+                const mousePosY = e.pageY - $(this).offset().top; // 마우스 Y 좌표
+
+                // 마우스가 이미지 영역 안에 있는지 확인
+                if (mousePosX < $(this).width() && mousePosY < $(this).height() && mousePosX > 0 && mousePosY > 0) {
+                    magnifierDiv.fadeIn(100); // 돋보기 표시
+                } else {
+                    magnifierDiv.fadeOut(100); // 돋보기 숨기기
+                    magnifierDiv.css("background-image", "none"); // 배경 이미지 숨기기
+                    return; // 이미지 바깥으로 나갔을 때는 더 이상 처리하지 않음
+                }
+
+                // 돋보기가 보일 때 위치와 배경을 업데이트
+                if (magnifierDiv.is(":visible")) {
+                    const bgPosX = -(mousePosX * zoomFactor - magnifierDiv.width() / 2);
+                    const bgPosY = -(mousePosY * zoomFactor - magnifierDiv.height() / 2);
+                    const magnifierPosX = mousePosX - magnifierDiv.width() / 2;
+                    const magnifierPosY = mousePosY - magnifierDiv.height() / 2;
+
+                    magnifierDiv.css({
+                        "left": magnifierPosX,
+                        "top": magnifierPosY,
+                        "background-image": `url('${imageTarget.attr("src")}')`, // 배경 이미지 설정
+                        "background-repeat": "no-repeat",
+                        "background-size": `${imageTarget.width() * zoomFactor}px ${imageTarget.height() * zoomFactor}px`, // 배경 크기 설정
+                        "background-position": `${bgPosX}px ${bgPosY}px`
+                    });
+                }
+            }
+
+            // 이미지에 mousemove 이벤트 핸들러 연결
+            $(this).on('mousemove', magnify);
+        });
+    </script>
+
 </div>
 </html>
