@@ -62,7 +62,6 @@ public class PaymentService {
     @Transactional
     public String saveOrder(PaymentDto paymentDto) {
         try {
-            // 주문 정보 및 결제 관련 정보를 처리
             log.info("PaymentDto 내용 확인: {}", paymentDto);
 
             // Order 조회
@@ -72,18 +71,20 @@ public class PaymentService {
             // 결제 정보 설정
             PaymentEntity payment = paymentDto.toEntity();
             payment.setOrder(order);  // 주문 정보 연결
-            payment.setStatus(PaymentStatus.PAID);  // 결제 상태 설정 (성공)
-            payment.setPaidAt(LocalDateTime.now());  // 결제 완료 시간
+            payment.setStatus(PaymentStatus.PAID);  // 결제 상태 설정
+            payment.setPaidAt(LocalDateTime.now());  // 결제 완료 시간 설정
 
             // 결제 저장
             paymentRepository.save(payment);
-
             log.info("결제 정보 저장 완료. 결제 ID: {}", payment.getId());
 
             return "주문 정보가 성공적으로 저장되었습니다.";
         } catch (Exception e) {
             log.error("주문 저장 중 에러 발생: {}", e.getMessage(), e);
+
+            // 결제 취소
             cancelPayment(paymentDto.getImpUid());  // 결제 취소 처리
+
             return "주문 정보 저장에 실패했습니다.";
         }
     }
