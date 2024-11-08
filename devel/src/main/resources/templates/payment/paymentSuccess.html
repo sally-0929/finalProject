@@ -8,9 +8,13 @@
 </head>
 <body>
 <h1>결제 성공</h1>
-<p>주문 번호: "[[${order.merchantUid}]]"</p>
-<p>결제 금액: "[[${order.amount}]]" 원</p>
-<p>결제 상태: "[[${order.status}]]"</p>
+<p>주문 번호: "[[${order.id}]]"</p>
+<p>결제 금액: "[[${order.totalAmount}]]" 원</p>
+<p>결제 상태: "[[${order.orderStatus}]]"</p>
+<p>결제 상태: "[[${order.orderDate}]]"</p>
+<p>결제 상태: "[[${order.member}]]"</p>
+<p>결제 상태: "[[${order.orderItems}]]"</p>
+<p>결제 상태: "[[${order.payments}]]"</p>
 <p>주문이 완료되었습니다. 감사합니다!</p>
 <a th:href="@{/}">확인</a>
 </body>

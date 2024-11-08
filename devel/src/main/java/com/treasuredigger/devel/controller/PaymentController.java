@@ -63,14 +63,19 @@ public class PaymentController {
             if (payment != null && "paid".equals(payment.getStatus())) {
                 // 결제 성공 처리
                 log.info("결제 성공 - 주문 번호: {}, 상태: {}, 금액: {}", payment.getMerchantUid(), payment.getStatus(), payment.getAmount());
-                BidItem bidItem = orderService.getBidItemByOrderId(902L);
+                String merchantUid = payment.getMerchantUid();
+                String orderIdString = merchantUid.substring(6); // "order_" 이후의 부분을 가져옴
+
+                Long orderId = Long.parseLong(orderIdString); // 숫자 부분을 Long으로 변환
+                BidItem bidItem = orderService.getBidItemByOrderId(orderId);
                 String bidItemId = bidItem.getBidItemId();
                 long bidNowPrice = bidItem.getMaxPrice();
                 Member member =  memberService.findMemberByMid(principal.getName());
                 Long mid = member.getId();
 
                 bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
-                model.addAttribute("payment", paymentResponse.getResponse());
+                model.addAttribute("payment", payment);
+                System.out.println("kkkkkkkkkkkkkkkkkkkkk" + payment);
                 return "payment/paymentSuccess";  // 결제 성공 템플릿
             } else {
                 // 결제 실패 처리
