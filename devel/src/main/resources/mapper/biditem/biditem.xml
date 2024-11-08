@@ -115,4 +115,13 @@
 
     </select>
 
+    <select id="getSuccessfulBid" resultType="com.treasuredigger.devel.dto.BidDto">
+        select max(bt.bid_reg_price) as bidregprice,
+        m.email as email,
+        m.mid as mid
+        from bids_tbl bt join `member` m on bt.member_id = m.member_id
+        WHERE bt.bid_item_id = #{bidItemId}
+    </select>
+
+
 </mapper>

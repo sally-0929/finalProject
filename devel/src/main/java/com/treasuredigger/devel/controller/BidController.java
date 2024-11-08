@@ -7,7 +7,7 @@ import com.treasuredigger.devel.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,8 +48,7 @@ public class BidController {
 
     private final OrderService orderService;
 
-    @Qualifier("taskScheduler")
-    private final TaskScheduler taskScheduler;
+
 
     @GetMapping("/list")
     public void bidlist(Model model, @RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -121,9 +120,7 @@ public class BidController {
 
         try {
             bidItemService.saveItem(BiditemFormDto, itemImgFileList, email);
-            LocalDateTime bidEndDate = BiditemFormDto.getBidEndDate();
-            Runnable task = runTask();
-            taskScheduler.schedule(task, Instant.from(bidEndDate));
+
 
         } catch (Exception e){
             e.printStackTrace();
@@ -221,11 +218,7 @@ public class BidController {
 
     }
 
-    private Runnable runTask() {
-        return () -> {
-            log.info("낙찰된 사람한테 메일 발송하는 로직 ");
-        };
-    }
+
 
 
 

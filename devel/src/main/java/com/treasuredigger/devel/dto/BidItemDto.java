@@ -34,6 +34,7 @@ public class BidItemDto {
     private String mid;
     private String bino;
 
+
     private String cname;
     private String buyNowCheck;
 

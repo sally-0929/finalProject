@@ -26,6 +26,9 @@ public class BidDto {
 
     private long rownum;
 
+    private String email;
+    private String mid;
+
 
     private Member member;
 
