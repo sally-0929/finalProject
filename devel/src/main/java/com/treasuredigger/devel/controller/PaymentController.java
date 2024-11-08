@@ -63,6 +63,13 @@ public class PaymentController {
             if (payment != null && "paid".equals(payment.getStatus())) {
                 // 결제 성공 처리
                 log.info("결제 성공 - 주문 번호: {}, 상태: {}, 금액: {}", payment.getMerchantUid(), payment.getStatus(), payment.getAmount());
+                BidItem bidItem = orderService.getBidItemByOrderId(902L);
+                String bidItemId = bidItem.getBidItemId();
+                long bidNowPrice = bidItem.getMaxPrice();
+                Member member =  memberService.findMemberByMid(principal.getName());
+                Long mid = member.getId();
+
+                bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
                 model.addAttribute("payment", paymentResponse.getResponse());
                 return "payment/paymentSuccess";  // 결제 성공 템플릿
             } else {
@@ -135,7 +142,7 @@ public class PaymentController {
 //            PaymentDto paymentDto = convertToPaymentDtoFromOrder(order);
             // 모델에 주문 정보 추가
             model.addAttribute("order", order);
-            paymentService.saveOrder(paymentDto);
+            //paymentService.saveOrder(paymentDto);
 
             // 주문 확인 페이지로 이동
             return "payment/paymentSuccess";  // 주문 확인 페이지
