@@ -10,53 +10,86 @@
 
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
-
     <script th:inline="javascript">
+        function filterOrders(filterType) {
+            console.log("필터링 시작: " + filterType);
+
+            document.querySelectorAll('.order-wrapper').forEach(function(wrapper) {
+                // 각 주문 항목 초기화
+                wrapper.classList.remove('hidden');
+                let hasVisibleItems = false;
+
+                // 해당 wrapper 내 order-item을 필터링
+                wrapper.querySelectorAll('.order-item').forEach(function(item) {
+                    if (filterType === 'all') {
+                        item.classList.remove('hidden');
+                        hasVisibleItems = true;
+                    } else if (filterType === 'general' && item.getAttribute('order-type') === 'general') {
+                        item.classList.remove('hidden');
+                        hasVisibleItems = true;
+                    } else if (filterType === 'auction' && item.getAttribute('order-type') === 'auction') {
+                        item.classList.remove('hidden');
+                        hasVisibleItems = true;
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+
+                // visible한 항목이 없으면 상위 wrapper를 숨김
+                if (!hasVisibleItems) {
+                    wrapper.classList.add('hidden');
+                }
+            });
+        }
+
         function cancelOrder(orderId) {
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
             var url = "/order/" + orderId + "/cancel";
             var paramData = {
-                orderId : orderId,
+                orderId: orderId
             };
 
             var param = JSON.stringify(paramData);
 
             $.ajax({
-                url      : url,
-                type     : "POST",
-                contentType : "application/json",
-                data     : param,
-                beforeSend : function(xhr){
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                data: param,
+                beforeSend: function(xhr) {
                     /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
                     xhr.setRequestHeader(header, token);
                 },
-                dataType : "json",
-                cache   : false,
-                success  : function(result, status){
+                dataType: "json",
+                cache: false,
+                success: function(result, status) {
                     alert("주문이 취소 되었습니다.");
-                    location.href='/orders/' + [[${page}]];
+                    location.href = '/orders/' + [[${page}]];
                 },
-                error : function(jqXHR, status, error){
-                    if(jqXHR.status == '401'){
+                error: function(jqXHR, status, error) {
+                    if (jqXHR.status == '401') {
                         alert('로그인 후 이용해주세요');
-                        location.href='/members/login';
-                    } else{
+                        location.href = '/members/login';
+                    } else {
                         alert(jqXHR.responseText);
                     }
                 }
             });
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
+            // 기본 필터링: 전체보기로 설정
+            filterOrders('all');
+
             // 가격 포맷팅 함수
             function formatNumberWithCommas(number) {
                 return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
 
             // 페이지 로드 시 모든 주문 항목 가격 포맷팅
-            $('.order-price').each(function () {
+            $('.order-price').each(function() {
                 var price = parseInt($(this).text().replace(/[^0-9]/g, ''));
                 if (!isNaN(price)) {
                     $(this).text(formatNumberWithCommas(price) + '원');
@@ -64,7 +97,6 @@
             });
         });
     </script>
-
 </th:block>
 
 <!-- 사용자 CSS 추가 -->
@@ -74,186 +106,190 @@
             width: 50%;
             margin: 0 auto;
             display: flex;
-            flex-direction: column; /* 세로로 요소 정렬 */
-            align-items: center; /* 자식 요소들 수평 중앙 정렬 */
+            flex-direction: column;
+            align-items: center;
         }
         .content h2 {
             align-self: flex-start;
         }
-        .repImgDiv{
-            margin-right:15px;
-            margin-left:15px;
-            height:auto;
+        .repImgDiv {
+            margin: 0 15px;
+            height: auto;
         }
-        .repImg{
-            height:100px;
-            width:100px;
+        .repImg {
+            height: 100px;
+            width: 100px;
             object-fit: contain;
             object-position: center;
-            border:1px solid lightgray;
+            border: 1px solid lightgray;
         }
-        .card{
-            width:800px;
-            height:100%;
-            padding:10px;
-            margin-bottom:20px;
+        .card {
+            width: 800px;
+            padding: 10px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s ease;
         }
         .card:hover {
-            transform: translateY(-5px); /* 카드 호버 시 살짝 떠오르는 효과 */
+            transform: translateY(-5px);
         }
-        .fs18{
-            font-size:18px
+        .fs18 {
+            font-size: 18px;
         }
-        .fs24{
-            font-size:24px
+        .fs24 {
+            font-size: 24px;
         }
         .pagination .page-link {
             color: black;
             background-color: transparent;
             border: none;
-            border-radius: 6px; /* 네모 모양에 약간 둥근 모서리 */
-            width: 30px; /* 버튼의 너비 고정 */
-            height: 30px; /* 버튼의 높이 고정 */
+            border-radius: 6px;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0; /* 패딩 제거 */
-            margin: 0 2px; /* 좌우 간격을 위한 약간의 마진 */
-            font-size: 1rem; /* 아이콘 크기 조정 */
+            margin: 0 2px;
+            font-size: 1rem;
         }
 
         .pagination .page-item.active .page-link {
-            background-color: black; /* 활성화된 페이지 배경 색상 */
-            color: white; /* 활성화된 페이지 텍스트 색상 */
-            border-radius: 6px; /* 약간 둥근 모서리 */
+            background-color: black;
+            color: white;
+            border-radius: 6px;
         }
 
         .pagination .page-link:hover {
             background-color: rgba(0, 0, 0, 0.1);
             color: black;
-            border-radius: 6px; /* 네모 유지 */
         }
 
         .pagination .page-link:focus {
-            box-shadow: none; /* 포커스 시 기본 강조 제거 */
+            box-shadow: none;
         }
 
-        /* Previous / Next 화살표에도 동일한 스타일 적용 */
-        .pagination .page-item .page-link {
-            padding: 6px 10px;
-        }
         .btn-outline-secondary {
-            color: #555;
-            background-color: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            padding: 0 12px; /* 양쪽에만 여백 추가 */
-            height: 30px; /* 버튼의 높이를 명확히 설정 */
-            display: flex;
-            align-items: center; /* 세로 중앙 정렬 */
-            justify-content: center; /* 가로 중앙 정렬 */
+            color: #333;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            padding: 0 15px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            outline: none;
         }
 
         .btn-outline-secondary:hover {
-            background-color: #333;
+            background-color: #555;
             color: white;
-            border-color: #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-color: #555;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
         }
 
-        .btn-outline-secondary:active {
-            background-color: #555;
-            border-color: #555;
-            box-shadow: none;
+        .btn-outline-secondary:focus {
+            outline: none;
         }
+
         .order-item:not(:last-child) {
-            border-bottom: 1px solid #e0e0e0; /* 아주 얕은 회색 구분선 */
+            border-bottom: 1px solid #e0e0e0;
             padding-bottom: 10px;
             margin-bottom: 10px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-buttons button {
+            margin: 0 5px;
+            padding: 7px 15px;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            color: #333;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+
+        .filter-buttons button:focus {
+            outline: none; /* 포커스 스타일 제거 */
+        }
+
+        .filter-buttons button:hover {
+            background: linear-gradient(135deg, #ddd, #ccc);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Hidden 클래스 추가 */
+        .hidden {
+            display: none !important;
         }
     </style>
 </th:block>
 
 <div layout:fragment="content" class="content">
-    <div style="width: 800px; text-align: left;">
-        <h2 class="mb-4">구매내역</h2>
+    <div class="filter-buttons">
+        <button onclick="filterOrders('all')">전체보기</button>
+        <button onclick="filterOrders('general')">일반상품</button>
+        <button onclick="filterOrders('auction')">경매상품</button>
     </div>
-    <div th:each="order : ${orders.getContent()}">
+
+    <div class="order-wrapper" th:each="order : ${orders.getContent()}">
         <div class="d-flex align-self-center">
             <h6 th:text="${order.orderDate} + ' 주문'"></h6>
             <div class="ml-3">
                 <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" th:value="${order.orderId}" onclick="cancelOrder(this.value)" style="height: 25px; line-height: 1; font-size: 1em; margin-bottom:5px">주문취소</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm"  th:value="${order.orderId}" onclick="cancelOrder(this.value)">주문취소</button>
                 </th:block>
                 <th:block th:unless="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
                     <h6>(취소 완료)</h6>
                 </th:block>
             </div>
         </div>
+
         <div class="card d-flex">
-            <div th:each="orderItem : ${order.orderItemDtoList}" class="d-flex order-item">
+            <div th:each="orderItem : ${order.orderItemDtoList}" class="d-flex order-item"
+                 th:attr="order-type=${orderItem.itemId != null ? 'general' : 'auction'}">
                 <div class="repImgDiv">
-                    <img th:src="${orderItem.imgUrl}" class = "rounded repImg" th:alt="${orderItem.itemNm}">
+                    <img th:src="${orderItem.imgUrl}" class="rounded repImg" th:alt="${orderItem.itemNm}">
                 </div>
                 <div class="align-self-center w-75">
                     <div th:if="${orderItem.itemId != null}">
-                        <div>
-                            <span th:text="일반상품"></span>
-                        </div>
                         <a th:href="@{'/item/' + ${orderItem.itemId}}" style="text-decoration: none; color: inherit;">
-
-                            <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold" style="font-size:18px"></span>
-                            <div class="fs18 font-weight-bold">
-
+                            <span style="font-size:13px;" th:text="일반상품"></span><br>
+                            <span th:text="${orderItem.itemNm}" class="fs20 font-weight-bold"></span>
+                            <div class="fs15 font-weight-bold">
                                 <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
-                                <span th:text="${orderItem.count} +'개'"></span>
+                                <span th:text="${orderItem.count} + '개'"></span>
                             </div>
                         </a>
                     </div>
                     <div th:if="${orderItem.itemId == null}">
-                        <div>
-                            <span th:text="경매상품"></span>
-                        </div>
                         <a th:href="@{'/biditem/view/' + ${orderItem.bidItemId}}" style="text-decoration: none; color: inherit;">
-                            <span th:text="${orderItem.itemNm}" class="fs24 font-weight-bold" style="font-size:18px"></span>
-                            <div class="fs18 font-weight-bold">
+                            <span style="font-size:13px;" th:text="경매상품"></span><br>
+                            <span th:text="${orderItem.itemNm}" class="fs20 font-weight-bold"></span>
+                            <div class="fs15 font-weight-bold">
                                 <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
-                                <span th:text="${orderItem.count} +'개'"></span>
+                                <span th:text="${orderItem.count} + '개'"></span>
                             </div>
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
-    <div th:with="start=${(orders.number/maxPage)*maxPage + 1}, end=(${(orders.totalPages == 0) ? 1 : (start + (maxPage - 1) < orders.totalPages ? start + (maxPage - 1) : orders.totalPages)})" >
-        <ul class="pagination justify-content-center">
-
-            <li class="page-item" th:classappend="${orders.number eq 0}?'disabled':''">
-                <a th:href="@{'/orders/' + ${orders.number-1}}" aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'> < </span>
-                </a>
-            </li>
-
-            <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${orders.number eq page-1}?'active':''">
-                <a th:href="@{'/orders/' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
-            </li>
-
-            <li class="page-item" th:classappend="${orders.number+1 ge orders.totalPages}?'disabled':''">
-                <a th:href="@{'/orders/' + ${orders.number+1}}" aria-label='Next' class="page-link">
-                    <span aria-hidden='true'> > </span>
-                </a>
-            </li>
-
-        </ul>
-    </div>
-
 </div>
-
 </html>
