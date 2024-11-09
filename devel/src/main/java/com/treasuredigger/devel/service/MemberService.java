@@ -2,7 +2,9 @@ package com.treasuredigger.devel.service;
 
 import com.treasuredigger.devel.constant.Role;
 import com.treasuredigger.devel.entity.Member;
+import com.treasuredigger.devel.entity.Order;
 import com.treasuredigger.devel.repository.MemberRepository;
+import com.treasuredigger.devel.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +22,8 @@ import java.util.Optional;
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+
+    private final OrderRepository orderRepository;
 
     public Member saveMember(Member member) {
         validateDuplicateMember(member);
@@ -61,6 +66,13 @@ public class MemberService implements UserDetailsService {
 
     public void deleteMember(String mid) {
         Member member = findMemberByMid(mid);
+
+        // 연관된 주문의 회원 정보를 null로 설정
+        List<Order> orders = member.getOrders();
+        for (Order order : orders) {
+            order.setMember(null); orderRepository.save(order);
+        }
+
         if (member == null) {
             throw new IllegalStateException("존재하지 않는 회원입니다.");
         }

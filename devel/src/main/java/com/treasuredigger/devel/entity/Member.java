@@ -52,7 +52,7 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // BidItem와의 관계
     private List<BidItem> bidItems;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // order와의 관계
+    @OneToMany(mappedBy = "member") // order와의 관계
     private List<Order> orders;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // inquirys와의 관계
