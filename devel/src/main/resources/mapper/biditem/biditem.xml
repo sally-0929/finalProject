@@ -50,7 +50,7 @@
     <select id="selectBidList" resultType="com.treasuredigger.devel.dto.BidItemDto">
         <include refid="BaseBidItemQuery" />
         <if test="auctionStatus != 'END'">
-        AND btt.bid_end_date > now()
+            AND btt.item_status !='END'
         </if>
 
         <if test="cid != null and cid != ''">
