@@ -323,7 +323,24 @@
                         <span class="card-title text-danger" style="font-size:10px" th:attr="data-enddate=${item.bidEndDate}"></span>
                         <p style="font-size:16px; margin-bottom:0 !important" th:id="'remainingTime-' + ${item.bidItemId}">남은 시간 계산 중...</p>
 
-                        <span class="card-title" style="font-size:12px">판매자 : [[${item.memberId}]]
+                        판매자 <span class="sellerInfo" style="font-weight:bold" th:text="${item.memberId}">
+                        </span>
+
+                        <div class="sellerEmail" style="display:none;" th:text="${item.email}"></div>
+
+                        <script> document.addEventListener("DOMContentLoaded", function() {
+                        const sellerInfoElements = document.querySelectorAll('.sellerInfo');
+                        const sellerEmailElements = document.querySelectorAll('.sellerEmail');
+
+                        sellerInfoElements.forEach(function(sellerInfoElement, index) {
+                            const sellerEmailElement = sellerEmailElements[index];
+                            if (isNumeric(sellerInfoElement.textContent) || sellerInfoElement.textContent.length >= 30) {
+                             console.log('조건만족'); sellerInfoElement.textContent = sellerEmailElement.textContent;
+                            }
+                            });
+                        });
+                            function isNumeric(value) { return /^\d+$/.test(value); }
+                        </script>
 
                         <img style="width:17px;" th:if="${item.mgst != null and item.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
                         <img style="width:17px;" th:if="${item.mgst != null and item.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />

@@ -33,6 +33,7 @@ public class BidItemDto {
     private String mgst;
     private String mid;
     private String bino;
+    private String email;
 
 
     private String cname;

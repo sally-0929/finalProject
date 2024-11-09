@@ -26,6 +26,9 @@
         (SELECT count(bt.bid_reg_price)
         FROM bids_tbl bt
         WHERE bt.bid_item_id = btt.bid_item_id) AS bidcount,
+        (SELECT m.email
+        FROM `member` m
+        WHERE m.member_id = btt.member_id) AS email,
         mg.mgid AS mgId,
         mg.member_grade_status AS mgst,
         (SELECT bt.buy_now_check
@@ -107,8 +110,10 @@
         bt.reg_time AS regtime,
         bt.bid_reg_price AS bidregprice,
         bt.created_by AS createdBy,
-        bt.bid_item_id AS biditemid
-        FROM bids_tbl bt
+        bt.bid_item_id AS biditemid,
+        bt.member_id,
+        m.email as email
+        FROM bids_tbl bt join `member` m  on bt.member_id = m.member_id
         WHERE bt.bid_item_id = #{bidItemId}
         ) subquery
         WHERE subquery.rownum > 0

@@ -448,7 +448,7 @@
                                             '<tr>' +
                                             '<td>' + bid.rownum + '</td>' +
                                             '<td>' + bid.bidRegPrice.toLocaleString('ko-KR') + '원</td>' +
-                                            '<td>' + bid.createdBy + '</td>' +
+                                            '<td>' + (isNumeric(bid.createdBy) || bid.createdBy.length >= 30 ? bid.email : bid.createdBy) + '</td>' +
                                             '<td>' + moment(bid.regtime).format('YYYY-MM-DD HH:mm:ss') + '</td>' +
                                             '</tr>'
                                         );
@@ -463,6 +463,8 @@
                             });
                         });
                     });
+
+                    function isNumeric(value) { return /^\d+$/.test(value); }
                 </script>
 
 
@@ -603,7 +605,22 @@
                         if (bidStartDate > today) { startDateElement.style.color = 'red'; }
                     });
                 </script>
-                판매자 <span style="font-weight:bold" th:text="${biditem.memberId}"></span>
+
+                판매자 <span id="sellerInfo" style="font-weight:bold" th:text="${biditem.memberId}">
+                        </span>
+
+                <div id="sellerEmail" style="display:none;" th:text="${biditem.email}"></div>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                    const sellerInfoElement = document.getElementById('sellerInfo');
+                    const sellerEmailElement = document.getElementById('sellerEmail');
+                   if (isNumeric(sellerInfoElement.textContent) || sellerInfoElement.textContent.length >= 30) {
+                   sellerInfoElement.textContent = sellerEmailElement.textContent;
+                   }
+                    });
+                    function isNumeric(value) { return /^\d+$/.test(value); }
+                </script>
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
