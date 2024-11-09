@@ -575,19 +575,32 @@
                         setInterval(updateRemainingTime, 1000);
                     });
                 </script>
-
+                시작기한
+                <div id="formattedStartDate" th:text="${biditem.bidStartDate}" style="margin-bottom:10px;"></div>
 
                 마감기한
                 <div id="formattedEndDate" th:text="${biditem.bidEndDate}" style="margin-bottom:10px;"></div>
                 <script>
                     document.addEventListener("DOMContentLoaded", function() {
                         const bidEndDateStr = "[[${biditem.bidEndDate}]]";
+                        const bidStartDateStr = "[[${biditem.bidStartDate}]]";
                         const bidEndDate = new Date(bidEndDateStr);
+                        const bidStartDate = new Date(bidStartDateStr);
+
 
                         const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
                         const formattedEndDate = new Intl.DateTimeFormat('ko-KR', options).format(bidEndDate);
+                        const formattedStartDate = new Intl.DateTimeFormat('ko-KR', options).format(bidStartDate);
+                        const startDateElement = document.getElementById('formattedStartDate');
+
 
                         document.getElementById('formattedEndDate').textContent = formattedEndDate;
+                        document.getElementById('formattedStartDate').textContent = formattedStartDate;
+
+                        const today = new Date();
+                        today.setHours(0,0,0,0);
+
+                        if (bidStartDate > today) { startDateElement.style.color = 'red'; }
                     });
                 </script>
                 판매자 <span style="font-weight:bold" th:text="${biditem.memberId}"></span>
