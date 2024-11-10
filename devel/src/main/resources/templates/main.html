@@ -169,6 +169,17 @@
             transition: color 0.3s;
             color:red;
         }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            30% { transform: translateY(-15px); }
+            60% { transform: translateY(5px); }
+            100% { transform: translateY(0); }
+        }
+
+        .price-digit {
+            display: inline-block;
+            animation: bounce 0.5s ease forwards;
+        }
     </style>
 </th:block>
 
@@ -277,9 +288,34 @@
         document.addEventListener("DOMContentLoaded", function() {
             const priceElements = document.querySelectorAll('.card-title.text-danger span');
 
-            priceElements.forEach(function(element) {
-                const price = parseInt(element.textContent, 10);
-                element.textContent = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            // 애니메이션 함수
+            function animatePrice(element) {
+                const targetPrice = parseInt(element.textContent.replace(/,/g, ''), 10);
+                const formattedPrice = targetPrice.toLocaleString();
+                element.textContent = ""; // 기존 텍스트 초기화
+
+                formattedPrice.split('').forEach((digit, index) => {
+                    const digitSpan = document.createElement('span');
+                    digitSpan.classList.add('price-digit');
+                    digitSpan.textContent = digit;
+                    digitSpan.style.animationDelay = `${index * 0.1}s`; // 지연 시간 추가
+                    element.appendChild(digitSpan);
+                });
+            }
+
+            // Intersection Observer 설정
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animatePrice(entry.target); // 애니메이션 실행
+                        observer.unobserve(entry.target); // 한 번 실행 후 관찰 중지
+                    }
+                });
+            }, { threshold: 0.5 }); // 요소가 50% 이상 보일 때 트리거
+
+            // 모든 가격 요소를 관찰 대상으로 설정
+            priceElements.forEach(element => {
+                observer.observe(element);
             });
         });
 
