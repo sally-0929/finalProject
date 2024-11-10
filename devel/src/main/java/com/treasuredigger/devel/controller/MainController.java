@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
@@ -30,9 +31,9 @@ public class MainController {
     private final WishlistService wishlistService;
 
     @GetMapping(value = "/")
-    public String main(ItemSearchDto itemSearchDto, Optional<Integer> page, Optional<String> cid, Model model, Authentication authentication) {
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 15);
-
+    public String main(ItemSearchDto itemSearchDto, Optional<Integer> page, @RequestParam("size") Optional<Integer> size, Optional<String> cid, Model model, Authentication authentication) {
+        int pageSize = size.orElse(20);
+        Pageable pageable = PageRequest.of(page.orElse(0), pageSize);
         Page<MainItemDto> items;
         if (cid.isPresent()) {
             items = itemService.getMainItemPageByCategory(cid.get(), itemSearchDto, pageable); // 카테고리별 항목 조회
@@ -42,7 +43,6 @@ public class MainController {
 
         model.addAttribute("items", items);
         model.addAttribute("itemSearchDto", itemSearchDto);
-        model.addAttribute("maxPage", 5);
 
         // 각 아이템의 판매 상태를 추가
         for (MainItemDto item : items) {
@@ -60,6 +60,24 @@ public class MainController {
 
         return "main";
     }
+    @GetMapping(value = "/loadItems")
+    public String loadItems(@RequestParam("page") int page,
+                            @RequestParam("size") Optional<Integer> size,
+                            @RequestParam("cid") Optional<String> cid,
+                            ItemSearchDto itemSearchDto, Model model) {
+        int pageSize = size.orElse(20);
+        Pageable pageable = PageRequest.of(page, pageSize);
 
+        Page<MainItemDto> items;
+        if (cid.isPresent()) {
+            items = itemService.getMainItemPageByCategory(cid.get(), itemSearchDto, pageable);
+        } else {
+            items = itemService.getMainItemPage(itemSearchDto, pageable);
+        }
+        items.forEach(item -> item.setItemSellStatus(itemService.getItemSellStatus(item.getId())));
+        model.addAttribute("items", items);
+
+        return "main :: #item-container"; // 추가 항목을 렌더링할 부분 뷰 리턴
+    }
 
 }

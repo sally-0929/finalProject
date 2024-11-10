@@ -94,41 +94,6 @@
             color: #fff;
             line-height: 1.2;
         }
-        .pagination .page-link {
-            color: black;
-            background-color: transparent;
-            border: none;
-            border-radius: 50%;
-            width: 30px; /* 버튼의 너비 고정 */
-            height: 30px; /* 버튼의 높이 고정 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0; /* 패딩 제거 */
-            margin: 0 2px; /* 좌우 간격을 위한 약간의 마진 */
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: black; /* 활성화된 페이지 배경 색상 */
-            color: white; /* 활성화된 페이지 텍스트 색상 */
-            border-radius: 6px; /* 약간 둥근 모서리 */
-        }
-
-        .pagination .page-link:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-            color: black;
-            border-radius: 6px; /* 네모 유지 */
-        }
-
-        .pagination .page-link:focus {
-            box-shadow: none; /* 포커스 시 기본 강조 제거 */
-        }
-
-        /* < > 화살표에도 동일한 스타일 적용 */
-        .pagination .page-item .page-link {
-            padding: 6px 10px;
-        }
-
         .wishlist-container img {
             transition: filter 0.3s ease;
         }
@@ -168,6 +133,46 @@
             font-size: 50px;
             transition: color 0.3s;
             color:red;
+        }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            30% { transform: translateY(-15px); }
+            60% { transform: translateY(5px); }
+            100% { transform: translateY(0); }
+        }
+
+        .price-digit {
+            display: inline-block;
+            animation: bounce 0.5s ease forwards;
+        }
+
+        /* 무한 스크롤 앵커 */
+        #scroll-anchor {
+            width: 100%;
+            height: 50px;
+        }
+
+        .dot {
+            opacity: 0;
+            animation: dot-blink 1s infinite;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes dot-blink {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
         }
     </style>
 </th:block>
@@ -250,7 +255,7 @@
             </div>
         </button>
     </div>
-    <div class="row">
+    <div class="row" id="item-container">
         <th:block th:each="item : ${items.getContent()}">
             <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
                 <div class="card" style="border:none">
@@ -273,16 +278,88 @@
             </div>
         </th:block>
     </div>
+    <div id="loading-indicator" style="text-align: center; font-size: 50px; color: gray; display: none;">
+        <span class="dot">.</span>
+        <span class="dot">.</span>
+        <span class="dot">.</span>
+    </div>
+    <div id="scroll-anchor"></div> <!-- 무한 스크롤을 위한 앵커 요소 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const priceElements = document.querySelectorAll('.card-title.text-danger span');
+            let pageNumber = 1; // 시작 페이지 번호
+            const scrollAnchor = document.getElementById('scroll-anchor');
+            const itemContainer = document.getElementById('item-container');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            let loading = false;
 
-            priceElements.forEach(function(element) {
-                const price = parseInt(element.textContent, 10);
-                element.textContent = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            const observer = new IntersectionObserver(async (entries) => {
+                if (entries[0].isIntersecting && !loading) {
+                    loading = true;
+                    loadingIndicator.style.display = 'block';
+
+                    // 2초 지연 후에 로딩 시작
+                    setTimeout(async () => {
+                        await loadMoreItems();
+                        loadingIndicator.style.display = 'none';
+                        loading = false;
+                    }, 2000);
+                }
             });
-        });
 
+            observer.observe(scrollAnchor);
+
+            async function loadMoreItems() {
+                try {
+                    const response = await fetch(`/loadItems?page=${pageNumber}&size=20`);
+                    const newItemsHtml = await response.text();
+
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = newItemsHtml;
+                    const newItems = tempDiv.querySelectorAll('.col.margin');
+                    newItems.forEach(item => itemContainer.appendChild(item));
+
+                    pageNumber++;
+                    animatePrices(); // 새로 로드된 아이템 가격에 애니메이션 적용
+                } catch (error) {
+                    console.error("추가 아이템 로드 중 오류 발생:", error);
+                }
+            }
+
+            const animateObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const priceElement = entry.target.querySelector('.card-title.text-danger span');
+                        if (!priceElement.classList.contains('animated')) {
+                            animatePrice(priceElement);
+                            priceElement.classList.add('animated'); // 애니메이션 완료 후 'animated' 클래스 추가
+                        }
+                        animateObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            function animatePrice(element) {
+                const targetPrice = parseInt(element.textContent.replace(/,/g, ''), 10);
+                const formattedPrice = targetPrice.toLocaleString();
+                element.textContent = "";
+
+                formattedPrice.split('').forEach((digit, index) => {
+                    const digitSpan = document.createElement('span');
+                    digitSpan.classList.add('price-digit');
+                    digitSpan.textContent = digit;
+                    digitSpan.style.animationDelay = `${index * 0.1}s`;
+                    element.appendChild(digitSpan);
+                });
+            }
+
+            function animatePrices() {
+                document.querySelectorAll('.col.margin').forEach(element => {
+                    animateObserver.observe(element);
+                });
+            }
+
+            animatePrices();
+        });
         function scrollToHeader() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -297,25 +374,4 @@
             alert(message);  // 유효한 메시지가 있을 경우만 알림을 띄움
         }
     </script>
-    <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})" >
-        <ul class="pagination justify-content-center">
-
-            <li class="page-item" th:classappend="${items.number eq 0}?'disabled':''">
-                <a th:href="@{'/' + '?searchQuery=' + ${itemSearchDto.searchQuery} + '&page=' + ${items.number-1}}" aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'> < </span>
-                </a>
-            </li>
-
-            <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${items.number eq page-1}?'active':''">
-                <a th:href="@{'/' +'?searchQuery=' + ${itemSearchDto.searchQuery} + '&page=' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
-            </li>
-
-            <li class="page-item" th:classappend="${items.number+1 ge items.totalPages}?'disabled':''">
-                <a th:href="@{'/' +'?searchQuery=' + ${itemSearchDto.searchQuery} + '&page=' + ${items.number+1}}" aria-label='Next' class="page-link">
-                    <span aria-hidden='true'> > </span>
-                </a>
-            </li>
-
-        </ul>
-    </div>
 </div>

@@ -218,21 +218,22 @@
             </tbody>
         </table>
 
-        <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})" >
+        <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})">
             <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${items.first}?'disabled'">
-                    <a th:onclick="'javascript:page(' + ${items.number - 1} + ')'" aria-label='Previous' class="page-link">
-                        <span aria-hidden='true'> < </span>
+                <li class="page-item" th:classappend="${items.first} ? 'disabled'">
+                    <a th:href="@{/admin/items/{page}(page=${items.number - 1})}" aria-label="Previous" class="page-link">
+                        <span aria-hidden="true">&lt;</span>
                     </a>
                 </li>
 
-                <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${items.number eq page-1}?'active':''">
-                    <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
+                <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
+                    th:classappend="${items.number eq page - 1} ? 'active' : ''">
+                    <a th:href="@{/admin/items/{page}(page=${page - 1})}" class="page-link">[[${page}]]</a>
                 </li>
 
-                <li class="page-item" th:classappend="${items.last}?'disabled'">
-                    <a th:onclick="'javascript:page(' + ${items.number + 1} + ')'" aria-label='Next' class="page-link">
-                        <span aria-hidden='true'> > </span>
+                <li class="page-item" th:classappend="${items.last} ? 'disabled'">
+                    <a th:href="@{/admin/items/{page}(page=${items.number + 1})}" aria-label="Next" class="page-link">
+                        <span aria-hidden="true">&gt;</span>
                     </a>
                 </li>
             </ul>

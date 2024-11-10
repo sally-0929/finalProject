@@ -330,7 +330,8 @@
         }
         .floating-container {
             position: fixed;
-            left: -300px;
+            width:370px;
+            left: -370px;
             bottom: 40%;
             transition: left 0.5s ease-in-out;
             z-index: 10000;
@@ -366,7 +367,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">수량</span>
                     </div>
-                    <input type="number" id="floatingCountInput" class="form-control text-right" style="margin-left: auto;" min="1" value="1">
+                    <input type="number" id="floatingCountInput" class="form-control text-left" style="margin-left: auto;" min="1" value="1">
                 </div>
                 <div class="mb-3">
                     남은 재고 : <span id="floatingCountDisplay"></span>개<br>
