@@ -156,11 +156,12 @@ public class BidController {
         log.info("mid " + mid);
 
 
-        //결재가 완료 되어야 그 후에 즉시구매한 값으로 수정 (선수작업 결재)
+        // 일반 입찰을 했을 경우 bid에 저장하는 로직
         if (buyNowCheck != null && buyNowCheck.trim().equals("N")) {
             bidService.saveBid(bidItemId, mid, bidNowPrice, buyNowCheck);
             return  new ResponseEntity<String>("Bid placed successfully", HttpStatus.OK);
         }else {
+            //즉시 구매했을경우 결재까지 성공해야 입찰테이블에 그 금액이 저장됨
             Long orderId =  orderService.orderBidItem(bidItemId, principal.getName());
             return new ResponseEntity<Long>(orderId, HttpStatus.OK);
         }

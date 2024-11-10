@@ -69,6 +69,21 @@ public class OrderService {
 
         }
 
+    public Long orderBidItem(String bidItemId, String mid, long bidPrice) {
+        BidItem bidItem = bidItemRepository.findById(bidItemId) .orElseThrow(EntityNotFoundException::new);
+        Member member = memberRepository.findByMid(mid);
+        List<OrderItem> orderItemList = new ArrayList<>();
+        bidItem.setMaxPrice(bidPrice);
+        OrderItem orderItem = OrderItem.createOrderBidItem(bidItem);
+        orderItemList.add(orderItem);
+        Order order = Order.createOrder(member, orderItemList);
+        orderRepository.save(order);
+        // 주문 후 회원 등급 갱신
+        memberGradeService.incrementMgdesc(member);
+        return order.getId();
+
+    }
+
 
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getOrderList(String email, Pageable pageable) {

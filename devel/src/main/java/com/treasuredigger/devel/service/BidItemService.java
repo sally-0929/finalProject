@@ -189,7 +189,7 @@ public class BidItemService {
         return () -> {
             BidDto bidDto =  bidItemMapper.getSuccessfulBid(bidItemId);
             //order로 옮겨주는 로직 필요
-            Long orderId =  orderService.orderBidItem(bidItemId, bidDto.getMid());
+            Long orderId =  orderService.orderBidItem(bidItemId, bidDto.getMid(), bidDto.getBidRegPrice());
 
 
             String htmlContent = "<html>" + "<body>" + "<h1>축하드립니다 !! 낙찰성공 안내 메시지</h1>"

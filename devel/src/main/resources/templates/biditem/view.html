@@ -448,7 +448,7 @@
                                             '<tr>' +
                                             '<td>' + bid.rownum + '</td>' +
                                             '<td>' + bid.bidRegPrice.toLocaleString('ko-KR') + '원</td>' +
-                                            '<td>' + bid.createdBy + '</td>' +
+                                            '<td>' + (isNumeric(bid.createdBy) || bid.createdBy.length >= 30 ? bid.email : bid.createdBy) + '</td>' +
                                             '<td>' + moment(bid.regtime).format('YYYY-MM-DD HH:mm:ss') + '</td>' +
                                             '</tr>'
                                         );
@@ -463,6 +463,8 @@
                             });
                         });
                     });
+
+                    function isNumeric(value) { return /^\d+$/.test(value); }
                 </script>
 
 
@@ -575,22 +577,50 @@
                         setInterval(updateRemainingTime, 1000);
                     });
                 </script>
-
+                시작기한
+                <div id="formattedStartDate" th:text="${biditem.bidStartDate}" style="margin-bottom:10px;"></div>
 
                 마감기한
                 <div id="formattedEndDate" th:text="${biditem.bidEndDate}" style="margin-bottom:10px;"></div>
                 <script>
                     document.addEventListener("DOMContentLoaded", function() {
                         const bidEndDateStr = "[[${biditem.bidEndDate}]]";
+                        const bidStartDateStr = "[[${biditem.bidStartDate}]]";
                         const bidEndDate = new Date(bidEndDateStr);
+                        const bidStartDate = new Date(bidStartDateStr);
+
 
                         const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
                         const formattedEndDate = new Intl.DateTimeFormat('ko-KR', options).format(bidEndDate);
+                        const formattedStartDate = new Intl.DateTimeFormat('ko-KR', options).format(bidStartDate);
+                        const startDateElement = document.getElementById('formattedStartDate');
+
 
                         document.getElementById('formattedEndDate').textContent = formattedEndDate;
+                        document.getElementById('formattedStartDate').textContent = formattedStartDate;
+
+                        const today = new Date();
+                        today.setHours(0,0,0,0);
+
+                        if (bidStartDate > today) { startDateElement.style.color = 'red'; }
                     });
                 </script>
-                판매자 <span style="font-weight:bold" th:text="${biditem.memberId}"></span>
+
+                판매자 <span id="sellerInfo" style="font-weight:bold" th:text="${biditem.memberId}">
+                        </span>
+
+                <div id="sellerEmail" style="display:none;" th:text="${biditem.email}"></div>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                    const sellerInfoElement = document.getElementById('sellerInfo');
+                    const sellerEmailElement = document.getElementById('sellerEmail');
+                   if (isNumeric(sellerInfoElement.textContent) || sellerInfoElement.textContent.length >= 30) {
+                   sellerInfoElement.textContent = sellerEmailElement.textContent;
+                   }
+                    });
+                    function isNumeric(value) { return /^\d+$/.test(value); }
+                </script>
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'NORMAL'}" th:src="@{/images/bronze.png}" alt="Normal" />
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'SILVER'}" th:src="@{/images/silver.png}" alt="silver" />
                 <img style="width:20px;" th:if="${biditem.mgst != null and biditem.mgst == 'GOLD'}" th:src="@{/images/gold.png}" alt="gold" />
