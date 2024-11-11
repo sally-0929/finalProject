@@ -34,8 +34,8 @@
   </thead>
   <tbody>
   <tr th:each="orderItem : ${orderItems}">
-    <td th:text="${orderItem.biditem.bidItemName}"></td> <!-- 상품명 -->
-<!--    <td th:text="${orderItem.item.itemNm}"></td> &lt;!&ndash; 상품명 &ndash;&gt;-->
+    <td th:text="${orderItem.biditem != null and orderItem.biditem.bidItemName != null ? orderItem.biditem.bidItemName : orderItem.item != null and orderItem.item.itemNm != null ? orderItem.item.itemNm : '상품명이 없습니다'}"></td>
+
     <td th:text="${orderItem.orderPrice}"></td> <!-- 가격 -->
     <td th:text="${orderItem.count}"></td> <!-- 수량 -->
     <td th:text="${orderItem.getTotalPrice()}"></td> <!-- 총 금액 -->
