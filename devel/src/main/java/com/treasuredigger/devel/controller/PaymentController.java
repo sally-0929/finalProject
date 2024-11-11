@@ -3,6 +3,7 @@ package com.treasuredigger.devel.controller;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import com.treasuredigger.devel.constant.OrderStatus;
 import com.treasuredigger.devel.dto.PaymentDto;
 import com.treasuredigger.devel.entity.BidItem;
 import com.treasuredigger.devel.entity.Member;
@@ -68,14 +69,21 @@ public class PaymentController {
                 String orderIdString = merchantUid.substring(6); // "order_" 이후의 부분을 가져옴
 
                 Long orderId = Long.parseLong(orderIdString); // 숫자 부분을 Long으로 변환
-                BidItem bidItem = orderService.getBidItemByOrderId(orderId);
-                String bidItemId = bidItem.getBidItemId();
-                long bidNowPrice = bidItem.getMaxPrice();
-                Member member =  memberService.findMemberByMid(principal.getName());
-                Long mid = member.getId();
+                orderService.changeOrderStatus(orderId, OrderStatus.PAYMENT_COMPLETED);
 
-                bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
-                return new ResponseEntity<>("success",HttpStatus.OK);  // 결제 성공 템플릿
+                try {
+                    BidItem bidItem = orderService.getBidItemByOrderId(orderId);
+                    String bidItemId = bidItem.getBidItemId();
+                    long bidNowPrice = bidItem.getMaxPrice();
+                    Member member =  memberService.findMemberByMid(principal.getName());
+                    Long mid = member.getId();
+
+                    bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
+                    return new ResponseEntity<>("success",HttpStatus.OK);  // 결제 성공 템플릿
+                }catch (Exception e){
+                    return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿
+                }
+
             } else {
                 // 결제 실패 처리
                 log.info("결제 실패 - 주문 번호: {}, 상태: {}", payment.getMerchantUid(), payment.getStatus());
@@ -155,6 +163,8 @@ public class PaymentController {
             return "error";  // 에러 페이지
         }
     }
+
+
 
 //    private PaymentDto convertToPaymentDtoFromOrder(Order order) {
 //        PaymentDto paymentDto = new PaymentDto();

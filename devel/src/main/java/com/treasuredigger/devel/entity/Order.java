@@ -25,6 +25,7 @@ public class Order extends BaseEntity {
     private LocalDateTime orderDate; //주문일
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private OrderStatus orderStatus; //주문상태
 
     @Column(name = "total_amount")
