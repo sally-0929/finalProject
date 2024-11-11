@@ -12,10 +12,7 @@ import com.treasuredigger.devel.entity.OrderItem;  // OrderItem 추가
 import com.treasuredigger.devel.repository.ItemRepository;
 import com.treasuredigger.devel.repository.MemberRepository;
 import com.treasuredigger.devel.repository.OrderRepository;
-import com.treasuredigger.devel.service.BidService;
-import com.treasuredigger.devel.service.MemberService;
-import com.treasuredigger.devel.service.OrderService;
-import com.treasuredigger.devel.service.PaymentService;
+import com.treasuredigger.devel.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -44,6 +41,7 @@ public class PaymentController {
     private final BidService bidService;
     private final OrderService orderService;
     private final MemberService memberService;
+    private final BidItemService bidItemService;
 
     /**
      * 아임포트 결제 검증
@@ -79,6 +77,7 @@ public class PaymentController {
                     Long mid = member.getId();
 
                     bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
+                    bidItemService.updateItemStatuses();
                     return new ResponseEntity<>("success",HttpStatus.OK);  // 결제 성공 템플릿
                 }catch (Exception e){
                     return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿
