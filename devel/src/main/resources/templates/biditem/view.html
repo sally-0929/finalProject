@@ -661,7 +661,20 @@
                     },
                     success: function(result, response) {
                         var orderId = result;
-                        location.href = '/payments/paymentP?orderId=' + orderId;
+                        // 팝업 창의 크기 설정
+                        var width = 1000;
+                        var height = 700;
+
+                        // 브라우저 창의 내부 크기를 기준으로 중앙 위치 계산
+                        var left = (window.innerWidth - width) / 2 + window.screenX;
+                        var top = (window.innerHeight - height) / 2 + window.screenY;
+
+                        // 새 창으로 결제 페이지 열기 (중앙 위치 설정)
+                        var paymentWindow = window.open(
+                            '/payments/paymentP?orderId=' + orderId,
+                            'paymentPopup',
+                            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,noopener,noreferrer`
+                        );
 
 <!--                        var responseText = JSON.stringify(response);-->
 <!--                        console.log('response: ' + responseText);-->

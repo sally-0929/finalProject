@@ -6,91 +6,188 @@
   <meta name="_csrf" th:content="${_csrf.token}"/>
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   <title>결제 페이지</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f7f7f7;
+      margin: 0;
+      min-height: 100vh;
+      background-image: linear-gradient(135deg, #eaeaea 15%, transparent 15%, transparent 50%, #eaeaea 50%, #eaeaea 65%, transparent 65%, transparent),
+                      linear-gradient(135deg, #eaeaea 15%, transparent 15%, transparent 50%, #eaeaea 50%, #eaeaea 65%, transparent 65%, transparent);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px;
+    }
+    .container {
+      background-color: white;
+      width: 80%;
+      max-width: 600px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h2, h3 {
+      color: #555;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .order-info, .order-items {
+      margin-bottom: 30px;
+    }
+    .order-info p, .order-items p {
+      color: #666;
+      margin: 5px 0;
+    }
+    .order-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .order-item-card {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .order-item-card div {
+      flex: 1;
+      text-align: center;
+      font-size: 0.9em;
+    }
+    .order-item-card .item-name {
+      font-weight: bold;
+      color: #333;
+    }
+    .order-item-card .item-price, .order-item-card .item-total {
+      color: #007bff;
+    }
+    .total-amount {
+      text-align: center;
+      color: #333;
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+    .payment-buttons {
+      display: flex;
+      justify-content: center; /* 중앙 정렬 */
+      gap: 20px; /* 버튼 간격 조정 */
+    }
+    .payment-button {
+      background-color: transparent; /* 배경색 제거 */
+      border: none; /* 테두리 제거 */
+      padding: 0; /* 여백 제거 */
+      cursor: pointer; /* 클릭 가능 커서 */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width:200px;
+      transition: transform 0.3s, filter 0.3s; /* 크기와 밝기 전환 애니메이션 */
+    }
+
+    .payment-button img {
+      width: 100%; /* 이미지가 버튼 전체 크기를 차지하도록 설정 */
+      height: auto;
+      transition: transform 0.3s, filter 0.3s; /* 이미지 애니메이션 */
+    }
+    .payment-button:hover {
+      transform: scale(1.05); /* 버튼이 약간 확대 */
+      filter: brightness(1.1); /* 밝기를 10% 증가 */
+    }
+
+    .payment-button:hover img {
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 추가 */
+      border-radius: 8px; /* 이미지 가장자리 부드럽게 */
+    }
+  </style>
 </head>
 <body>
-<h1>결제 정보</h1>
+<div class="container">
+  <h1>결제 정보</h1>
 
-<!-- 주문 정보 출력 -->
-<div>
-  <h2>주문 정보</h2>
-  <p><strong>주문 번호:</strong> <span th:text="${order.id}"></span></p>
-  <p><strong>주문자:</strong> <span th:text="${order.member.name}"></span></p>
-  <p><strong>주문일:</strong> <span th:text="${order.orderDate}"></span></p>
-  <p><strong>주문 상태:</strong> <span th:text="${order.orderStatus}"></span></p>
+  <!-- 주문 정보 출력 -->
+  <div class="order-items">
+    <h2>주문 항목</h2>
+    <!-- 제목 행 추가 -->
+    <div class="order-item-card" style="font-weight: bold; background-color: #e9e9e9;">
+      <div style="flex: 2;">상품명</div>
+      <div style="flex: 1;">상품 가격</div>
+      <div style="flex: 1;">수량</div>
+      <div style="flex: 1;">결제 금액</div>
+    </div>
+
+    <!-- 주문 항목 출력 -->
+    <div th:each="orderItem : ${orderItems}" class="order-item-card">
+      <div class="item-name" style="flex: 2;" th:text="${orderItem.biditem != null && orderItem.biditem.bidItemName != null ? orderItem.biditem.bidItemName : orderItem.item != null && orderItem.item.itemNm != null ? orderItem.item.itemNm : '상품명이 없습니다'}"></div>
+      <div class="item-price" style="flex: 1;" th:text="${orderItem.orderPrice} + ' 원'"></div>
+      <div class="item-count" style="flex: 1;" th:text="'수량: ' + ${orderItem.count}"></div>
+      <div class="item-total" style="flex: 1;" th:text="${orderItem.getTotalPrice()} + ' 원'"></div>
+    </div>
+  </div>
+
+  <!-- 총 결제 금액 -->
+  <div class="total-amount">
+    <h3>총 금액: <span id="totalAmount" th:text="${order.totalAmount}"></span></h3>
+  </div>
+  <!-- 결제 버튼 -->
+  <div class="payment-buttons">
+    <button id="inicisPay" class="payment-button" onclick="handlePayment('html5_inicis.INIpayTest')">
+      <img src="/images/kginicis.png"alt="inicis logo">
+    </button>
+    <button id="kakaoPay" class="payment-button" onclick="handlePayment('kakaopay')">
+      <img src="/images/kakaopay.png" alt="kakao logo">
+    </button>
+  </div>
 </div>
-
-<!-- 주문 항목 출력 -->
-<h2>주문 항목</h2>
-<table border="1" cellpadding="10">
-  <thead>
-  <tr>
-    <th>상품명</th>
-    <th>가격</th>
-    <th>수량</th>
-    <th>총 금액</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="orderItem : ${orderItems}">
-    <td th:text="${orderItem.biditem != null and orderItem.biditem.bidItemName != null ? orderItem.biditem.bidItemName : orderItem.item != null and orderItem.item.itemNm != null ? orderItem.item.itemNm : '상품명이 없습니다'}"></td>
-
-    <td th:text="${orderItem.orderPrice}"></td> <!-- 가격 -->
-    <td th:text="${orderItem.count}"></td> <!-- 수량 -->
-    <td th:text="${orderItem.getTotalPrice()}"></td> <!-- 총 금액 -->
-  </tr>
-  </tbody>
-</table>
-
-<!-- 총 결제 금액 -->
-<h3>총 금액: <span th:text="${order.totalAmount}"></span> 원</h3>
-
-<hr>
-
-<!-- 결제 버튼 -->
-<h3>결제를 진행하세요</h3>
-<button id="inicisPay" onclick="handlePayment('html5_inicis.INIpayTest')">통합 결제</button>
-<button id="kakaoPay" onclick="handlePayment('kakaopay')">카카오페이 결제</button>
 
 <script>
   var IMP = window.IMP;
   IMP.init("imp14351567");  // 아임포트 가맹점 코드
 
-function handlePayment(pg){
-console.log("handlePayment");
-console.log("pg");
-  $(document).ready(function() {
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
+  function handlePayment(pg) {
+    console.log("handlePayment", pg);
+    $(document).ready(function() {
+      var token = $("meta[name='_csrf']").attr("content");
+      var header = $("meta[name='_csrf_header']").attr("content");
 
-    var orderId = "[[${order.id}]]"; // orderId를 여기서 처리
-    var totalAmount = "[[${order.totalAmount}]]"; // 주문 총액을 여기서 처리
-    totalAmount = Number(totalAmount);
+      var orderId = "[[${order.id}]]";
+      var totalAmount = "[[${order.totalAmount}]]";
+      totalAmount = Number(totalAmount);
 
-      // 결제 요청
       IMP.request_pay({
-        pg: pg,   // PG사
-        pay_method: "card",               // 결제 수단
-        merchant_uid: "order_" + orderId, // 가맹점 주문번호 (유니크해야 함)
-        name: "주문번호 " + orderId,       // 상품명
-        amount: totalAmount,              // 결제 금액
-        buyer_name: "[[${order.member.name}]]", // 구매자 이름
-        buyer_tel:"[[${order.member.phone}]]", // 구매자 전화번호
-        buyer_email:"[[${order.member.email}]]" // 구매자 이메일
+        pg: pg,
+        pay_method: "card",
+        merchant_uid: "order_" + orderId,
+        name: "주문번호 " + orderId,
+        amount: totalAmount,
+        buyer_name: "[[${order.member.name}]]",
+        buyer_tel: "[[${order.member.phone}]]",
+        buyer_email: "[[${order.member.email}]]"
       }, function (rsp) {
         if (rsp.success) {
           alert("결제 완료!");
 
-          // 결제 성공 시 서버로 결제 정보를 전송하여 처리
           $.ajax({
             type: 'POST',
-            url: '/payments/validation/' + rsp.imp_uid, // 아임포트 결제 검증 API 호출
+            url: '/payments/validation/' + rsp.imp_uid,
             beforeSend: function(xhr) {
-              xhr.setRequestHeader(header, token);  // CSRF 토큰 헤더에 설정
+              xhr.setRequestHeader(header, token);
             },
             success: function(response) {
-              if (response=='success') {
+              if (response === 'success') {
                 alert("주문이 성공적으로 처리되었습니다.");
                 location.href = "/payments/confirmation?orderId=" + orderId;
               } else {
@@ -98,19 +195,24 @@ console.log("pg");
               }
             },
             error: function(xhr, status, error) {
-              // 오류 메시지를 더 구체적으로 출력
               console.error("AJAX 요청 실패:", status, error);
               alert("주문 정보 저장에 실패했습니다.");
             }
           });
         } else {
           alert("결제 실패: " + rsp.error_msg);
-          location.href = "/";
-
+          window.close(); // 창을 닫습니다.
         }
       });
+    });
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    // 모든 금액 요소를 포맷팅
+    document.querySelectorAll(".item-price, .item-total, #totalAmount").forEach(function(element) {
+      const text = element.textContent.replace(/[^\d]/g, ''); // 숫자만 추출
+      element.textContent = Number(text).toLocaleString() + ' 원'; // 숫자를 포맷팅하여 콤마 추가
+    });
   });
- }
 </script>
 </body>
 </html>

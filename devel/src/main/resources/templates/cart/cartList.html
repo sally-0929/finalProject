@@ -188,7 +188,6 @@
                 dataType: "json",
                 cache: false,
                 success: function(result, status) {
-                    alert("주문이 완료 되었습니다.");
                     location.href = '/orders';
                 },
                 error: function(jqXHR, status, error) {
@@ -228,12 +227,11 @@
         }
         .fs24 {
             font-size: 24px;
-            white-space: nowrap;
+            white-space: normal; /* 여러 줄을 허용 */
             overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 450px; /* 적절한 너비로 제한 */
-            display: inline-block; /* 너비 제한이 적용되도록 설정 */
-            vertical-align: middle; /* 세로 정렬 */
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* 최대 2줄까지만 표시 */
+            -webkit-box-orient: vertical;
         }
     </style>
 </th:block>
