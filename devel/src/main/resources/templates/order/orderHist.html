@@ -252,7 +252,14 @@
             <h6 th:text="${order.orderDate} + ' 주문'"></h6>
             <div class="ml-3">
                 <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
-                    <button type="button" class="btn btn-outline-secondary btn-sm"  th:value="${order.orderId}" onclick="cancelOrder(this.value)">주문취소</button>
+                    <th:block th:if="${order.orderItemDtoList[0].itemId != null}">
+                        <!-- 일반 상품: 주문취소 버튼 표시 -->
+                        <button type="button" class="btn btn-outline-secondary btn-sm" th:value="${order.orderId}" onclick="cancelOrder(this.value)">주문취소</button>
+                    </th:block>
+                    <th:block th:if="${order.orderItemDtoList[0].itemId == null}">
+                        <!-- 경매 상품: 취소 불가 텍스트 표시 -->
+                        <span style="color: red; font-weight: bold;">취소 불가</span>
+                    </th:block>
                 </th:block>
                 <th:block th:unless="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
                     <h6>(취소 완료)</h6>
