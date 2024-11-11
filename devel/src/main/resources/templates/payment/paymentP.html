@@ -105,6 +105,8 @@ console.log("pg");
           });
         } else {
           alert("결제 실패: " + rsp.error_msg);
+          location.href = "/";
+
         }
       });
   });
