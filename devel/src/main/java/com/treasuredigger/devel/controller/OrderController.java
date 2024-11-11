@@ -70,7 +70,7 @@ public class OrderController {
         model.addAttribute("orders", ordersHistDtoList);
         model.addAttribute("page", pageable.getPageNumber());
         model.addAttribute("maxPage", 5);
-
+        model.addAttribute("orderStatusOrder", com.treasuredigger.devel.constant.OrderStatus.ORDER);
         return "order/orderHist";
     }
 

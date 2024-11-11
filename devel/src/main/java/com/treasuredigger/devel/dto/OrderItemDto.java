@@ -10,12 +10,14 @@ public class OrderItemDto {
     public OrderItemDto(OrderItem orderItem, String imgUrl) {
         System.out.println("Order Item" + orderItem);
         if (orderItem.getItem() != null) {
+            this.orderId = orderItem.getId();
             this.itemId = orderItem.getItem().getId();
             this.itemNm = orderItem.getItem().getItemNm();
             this.count = orderItem.getCount();
             this.orderPrice = orderItem.getOrderPrice();
             this.imgUrl = imgUrl;
         } else if (orderItem.getBiditem() != null) {
+            this.orderId = orderItem.getId();
             this.bidItemId = orderItem.getBiditem().getBidItemId();
             this.itemNm = orderItem.getBiditem().getBidItemName();
             this.count = orderItem.getCount();
@@ -27,6 +29,7 @@ public class OrderItemDto {
             // log.warn("OrderItem has neither Item nor BidItem: " + orderItem.getId());
         }
     }
+    private long orderId;
     private String bidItemId;
     private Long itemId; // 상품 ID
     private String itemNm; //상품명

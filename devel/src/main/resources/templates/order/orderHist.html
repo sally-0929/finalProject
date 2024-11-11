@@ -241,6 +241,7 @@
 </th:block>
 
 <div layout:fragment="content" class="content">
+    <h1>나의 구매내역</h1>
     <div class="filter-buttons">
         <button onclick="filterOrders('all')">전체보기</button>
         <button onclick="filterOrders('general')">일반상품</button>
@@ -249,15 +250,20 @@
 
     <div class="order-wrapper" th:each="order : ${orders.getContent()}">
         <div class="d-flex align-self-center">
-            <h6 th:text="${order.orderDate} + ' 주문'"></h6>
+            <h6 th:text="${order.orderDate}"></h6>
             <div class="ml-3">
                 <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
-                    <button type="button" class="btn btn-outline-secondary btn-sm"  th:value="${order.orderId}" onclick="cancelOrder(this.value)">주문취소</button>
+
+                    <button type="button" class="btn btn-outline-secondary btn-sm" th:value="${order.orderId}" onclick="cancelOrder(this.value)">(결제 대기중)주문취소</button>
                 </th:block>
-                <th:block th:unless="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
+                <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).CANCEL}">
                     <h6>(취소 완료)</h6>
                 </th:block>
+                <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).PAYMENT_COMPLETED}">
+                    <h6>(결제 완료)</h6>
+                </th:block>
             </div>
+
         </div>
 
         <div class="card d-flex">
@@ -268,7 +274,15 @@
                 </div>
                 <div class="align-self-center w-75">
                     <div th:if="${orderItem.itemId != null}">
-                        <a th:href="@{'/item/' + ${orderItem.itemId}}" style="text-decoration: none; color: inherit;">
+                        <a th:if="${order.orderStatus == orderStatusOrder}" th:href="@{'/payments/paymentP?orderId=' + ${orderItem.orderId}}" style="text-decoration: none; color: inherit;">
+                            <span style="font-size:13px;" th:text="일반상품"></span><br>
+                            <span th:text="${orderItem.itemNm}" class="fs20 font-weight-bold"></span>
+                            <div class="fs15 font-weight-bold">
+                                <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
+                                <span th:text="${orderItem.count} + '개'"></span>
+                            </div>
+                        </a>
+                        <a th:unless="${order.orderStatus == orderStatusOrder}" th:href="@{'/item/' + ${orderItem.itemId}}" style="text-decoration: none; color: inherit;">
                             <span style="font-size:13px;" th:text="일반상품"></span><br>
                             <span th:text="${orderItem.itemNm}" class="fs20 font-weight-bold"></span>
                             <div class="fs15 font-weight-bold">
@@ -278,7 +292,15 @@
                         </a>
                     </div>
                     <div th:if="${orderItem.itemId == null}">
-                        <a th:href="@{'/biditem/view/' + ${orderItem.bidItemId}}" style="text-decoration: none; color: inherit;">
+                        <a th:if="${order.orderStatus == orderStatusOrder}" th:href="@{'/payments/paymentP?orderId=' + ${orderItem.orderId}}" style="text-decoration: none; color: inherit;">
+                            <span style="font-size:13px;" th:text="경매상품"></span><br>
+                            <span th:text="${orderItem.itemNm}" class="fs20 font-weight-bold"></span>
+                            <div class="fs15 font-weight-bold">
+                                <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
+                                <span th:text="${orderItem.count} + '개'"></span>
+                            </div>
+                        </a>
+                        <a th:unless="${order.orderStatus == orderStatusOrder}" th:href="@{'/biditem/view/' + ${orderItem.bidItemId}}" style="text-decoration: none; color: inherit;">
                             <span style="font-size:13px;" th:text="경매상품"></span><br>
                             <span th:text="${orderItem.itemNm}" class="fs20 font-weight-bold"></span>
                             <div class="fs15 font-weight-bold">
@@ -290,6 +312,9 @@
                 </div>
             </div>
         </div>
+
+
+
     </div>
 </div>
 </html>
