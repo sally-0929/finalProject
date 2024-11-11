@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>결제 성공</title>
   <style>
+    /* 스타일 그대로 유지 */
     body {
       font-family: Arial, sans-serif;
       display: flex;
@@ -87,10 +88,26 @@
   <p class="info">주문 번호: <span class="highlight" th:text="${order.id}"></span></p>
   <p class="info">주문자 이름: <span class="highlight" th:text="${order.member.name}"></span></p>
   <p class="info">주문 일자: <span class="highlight" th:text="${order.orderDate}"></span></p>
-  <p class="info">주문 총액: <span class="highlight" th:text="${order.totalAmount} + ' 원'"></span></p>
+
+  <!-- 주문 총액을 Thymeleaf로 설정하고 id를 통해 JavaScript에서 가져와서 콤마 추가 -->
+  <p class="info">주문 총액: <span id="totalAmount" th:text="${order.totalAmount}"></span> 원</p>
+
   <p class="info">주문이 완료되었습니다. 감사합니다!</p>
   <button class="confirm-button" onclick="closeAndRedirect()">확인</button>
+
   <script>
+    // 금액에 콤마 추가 함수
+    function formatNumberWithCommas(number) {
+        return number.toLocaleString();
+    }
+
+    // 페이지 로드 후, 콤마 추가된 금액을 표시
+    document.addEventListener("DOMContentLoaded", function() {
+        const totalAmountElement = document.getElementById("totalAmount");
+        const totalAmount = parseInt(totalAmountElement.textContent, 10); // 텍스트에서 숫자 추출
+        totalAmountElement.textContent = formatNumberWithCommas(totalAmount);
+    });
+
     function closeAndRedirect() {
         try {
             // 부모 창이 열려 있는지 확인하고 이동
