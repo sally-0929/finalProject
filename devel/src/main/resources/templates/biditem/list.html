@@ -166,6 +166,13 @@
             right: -10px !important;
             font-size: 50px !important;
         }
+        .main-img {
+            transition: transform 0.3s ease;
+        }
+
+        .main-img:hover {
+            transform: scale(1.05); /* 1.05배 확대 */
+        }
     </style>
 </th:block>
 
@@ -300,7 +307,7 @@
         <th:block th:each="item, status: ${bidItemList}">
             <div class="col margin" style="flex: 0 0 20%; max-width: 20%;">
                 <div class="card" style="border:none;">
-                    <a th:href="'/biditem/view/' + ${item.bidItemId}" class="text-dark">
+                    <a th:href="'/biditem/view/' + ${item.bidItemId}" class="text-dark main-img">
                         <img th:src="${item.bidImgUrl}" class="card-img-top" style="height: 300px; width: 100%; object-fit: contain; object-position: center; border:1px solid lightgray; border-radius:10px;">
                         <!-- 관심 상품일 경우 하트 아이콘 표시 -->
                         <i class="heart-icon fas fa-heart" style="position: absolute; bottom: 10px; right: 10px; color: red; font-size: 24px;"
