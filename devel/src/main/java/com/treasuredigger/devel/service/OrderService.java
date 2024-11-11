@@ -1,5 +1,6 @@
 package com.treasuredigger.devel.service;
 
+import com.treasuredigger.devel.constant.OrderStatus;
 import com.treasuredigger.devel.dto.OrderDto;
 import com.treasuredigger.devel.entity.*;
 import com.treasuredigger.devel.repository.*;
@@ -171,4 +172,10 @@ public class OrderService {
         } throw new EntityNotFoundException("No BidItem found for order id " + orderId);
     }
 
+    public void changeOrderStatus(Long orderId, OrderStatus newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found with id " + orderId));
+        order.setOrderStatus(newStatus);
+        orderRepository.save(order);
+    }
 }
