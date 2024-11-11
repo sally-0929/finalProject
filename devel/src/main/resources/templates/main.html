@@ -307,10 +307,10 @@
             });
 
             observer.observe(scrollAnchor);
-
+            const cid = new URLSearchParams(window.location.search).get('cid'); // 현재 URL에서 cid 가져오기
             async function loadMoreItems() {
                 try {
-                    const response = await fetch(`/loadItems?page=${pageNumber}&size=20`);
+                    const response = await fetch(`/loadItems?page=${pageNumber}&size=20${cid ? `&cid=${cid}` : ''}`);
                     const newItemsHtml = await response.text();
 
                     const tempDiv = document.createElement('div');
