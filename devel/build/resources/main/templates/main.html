@@ -297,12 +297,12 @@
                     loading = true;
                     loadingIndicator.style.display = 'block';
 
-                    // 2초 지연 후에 로딩 시작
+                    // 1초 지연 후에 로딩 시작
                     setTimeout(async () => {
                         await loadMoreItems();
                         loadingIndicator.style.display = 'none';
                         loading = false;
-                    }, 2000);
+                    }, 1000);
                 }
             });
 
