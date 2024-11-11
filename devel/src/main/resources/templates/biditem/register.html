@@ -251,21 +251,29 @@
 
 
               function validateForm() {
-            const priceStatus = checkDisplayStatus();
-            const dateStatus = checkDateDisplayStatus();
+                const startDate = new Date(document.getElementById('bidStartDate').value);
+                const endDate = new Date(document.getElementById('bidEndDate').value);
+                const startPrice = parseInt(document.getElementById('startPrice').value, 10);
+                const maxPrice = parseInt(document.getElementById('maxPrice').value, 10);
 
+                // 날짜 검증
+                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                    alert('날짜를 입력해주세요');
+                    return false;
+                }
 
-            if (priceStatus === 'block') {
-                alert('가격을 다시한번 확인해주세요');
-                return false;
-            }
+                if (startDate > endDate) {
+                    alert('시작 날짜보다 마감 날짜가 빠를 수 없습니다.');
+                    return false;
+                }
 
-            if(dateStatus ==='block'){
-                alert('날짜를 다시 한번 확인해주세요');
-                return false;
-            }
+                // 가격 검증
+                if (isNaN(startPrice) || isNaN(maxPrice) || startPrice > maxPrice) {
+                    alert('가격을 다시 확인해주세요');
+                    return false;
+                }
 
-            return true;
+                return true;
             }
 
 

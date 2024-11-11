@@ -151,7 +151,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
                 .where(itemImg.repimgYn.eq("Y"))
                 .where(item.itemCategory.cid.eq(cid))  // 카테고리 필터링
                 .where(itemNmLike(itemSearchDto.getSearchQuery()))
-                .orderBy(item.id.desc())
+                .orderBy(item.itemSellStatus.asc(), item.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

@@ -34,41 +34,6 @@
         .center{
             text-align:center;
         }
-        .pagination .page-link {
-            color: black;
-            background-color: transparent;
-            border: none;
-            border-radius: 50%;
-            width: 30px; /* 버튼의 너비 고정 */
-            height: 30px; /* 버튼의 높이 고정 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0; /* 패딩 제거 */
-            margin: 0 2px; /* 좌우 간격을 위한 약간의 마진 */
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: black; /* 활성화된 페이지 배경 색상 */
-            color: white; /* 활성화된 페이지 텍스트 색상 */
-            border-radius: 6px; /* 약간 둥근 모서리 */
-        }
-
-        .pagination .page-link:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-            color: black;
-            border-radius: 6px; /* 네모 유지 */
-        }
-
-        .pagination .page-link:focus {
-            box-shadow: none; /* 포커스 시 기본 강조 제거 */
-        }
-
-        /* < > 화살표에도 동일한 스타일 적용 */
-        .pagination .page-item .page-link {
-            padding: 6px 10px;
-        }
-
         .category-btn {
             width: 160px;
             height: 160px;
@@ -390,23 +355,4 @@
             </div>
         </th:block>
     </div>
-
-
-    <!-- Pagination Controls -->
-    <div class="pagination justify-content-center mt-4">
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/biditem/list(page=${currentPage > 0 ? currentPage - 1 : 0})}"> < </a>
-            </li>
-            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
-                th:classappend="${pageNum == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/biditem/list(page=${pageNum})}" th:text="${pageNum + 1}">1</a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage == (totalPages != null ? totalPages - 1 : 0)} ? 'disabled'">
-                <a class="page-link" th:href="@{/biditem/list(page=${currentPage < (totalPages != null ? totalPages - 1 : 0) ? currentPage + 1 : currentPage})}"> > </a>
-            </li>
-        </ul>
-    </div>
-
-
 </div>
