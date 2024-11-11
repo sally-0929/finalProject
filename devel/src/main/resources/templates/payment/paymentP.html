@@ -133,7 +133,7 @@
     <div th:each="orderItem : ${orderItems}" class="order-item-card">
       <div class="item-name" style="flex: 2;" th:text="${orderItem.biditem != null && orderItem.biditem.bidItemName != null ? orderItem.biditem.bidItemName : orderItem.item != null && orderItem.item.itemNm != null ? orderItem.item.itemNm : '상품명이 없습니다'}"></div>
       <div class="item-price" style="flex: 1;" th:text="${orderItem.orderPrice} + ' 원'"></div>
-      <div class="item-count" style="flex: 1;" th:text="'수량: ' + ${orderItem.count}"></div>
+      <div class="item-count" style="flex: 1;" th:text="${orderItem.count}"></div>
       <div class="item-total" style="flex: 1;" th:text="${orderItem.getTotalPrice()} + ' 원'"></div>
     </div>
   </div>
@@ -192,16 +192,18 @@
                 location.href = "/payments/confirmation?orderId=" + orderId;
               } else {
                 alert("결제 검증 실패");
+                redirectToOrders();
               }
             },
             error: function(xhr, status, error) {
               console.error("AJAX 요청 실패:", status, error);
               alert("주문 정보 저장에 실패했습니다.");
+              redirectToOrders();
             }
           });
         } else {
           alert("결제 실패: " + rsp.error_msg);
-          window.close(); // 창을 닫습니다.
+          redirectToOrders();
         }
       });
     });
@@ -213,6 +215,12 @@
       element.textContent = Number(text).toLocaleString() + ' 원'; // 숫자를 포맷팅하여 콤마 추가
     });
   });
+  function redirectToOrders() {
+  if (window.opener) {
+    window.opener.location.href = "/orders"; // 부모 창 이동
+  }
+  window.close(); // 현재 창 닫기
+}
 </script>
 </body>
 </html>

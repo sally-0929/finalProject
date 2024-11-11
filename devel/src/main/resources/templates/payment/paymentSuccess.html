@@ -1,18 +1,112 @@
-<!-- resources/templates/payment/success.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>결제 성공</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f3f4f6;
+      margin: 0;
+      min-height: 100vh;
+      background-image: linear-gradient(135deg, #eaeaea 15%, transparent 15%, transparent 50%, #eaeaea 50%, #eaeaea 65%, transparent 65%, transparent),
+                        linear-gradient(135deg, #eaeaea 15%, transparent 15%, transparent 50%, #eaeaea 50%, #eaeaea 65%, transparent 65%, transparent);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px;
+    }
+    .container {
+      background-color: white;
+      width: 80%;
+      max-width: 480px;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    h1 {
+      color: #007bff;
+      font-size: 2em;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    .info {
+      color: #444;
+      font-size: 1em;
+      margin: 12px 0;
+      line-height: 1.6;
+    }
+    .info span {
+      color: #007bff;
+      font-weight: bold;
+    }
+    .highlight {
+      font-size: 1.2em;
+      color: #333;
+      font-weight: 600;
+    }
+    .confirm-button {
+      margin-top: 25px;
+      padding: 12px 24px;
+      font-size: 1em;
+      color: white;
+      background-color: #28a745;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .confirm-button:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+    }
+    .confirm-button:active {
+      background-color: #1e7e34;
+      transform: translateY(0);
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
 </head>
 <body>
-<h1>결제 성공</h1>
-<p>주문 번호: "[[${order.id}]]"</p>
-<p>주문자 이름: "[[${order.member.name}]]"</p>
-<p>주문 일자: "[[${order.orderDate}]]"</p>
-<p>주문 총액: "[[${order.totalAmount}]]"</p>
-<p>주문이 완료되었습니다. 감사합니다!</p>
-<a th:href="@{/}">확인</a>
+<div class="container">
+  <h1>결제 성공</h1>
+  <p class="info">주문 번호: <span class="highlight" th:text="${order.id}"></span></p>
+  <p class="info">주문자 이름: <span class="highlight" th:text="${order.member.name}"></span></p>
+  <p class="info">주문 일자: <span class="highlight" th:text="${order.orderDate}"></span></p>
+  <p class="info">주문 총액: <span class="highlight" th:text="${order.totalAmount} + ' 원'"></span></p>
+  <p class="info">주문이 완료되었습니다. 감사합니다!</p>
+  <button class="confirm-button" onclick="closeAndRedirect()">확인</button>
+  <script>
+    function closeAndRedirect() {
+        try {
+            // 부모 창이 열려 있는지 확인하고 이동
+            if (window.opener && !window.opener.closed) {
+                window.opener.location.href = '/orders'; // 부모 창 이동
+                window.opener.focus(); // 부모 창에 포커스 설정
+                window.close(); // 현재 창 닫기
+            } else {
+                alert("부모 창이 열려 있지 않거나 접근할 수 없습니다.");
+            }
+        } catch (e) {
+            console.error("부모 창 이동 오류:", e);
+            alert("부모 창에 접근할 수 없습니다.");
+        }
+    }
+  </script>
+</div>
 </body>
 </html>

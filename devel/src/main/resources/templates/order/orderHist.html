@@ -96,6 +96,18 @@
                 }
             });
         });
+        function openCenteredWindow(url) {
+            // 새 창의 가로 및 세로 크기 설정
+            const width = 1000;
+            const height = 700;
+
+            // 현재 창의 화면 크기를 기준으로 중앙 위치 계산
+            const left = (window.innerWidth / 2 + window.screenX) - (width / 2);
+            const top = (window.innerHeight / 2 + window.screenY) - (height / 2);
+
+            // 중앙에 위치한 새 창 열기
+            window.open(url, '_blank', `width=${width},height=${height},top=${top},left=${left}`);
+        }
     </script>
 </th:block>
 
@@ -184,6 +196,7 @@
             transition: all 0.3s ease;
             cursor: pointer;
             outline: none;
+            transform: translateY(-5px);
         }
 
         .btn-outline-secondary:hover {
@@ -191,7 +204,7 @@
             color: white;
             border-color: #555;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
+            transform: translateY(-10px);
         }
 
         .btn-outline-secondary:focus {
@@ -274,7 +287,10 @@
                 </div>
                 <div class="align-self-center w-75">
                     <div th:if="${orderItem.itemId != null}">
-                        <a th:if="${order.orderStatus == orderStatusOrder}" th:href="@{'/payments/paymentP?orderId=' + ${orderItem.orderId}}" style="text-decoration: none; color: inherit;">
+                        <a th:if="${order.orderStatus == orderStatusOrder}"
+                           th:href="@{'/payments/paymentP?orderId=' + ${orderItem.orderId}}"
+                           style="text-decoration: none; color: inherit;"
+                           onclick="openCenteredWindow(this.href); return false;">
                             <span style="font-size:13px;" th:text="일반상품"></span><br>
                             <span th:text="${orderItem.itemNm}" class="fs20 font-weight-bold"></span>
                             <div class="fs15 font-weight-bold">
@@ -292,7 +308,10 @@
                         </a>
                     </div>
                     <div th:if="${orderItem.itemId == null}">
-                        <a th:if="${order.orderStatus == orderStatusOrder}" th:href="@{'/payments/paymentP?orderId=' + ${orderItem.orderId}}" style="text-decoration: none; color: inherit;">
+                        <a th:if="${order.orderStatus == orderStatusOrder}"
+                           th:href="@{'/payments/paymentP?orderId=' + ${orderItem.orderId}}"
+                           style="text-decoration: none; color: inherit;"
+                           onclick="openCenteredWindow(this.href); return false;">
                             <span style="font-size:13px;" th:text="경매상품"></span><br>
                             <span th:text="${orderItem.itemNm}" class="fs20 font-weight-bold"></span>
                             <div class="fs15 font-weight-bold">
