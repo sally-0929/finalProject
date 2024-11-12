@@ -188,7 +188,8 @@
                 dataType: "json",
                 cache: false,
                 success: function(result, status) {
-                    location.href = '/orders';
+                    console.log('result ' + result);
+                    location.href = '/payments/paymentP?orderId=' + result;
                 },
                 error: function(jqXHR, status, error) {
                     if (jqXHR.status == '401') {
