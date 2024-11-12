@@ -16,6 +16,14 @@ public class IamportConfig {
     @Value("${iamport.api.secret}")
     private String apiSecret;
 
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public String getApiSecret() {
+        return apiSecret;
+    }
+
     @Bean
     public IamportClient iamportClient() {
         return new IamportClient(apiKey, apiSecret);

@@ -3,22 +3,18 @@ package com.treasuredigger.devel.controller;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import com.treasuredigger.devel.config.IamportConfig;
 import com.treasuredigger.devel.constant.OrderStatus;
-import com.treasuredigger.devel.dto.PaymentDto;
 import com.treasuredigger.devel.entity.BidItem;
 import com.treasuredigger.devel.entity.Member;
 import com.treasuredigger.devel.entity.Order;
 import com.treasuredigger.devel.entity.OrderItem;  // OrderItem 추가
-import com.treasuredigger.devel.repository.ItemRepository;
-import com.treasuredigger.devel.repository.MemberRepository;
 import com.treasuredigger.devel.repository.OrderRepository;
 import com.treasuredigger.devel.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,20 +32,19 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final OrderRepository orderRepository;
-    private final MemberRepository memberRepository;
-    private final ItemRepository itemRepository;
     private final BidService bidService;
     private final OrderService orderService;
     private final MemberService memberService;
     private final BidItemService bidItemService;
+    private final RefundService refundService;
+    private final IamportConfig iamportConfig;
 
     /**
      * 아임포트 결제 검증
      */
-    @RequestMapping(value="/validation/{imp_uid}",method = RequestMethod.POST )
+    @RequestMapping(value = "/validation/{orderId}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> validateIamport(@PathVariable String imp_uid, Model model, Principal principal) throws IamportResponseException, IOException {
-        log.info("imp_uid: {}", imp_uid);
+    public ResponseEntity<String> validateIamport(@PathVariable Long orderId, @RequestParam("imp_uid") String imp_uid, Model model, Principal principal) throws IamportResponseException, IOException {
 
         // 결제 검증 결과
         IamportResponse<Payment> paymentResponse = paymentService.validateIamport(imp_uid);
@@ -64,22 +59,22 @@ public class PaymentController {
                 // 결제 성공 처리
                 log.info("결제 성공 - 주문 번호: {}, 상태: {}, 금액: {}", payment.getMerchantUid(), payment.getStatus(), payment.getAmount());
                 String merchantUid = payment.getMerchantUid();
-                String orderIdString = merchantUid.substring(6); // "order_" 이후의 부분을 가져옴
-
-                Long orderId = Long.parseLong(orderIdString); // 숫자 부분을 Long으로 변환
+//                String orderIdString = orderId1.substring(6); // "order_" 이후의 부분을 가져옴
+//
+//                Long orderId = Long.parseLong(orderIdString); // 숫자 부분을 Long으로 변환
                 orderService.changeOrderStatus(orderId, OrderStatus.PAYMENT_COMPLETED);
 
                 try {
                     BidItem bidItem = orderService.getBidItemByOrderId(orderId);
                     String bidItemId = bidItem.getBidItemId();
                     long bidNowPrice = bidItem.getMaxPrice();
-                    Member member =  memberService.findMemberByMid(principal.getName());
+                    Member member = memberService.findMemberByMid(principal.getName());
                     Long mid = member.getId();
 
-                    bidService.saveBid(bidItemId,mid,bidNowPrice, "Y");
+                    bidService.saveBid(bidItemId, mid, bidNowPrice, "Y");
                     bidItemService.updateItemStatuses();
-                    return new ResponseEntity<>("success",HttpStatus.OK);  // 결제 성공 템플릿
-                }catch (Exception e){
+                    return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿
+                } catch (Exception e) {
                     return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿
                 }
 
@@ -87,30 +82,38 @@ public class PaymentController {
                 // 결제 실패 처리
                 log.info("결제 실패 - 주문 번호: {}, 상태: {}", payment.getMerchantUid(), payment.getStatus());
 //                model.addAttribute("errorMessage", "결제 실패 또는 결제 정보가 유효하지 않습니다.");
-                return new ResponseEntity<>("fail",HttpStatus.OK);  // 결제 실패 템플릿
+                return new ResponseEntity<>("fail", HttpStatus.OK);  // 결제 실패 템플릿
             }
         } else {
             // 결제 검증 실패
             log.error("결제 검증 실패: 응답 코드 {}, 응답 메시지 {}", paymentResponse.getCode(), paymentResponse.getMessage());
             model.addAttribute("errorMessage", "결제 검증 실패");
-            return new ResponseEntity<>("invalid",HttpStatus.OK);
+            return new ResponseEntity<>("invalid", HttpStatus.OK);
         }
     }
-    /**
-     * 주문 처리
-     */
-    @PostMapping("/order")
-    public ResponseEntity<String> processOrder(@RequestBody PaymentDto paymentDto) {
-        log.info("Received order: {}", paymentDto.toString());
-        return ResponseEntity.ok(paymentService.saveOrder(paymentDto));  // 주문 저장 후 응답
-    }
 
-    /**
-     * 결제 취소
-     */
-    @PostMapping("/cancel/{imp_uid}")
-    public IamportResponse<Payment> cancelPayment(@PathVariable String imp_uid) throws IamportResponseException, IOException {
-        return paymentService.cancelPayment(imp_uid);
+    @RequestMapping(value = "/{orderId}/refund", method = RequestMethod.POST)
+    public ResponseEntity<String> refundOrder(@PathVariable Long orderId, @RequestParam String reason, @RequestParam String merchantUid) {
+        try {
+            // 주문 조회
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
+            log.info("Refund request received: orderId={}, reason={}", orderId, reason);
+
+            // Iamport API와의 통합을 위해 액세스 토큰을 받아옴
+            String accessToken = refundService.getToken(iamportConfig.getApiKey(), iamportConfig.getApiSecret());
+
+            // 환불 요청
+            refundService.refundRequest(accessToken, merchantUid, reason);
+
+            log.info("환불 요청 성공 - orderId: {}, merchantUid: {}, reason: {}", orderId, merchantUid, reason);
+
+            return ResponseEntity.ok("환불 요청이 완료되었습니다.");
+        } catch (Exception e) {
+            log.error("환불 요청 처리 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("환불 요청 처리에 실패했습니다.");
+        }
     }
 
     /**
@@ -148,28 +151,20 @@ public class PaymentController {
         try {
             // 주문 정보 조회
             Order order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new IllegalArgumentException("주문 정보가 없습니다. orderId: " + orderId));
+                    .orElseThrow(() -> new IllegalArgumentException("주문 정보를 찾을 수 없습니다."));
 
-//            PaymentDto paymentDto = convertToPaymentDtoFromOrder(order);
+            // 결제 처리 (예: 123 금액으로 결제 처리)
+            paymentService.processOrderPayment(orderId);
+
             // 모델에 주문 정보 추가
             model.addAttribute("order", order);
-//            paymentService.saveOrder(paymentDto);
+
             // 주문 확인 페이지로 이동
-            return "payment/paymentSuccess";  // 주문 확인 페이지
+            return "payment/paymentSuccess";  // 결제 성공 페이지
         } catch (Exception e) {
             log.error("주문 확인 중 에러 발생: {}", e.getMessage(), e);
             model.addAttribute("errorMessage", e.getMessage());
             return "error";  // 에러 페이지
         }
     }
-
-
-
-//    private PaymentDto convertToPaymentDtoFromOrder(Order order) {
-//        PaymentDto paymentDto = new PaymentDto();
-//        paymentDto.setMerchantUid(order.getMerchantUid());  // 주문 ID (결제 요청 시 사용한 ID)
-//        paymentDto.setAmount(order.getTotalAmount());  // 결제 금액
-//        paymentDto.setStatus(order.getStatus());  // 결제 상태
-//        return paymentDto;
-//    }
 }

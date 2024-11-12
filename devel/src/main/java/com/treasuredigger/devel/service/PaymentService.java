@@ -52,6 +52,7 @@ public class PaymentService {
         try {
             CancelData cancelData = new CancelData(imp_uid, true);
             IamportResponse<Payment> payment = iamportClient.cancelPaymentByImpUid(cancelData);
+            log.info("결제 취소 성공: {}", imp_uid);
             return payment;
         } catch (Exception e) {
             log.error("결제 취소 중 에러 발생: {}", e.getMessage());
@@ -59,35 +60,69 @@ public class PaymentService {
         }
     }
 
+//    @Transactional
+//    public String saveOrder(PaymentDto paymentDto) {
+//        try {
+//            log.info("PaymentDto 내용 확인: {}", paymentDto);
+//
+//            // Order 조회
+//            Order order = orderRepository.findById(paymentDto.getOrderId())
+//                    .orElseThrow(() -> new IllegalArgumentException("주문 정보가 없습니다."));
+//
+//            // 결제 정보 설정
+//            PaymentEntity payment = paymentDto.toEntity();
+//            payment.setOrder(order);  // 주문 정보 연결
+//            payment.setStatus(PaymentStatus.PAID);  // 결제 상태 설정
+//            payment.setPaidAt(LocalDateTime.now());  // 결제 완료 시간 설정
+//
+//            // 결제 저장
+//            paymentRepository.save(payment);
+//            log.info("결제 정보 저장 완료. 결제 ID: {}", payment.getId());
+//
+//            return "주문 정보가 성공적으로 저장되었습니다.";
+//        } catch (Exception e) {
+//            log.error("주문 저장 중 에러 발생: {}", e.getMessage(), e);
+//
+//            // 결제 취소
+//            cancelPayment(paymentDto.getImpUid());  // 결제 취소 처리
+//
+//            return "주문 정보 저장에 실패했습니다.";
+//        }
+//    }
+
     @Transactional
-    public String saveOrder(PaymentDto paymentDto) {
-        try {
-            log.info("PaymentDto 내용 확인: {}", paymentDto);
+    public void processOrderPayment(Long orderId) {
+        // 주문 조회
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
 
-            // Order 조회
-            Order order = orderRepository.findById(paymentDto.getOrderId())
-                    .orElseThrow(() -> new IllegalArgumentException("주문 정보가 없습니다."));
+        // 총 결제 금액 계산 (Order에서 제공하는 getTotalPrice 메서드를 사용)
+        int paymentAmount = order.getTotalPrice();
 
-            // 결제 정보 설정
-            PaymentEntity payment = paymentDto.toEntity();
-            payment.setOrder(order);  // 주문 정보 연결
-            payment.setStatus(PaymentStatus.PAID);  // 결제 상태 설정
-            payment.setPaidAt(LocalDateTime.now());  // 결제 완료 시간 설정
+        // 결제 상태를 "COMPLETED"로 설정
+        PaymentStatus paymentStatus = PaymentStatus.PAID;
 
-            // 결제 저장
-            paymentRepository.save(payment);
-            log.info("결제 정보 저장 완료. 결제 ID: {}", payment.getId());
+        // 주문에 결제 추가
+        PaymentEntity paymentEntity = new PaymentEntity();
+        paymentEntity.setAmount(paymentAmount);  // 총 결제 금액 설정
+        paymentEntity.setPaymentStatus(paymentStatus);  // 결제 상태 설정
+        paymentEntity.setOrder(order);  // 주문과 결제 연결
+        paymentEntity.setPaymentDateNow();  // 결제 완료 시간 설정
 
-            return "주문 정보가 성공적으로 저장되었습니다.";
-        } catch (Exception e) {
-            log.error("주문 저장 중 에러 발생: {}", e.getMessage(), e);
+        // 주문에 포함된 merchantUid 설정
+        paymentEntity.setMerchantUid(order.getMerchantUid());  // 주문의 merchantUid를 결제 정보에 설정
 
-            // 결제 취소
-            cancelPayment(paymentDto.getImpUid());  // 결제 취소 처리
+        // 결제 내역 저장
+        paymentRepository.save(paymentEntity);
+        log.info("결제 정보 저장 완료. 결제 ID: {}", paymentEntity.getId());
 
-            return "주문 정보 저장에 실패했습니다.";
-        }
+        // 주문에 결제 정보 추가 (주문 객체에 결제 내역 연결)
+        order.addPayment(paymentEntity);
+
+        // 주문 저장 (결제 정보가 추가된 상태로 저장)
+        orderRepository.save(order);
     }
+
 }
 
 
