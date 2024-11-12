@@ -44,10 +44,11 @@
             border-radius: 50%;
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, border-color 0.5s ease; /* border-color 전환 추가 */
             box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5),
-                        inset -1px -1px 4px rgba(255, 255, 255, 1); /* 내부 광택 */
+                        inset -1px -1px 4px rgba(255, 255, 255, 1);
             animation: glass-shine 3s infinite;
+            animation-play-state: running; /* 기본 상태에서 애니메이션 실행 */
         }
 
        /* 유리 광택 효과 */
@@ -67,11 +68,11 @@
 
         /* 더욱 강한 호버 효과 */
         .category-btn:hover {
-            background: radial-gradient(circle at 30% 30%, #ffffff, #cfcfcf);
+            background: white;
             border: 3px solid black;
             transform: translateY(-5px);
-            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.6), /* 호버 시 외부 그림자 강하게 */
-                        inset -2px -2px 6px rgba(255, 255, 255, 1); /* 호버 시 내부 광택 */
+            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.6),
+                        inset -2px -2px 6px rgba(255, 255, 255, 1);
         }
 
         /* 기본 상태에서 유리 반짝임 애니메이션 */
@@ -322,7 +323,7 @@
                                   th:text="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL ? '판매중' : '품절'}">
                             </span>
                         </div>
-                        <span class="card-title" style="font-size:18px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; max-width: 100%; line-height: 1.3em; max-height: 2.6em; margin-bottom: 5px;">[[${item.itemNm}]]</span>
+                        <span class="card-title" style="font-size:18px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; max-width: 100%; line-height: 1.3em; height: 50px; margin-bottom: 10px;">[[${item.itemNm}]]</span>
                         <span class="card-title text-danger" style="font-size:18px; font-weight:bold"><span th:text="${item.price}"></span>원</span>
                     </div>
                 </div>
