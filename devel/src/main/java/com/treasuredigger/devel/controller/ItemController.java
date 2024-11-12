@@ -52,6 +52,7 @@ public class ItemController {
         return "item/itemForm";
     }
 
+
     @PostMapping(value = "/admin/item/new")
     public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
                           Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
