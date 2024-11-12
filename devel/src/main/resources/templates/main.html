@@ -220,6 +220,47 @@
         .main-img:hover {
             transform: scale(1.05); /* 1.05배 확대 */
         }
+
+        .announcement-bar {
+            width: 100%;
+            overflow: hidden;
+            background-color: #f8e6e6; /* 연한 빨간 회색 */
+            border-top: 1px solid #e0b0b0; /* 더 짙은 빨간 회색 테두리 */
+            font-size: 1em;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            height: 60px;
+        }
+
+        .announcement-content {
+            display: flex;
+            animation: scrollContinuous 30s linear infinite; /* 더 긴 애니메이션 시간 */
+        }
+
+        .announcement-section {
+            padding: 10px 20px;
+            white-space: nowrap;
+        }
+
+        .announcement-section.short {
+            flex: 0 0 8%;
+            font-weight: bold;
+            color: #007bff;
+            text-align:right;
+        }
+
+        .announcement-section:not(.short) {
+            flex: 1 1 25%;
+            text-align: center;
+        }
+
+        /* 자연스럽게 이어지는 무한 슬라이드 애니메이션 */
+        @keyframes scrollContinuous {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* 절반까지 이동하면 반복 시작 */
+        }
     </style>
 </th:block>
 
@@ -247,6 +288,20 @@
     <input type="hidden" name="searchQuery" th:value="${itemSearchDto.searchQuery}">
     <div th:if="${not #strings.isEmpty(itemSearchDto.searchQuery)}" class="center">
         <p class="h3 font-weight-bold" th:text="${itemSearchDto.searchQuery} + '검색 결과'"></p>
+    </div>
+
+    <div class="announcement-bar">
+        <div class="announcement-content">
+            <div class="announcement-section short">[ 공지 ]</div>
+            <div class="announcement-section">김재혁 사장, 천재로 밝혀져....</div>
+            <div class="announcement-section">회원 등급을 VVIP로 올리려면 100만원 이상 사야해</div>
+            <div class="announcement-section">우리팀 대박나게 해주세요</div>
+            <!-- 동일한 공지사항 반복 -->
+            <div class="announcement-section short">[ 공지 ]</div>
+            <div class="announcement-section">김재혁 사장, 천재로 밝혀져....</div>
+            <div class="announcement-section">회원 등급을 VVIP로 올리려면 100만원 이상 사야해</div>
+            <div class="announcement-section">우리팀 대박나게 해주세요</div>
+        </div>
     </div>
 
     <div class="container">
@@ -330,7 +385,7 @@
             </div>
         </th:block>
     </div>
-    <div id="loading-indicator" style="text-align: center; font-size: 50px; color: gray; display: none;">
+    <div id="loading-indicator" style="text-align: center; font-size: 100px; color: gray; display: none;">
         <span class="dot">.</span>
         <span class="dot">.</span>
         <span class="dot">.</span>
