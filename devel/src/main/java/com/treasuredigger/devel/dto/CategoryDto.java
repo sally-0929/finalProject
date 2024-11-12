@@ -13,5 +13,5 @@ public class CategoryDto {
 
     private String cname;
 
-    private String cDesc;
+    private String cdesc;
 }

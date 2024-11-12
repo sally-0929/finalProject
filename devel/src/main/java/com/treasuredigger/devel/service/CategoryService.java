@@ -36,6 +36,7 @@ public class CategoryService {
     }
 
     public void update(CategoryDto categoryDto) {
+        System.out.println("update data ++ " + categoryDto);
         ItemCategory itemCategory = dtoToEntity(categoryDto);
         categoryRepository.findById(itemCategory.getCid()).ifPresent(existingCategory -> {
             existingCategory.setCname(itemCategory.getCname());
@@ -56,7 +57,7 @@ public class CategoryService {
         ItemCategory category = new ItemCategory();
         category.setCid(categoryDto.getCid());
         category.setCname(categoryDto.getCname());
-        category.setCdesc(categoryDto.getCDesc());
+        category.setCdesc(categoryDto.getCdesc());
         return category;
     }
 
@@ -67,7 +68,7 @@ public class CategoryService {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setCid(category.getCid());
         categoryDto.setCname(category.getCname());
-        categoryDto.setCDesc(category.getCdesc());
+        categoryDto.setCdesc(category.getCdesc());
         return categoryDto;
     }
 
