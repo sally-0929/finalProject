@@ -17,11 +17,13 @@ public class OrderHistDto {
         this.orderId = order.getId();
         this.orderDate = order.getOrderDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.orderStatus = order.getOrderStatus();
+        this.merchantUid = order.getMerchantUid();
     }
 
     private Long orderId; //주문아이디
     private String orderDate; //주문날짜
     private OrderStatus orderStatus; //주문 상태
+    private String merchantUid;
 
     private List<OrderItemDto> orderItemDtoList = new ArrayList<>();
 

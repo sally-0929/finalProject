@@ -25,16 +25,16 @@ public class PaymentDto {
     private PaymentStatus status;  // 결제 상태
     private LocalDateTime paidAt;  // 결제 완료 시간
 
-    public PaymentEntity toEntity() {
-        return PaymentEntity.builder()
-                .id(paymentId)
-                .order(order)
-                .impUid(impUid)
-                .merchantUid(merchantUid)
-                .amount(amount)
-                .status(status)
-                .paidAt(paidAt)
-                .build();
-    }
+//    public PaymentEntity toEntity() {
+//        return PaymentEntity.builder()
+//                .id(paymentId)
+//                .order(order)
+//                .impUid(impUid)
+//                .merchantUid(merchantUid)
+//                .amount(amount)
+//                .status(status)
+//                .paidAt(paidAt)
+//                .build();
+//    }
 }
 

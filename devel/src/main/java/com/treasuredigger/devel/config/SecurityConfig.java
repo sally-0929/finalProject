@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/email/sendAuth").permitAll()
                         .requestMatchers("/sms/send").permitAll()
                         .requestMatchers("/payments/paymentP").permitAll()
+                        .requestMatchers("/payments/refund").permitAll()
                         .requestMatchers("/payments/validation/**").permitAll()
                         .requestMatchers("/payments/**").permitAll()
                         .anyRequest()

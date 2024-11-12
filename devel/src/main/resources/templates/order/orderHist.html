@@ -108,6 +108,66 @@
             // 중앙에 위치한 새 창 열기
             window.open(url, '_blank', `width=${width},height=${height},top=${top},left=${left}`);
         }
+
+        function openRefundModal(orderId, merchantUid) {
+            // 환불 요청을 위한 모달 창을 열기
+            document.getElementById('refundModal').style.display = 'block';
+            // 모달에 주문 ID를 저장
+            document.getElementById('refundModal').setAttribute('data-order-id', orderId);
+            document.getElementById('refundModal').setAttribute('data-order-merchantUid', merchantUid);
+        }
+
+        function closeRefundModal() {
+            // 모달 창을 닫기
+            document.getElementById('refundModal').style.display = 'none';
+        }
+
+        function submitRefund() {
+            var orderId = document.getElementById('refundModal').getAttribute('data-order-id');
+            var merchantUid = document.getElementById('refundModal').getAttribute('data-order-merchantUid');
+            var reason = document.getElementById('refundReason').value;
+
+            if (!reason) {
+                alert('환불 사유를 입력해 주세요.');
+                return;
+            }
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            // URL 및 파라미터 설정
+            var url = "/payments/" + orderId + "/refund";  // 환불 요청 API URL
+            var paramData = {
+                reason: reason,
+                merchantUid: merchantUid
+            };
+
+            // 로그로 데이터 확인
+            console.log(`orderId: ${orderId}, reason: ${reason}, merchantUid: ${merchantUid}`);
+
+            // Ajax 요청
+            $.ajax({
+                url: url,
+                type: "POST",
+                // contentType을 "application/x-www-form-urlencoded"로 설정하여 쿼리 파라미터로 전송
+                contentType: "application/x-www-form-urlencoded",
+                data: $.param(paramData),  // 데이터를 쿼리 파라미터 형식으로 전달
+                beforeSend: function(xhr) {
+                    // CSRF 토큰 설정
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function(result) {
+                    alert("환불 요청 성공: " + result);  // 성공 메시지 출력
+                    location.reload();  // 페이지 새로고침
+                },
+                error: function(jqXHR, status, error) {
+                    alert("환불 요청 실패: " + jqXHR.responseText);  // 실패 메시지 출력
+                }
+            });
+
+            // 환불 요청 후 모달 닫기
+            closeRefundModal();
+        }
     </script>
 </th:block>
 
@@ -250,6 +310,46 @@
         .hidden {
             display: none !important;
         }
+
+        #refundModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </th:block>
 
@@ -273,10 +373,25 @@
                     <h6>(취소 완료)</h6>
                 </th:block>
                 <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).PAYMENT_COMPLETED}">
-                    <h6>(결제 완료)</h6>
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                            th:value="${order.orderId}"
+                            th:data-order-merchantUid="${order.merchantUid}" onclick="openRefundModal(this.value, this.getAttribute('data-order-merchantUid'))">
+                    (결제 완료) 환불 요청
+                    </button>
                 </th:block>
             </div>
 
+        </div>
+
+        <!-- 환불 사유 입력 모달 -->
+        <div id="refundModal" style="display: none;">
+            <div class="modal-content">
+                <h3>환불 요청</h3>
+                <textarea id="refundReason" placeholder="환불 사유를 입력하세요." rows="4" cols="50"></textarea>
+                <br>
+                <button type="button" onclick="submitRefund()">환불 요청</button>
+                <button type="button" onclick="closeRefundModal()">취소</button>
+            </div>
         </div>
 
         <div class="card d-flex">

@@ -170,7 +170,7 @@
       IMP.request_pay({
         pg: pg,
         pay_method: "card",
-        merchant_uid: "order_" + orderId,
+        merchant_uid: "[[${order.merchantUid}]]",
         name: "주문번호 " + orderId,
         amount: totalAmount,
         buyer_name: "[[${order.member.name}]]",
@@ -182,7 +182,8 @@
 
           $.ajax({
             type: 'POST',
-            url: '/payments/validation/' + rsp.imp_uid,
+            url: '/payments/validation/' + orderId,
+            data:{imp_uid:rsp.imp_uid},
             beforeSend: function(xhr) {
               xhr.setRequestHeader(header, token);
             },

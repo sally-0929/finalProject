@@ -88,7 +88,6 @@
   <p class="info">주문 번호: <span class="highlight" th:text="${order.id}"></span></p>
   <p class="info">주문자 이름: <span class="highlight" th:text="${order.member.name}"></span></p>
   <p class="info">주문 일자: <span class="highlight" th:text="${order.orderDate}"></span></p>
-
   <!-- 주문 총액을 Thymeleaf로 설정하고 id를 통해 JavaScript에서 가져와서 콤마 추가 -->
   <p class="info">주문 총액: <span id="totalAmount" th:text="${order.totalAmount}"></span> 원</p>
 
