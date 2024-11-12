@@ -33,7 +33,7 @@ public class MemberService implements UserDetailsService {
     private void validateDuplicateMember(Member member) {
         Member findMember = memberRepository.findByMid(member.getMid());
         if (findMember != null) {
-            throw new IllegalStateException("이미 가입된 회원입니다.");
+            throw new IllegalStateException("이미 가입된 아이디입니다. 새로운 아이디로 입력해주세요.");
         }
     }
 

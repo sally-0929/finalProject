@@ -188,7 +188,8 @@
                 dataType: "json",
                 cache: false,
                 success: function(result, status) {
-                    location.href = '/orders';
+                    console.log('result ' + result);
+                    location.href = '/payments/paymentP?orderId=' + result;
                 },
                 error: function(jqXHR, status, error) {
                     if (jqXHR.status == '401') {
@@ -264,7 +265,7 @@
                         <img th:src="${cartItem.imgUrl}" class="rounded repImg" th:alt="${cartItem.itemNm}">
                     </div>
                     <div class="align-self-center">
-                        <span th:text="${cartItem.itemNm}" class="fs24 font-weight-bold" ></span>
+                        <span th:text="${cartItem.itemNm}" class="font-weight-bold" style="font-size:20px" ></span>
                         <div class="fs18 font-weight-light">
                             <div class="d-flex mt-2 align-items-center">
                                 <span th:id="'price_' + ${cartItem.cartItemId}"

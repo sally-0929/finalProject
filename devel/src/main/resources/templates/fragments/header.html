@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
 
+</head>
 <div th:fragment="header" class="header">
     <nav class="navbar navbar-expand-sm navbar-light">
         <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -38,6 +42,121 @@
 <!--                <li class="nav-item" sec:authorize="isAuthenticated()">-->
 <!--                    <span class="nav-link" id="username" th:text="${#authentication.name}"></span>-->
 <!--                </li>-->
+                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')"> <a class="nav-link" href="#" data-toggle="modal" data-target="#categoryModal">카테고리 관리</a> </li> <!-- Modal --> <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true"> <div class="modal-dialog"> <div class="modal-content"> <div class="modal-header"> <h5 class="modal-title" id="categoryModalLabel">카테고리 관리</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div> <div class="modal-body"> <button class="btn btn-primary" onclick="addCategoryRow()">카테고리 추가</button> <table id="categoryTable" class="table"> <thead> <tr> <th>CID</th> <th>카테고리 이름</th> <th>설명</th> <th>액션</th> </tr> </thead> <tbody> <!-- Categories will be dynamically added here --> </tbody> </table> </div> </div> </div> </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    loadCategories();
+
+    document.querySelector("#categoryModal").addEventListener("hidden.bs.modal", function() {
+        document.querySelector("#categoryTable tbody").innerHTML = "";
+    });
+
+    window.addCategoryRow = function() {
+        const tbody = document.querySelector("#categoryTable tbody");
+        const newRow = createCategoryRow({ cid: "", cname: "", cDesc: "" }, true);
+        tbody.appendChild(newRow);
+    }
+
+   function loadCategories() {
+    fetch("/api/categories")
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.querySelector("#categoryTable tbody");
+            data.forEach(category => {
+                const row = createCategoryRow(category);
+                tbody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error("Error loading categories:", error);
+        });
+}
+
+
+    function createCategoryRow(category, isNew = false) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><input type="text" class="form-control" value="${category.cid}" ${!isNew ? 'readonly' : ''}></td>
+            <td><input type="text" class="form-control" value="${category.cname}"></td>
+            <td><input type="text" class="form-control" value="${category.cdesc}"></td>
+            <td>
+                ${isNew ? `<button class="btn btn-success" onclick="saveCategory(this)">저장</button>` :
+                `<button class="btn btn-primary" onclick="updateCategory(this)">수정</button>
+                 <button class="btn btn-danger" onclick="deleteCategory('${category.cid}')">삭제</button>`}
+            </td>
+        `;
+        return row;
+    }
+
+    window.saveCategory = function(button) {
+        const row = button.closest("tr");
+        const cid = row.cells[0].querySelector("input").value;
+        const cname = row.cells[1].querySelector("input").value;
+        const cdesc = row.cells[2].querySelector("input").value;
+
+        const category = { cid, cname, cdesc };
+
+        fetch("/api/categories", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                [csrfHeader]: csrfToken // Include CSRF token in headers
+            },
+            body: JSON.stringify(category)
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert("저장 실패");
+            }
+        });
+    }
+
+    window.updateCategory = function(button) {
+        const row = button.closest("tr");
+        const cid = row.cells[0].querySelector("input").value;
+        const cname = row.cells[1].querySelector("input").value;
+        const cdesc = row.cells[2].querySelector("input").value;
+
+        const category = { cid, cname, cdesc };
+
+        fetch("/api/categories", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                [csrfHeader]: csrfToken // Include CSRF token in headers
+            },
+            body: JSON.stringify(category)
+        }).then(response => {
+            if (response.ok) {
+                alert("수정되었습니다.");
+            } else {
+                alert("수정 실패");
+            }
+        });
+    }
+
+    window.deleteCategory = function(cid) {
+        fetch(`/api/categories/${cid}`, {
+            method: "DELETE",
+            headers: {
+                [csrfHeader]: csrfToken // Include CSRF token in headers
+            }
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert("해당 카테고리에 물품이 존재합니다....");
+            }
+        });
+    }
+});
+
+
+                </script>
             </ul>
             <li class="nav-item" sec:authorize="isAuthenticated()">
                 <a class="navbar-brand" href="/cart" style="position: relative; display: inline-block;">

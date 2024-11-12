@@ -7,23 +7,39 @@
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <style>
-        .my-card-container { /* 카드 컨테이너 이름 변경 */
+        .my-card-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4개 열로 나누기 */
+            grid-template-columns: repeat(4, minmax(0, 1fr)); /* 각 열을 가능한 최대 폭까지 줄임 */
             grid-template-rows: repeat(2, 1fr); /* 2개 행으로 나누기 */
-            gap: 70px;
-            justify-items: center; /* 카드 중앙 정렬 */
-            padding: 20px;
+            row-gap: 80px; /* 세로 간격 유지 */
+            justify-items: center;
+            padding: 40px 80px;
+            color: #111111;
+            text-decoration: none; /* 링크의 밑줄 제거 */
         }
+        /* 구슬 효과 스타일 */
         .my-card {
             width: 200px;
             height: 200px;
-            background-color: rgba(0, 0, 0, 0.2);
+            background: radial-gradient(circle at 30% 30%, #fafafa, #cfcfcf); /* 중심부터 퍼지는 색상 그라데이션 */
+            border: 3px solid #e0e0e0;
             border-radius: 50%;
             display: flex;
-            align-items: center; /* 수직 중앙 정렬 */
-            justify-content: center; /* 수평 중앙 정렬 */
-            position: relative; /* 절대 위치 설정을 위한 기준 */
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2), /* 외부 그림자 */
+                        inset -10px -10px 20px rgba(255, 255, 255, 1); /* 내부 하이라이트 */
+            transition: transform 0.3s, box-shadow 0.3s ease, border-color 0.3s ease;
+            animation: shine 3s infinite ease-in-out; /* 광택 애니메이션 */
+        }
+
+        .my-card:hover {
+            transform: translateY(-10px); /* 구슬이 살짝 올라가는 효과 */
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3), /* 외부 그림자 강화 */
+                        inset -12px -12px 24px rgba(255, 255, 255, 1); /* 내부 하이라이트 강화 */
+            border-color: black; /* border가 검은색으로 부드럽게 변경 */
+            animation-play-state: paused; /* hover 시 애니메이션 일시정지 */
         }
 
         .my-card img {
@@ -37,14 +53,22 @@
             position: absolute; /* 절대 위치 설정 */
             top: 100%; /* 카드 아래쪽으로 위치 */
             left: 50%; /* 수평 중앙 */
-            font-size: 15px;
+            font-size: 17px;
             transform: translateX(-50%); /* 중앙으로 이동 */
             text-align: center; /* 텍스트 중앙 정렬 */
-            margin-top: 10px; /* 원과 텍스트 사이의 간격 조정 */
+            margin-top: 20px; /* 원과 텍스트 사이의 간격 조정 */
+            font-weight:bold;
         }
-        .move-right {
-            transform: translateX(5px); /* 오른쪽으로 10px 이동 */
+
+        .my-card-container a {
+            color: #333333; /* 진한 회색 */
+            text-decoration: none; /* 링크의 밑줄 제거 */
         }
+
+        .my-card-container a:hover {
+            color: #111111; /* 호버 시 더 진한 회색 */
+        }
+
         @media (max-width: 768px) {
             .my-card {
                 width: 150px;
@@ -89,60 +113,42 @@
 <!--        </form>-->
 
         <div class="my-card-container">
-            <div class="my-card" th:if="${member.provider != null}">
-                <a href="#" th:onclick="'alert(\'소셜로그인은 정보 수정이 불가합니다.\'); return false;'">
-                    <img th:src="@{/images/memberupdate.png}" alt="회원정보수정" style="width: 80px;">
-                </a>
+            <a href="#" class="my-card" th:if="${member.provider != null}" th:onclick="'alert(\'소셜로그인은 정보 수정이 불가합니다.\'); return false;'">
+                <img th:src="@{/images/memberupdate.png}" alt="회원정보수정" style="width: 80px;">
                 <p>회원정보수정</p>
-            </div>
-            <div class="my-card" th:if="${member.provider == null}">
-                <a href="#" th:onclick="'openPasswordCheckPopup(); return false;'">
-                    <img th:src="@{/images/memberupdate.png}" alt="회원정보수정" style="width: 80px;">
-                </a>
+            </a>
+            <a href="#" class="my-card" th:if="${member.provider == null}" th:onclick="'openPasswordCheckPopup(); return false;'">
+                <img th:src="@{/images/memberupdate.png}" alt="회원정보수정" style="width: 80px;">
                 <p>회원정보수정</p>
-            </div>
-            <div class="my-card">
-                <a href="/orders">
-                    <img th:src="@{/images/buy.png}" alt="구매내역" style="width: 80px;">
-                </a>
+            </a>
+            <a href="/orders" class="my-card">
+                <img th:src="@{/images/buy.png}" alt="구매내역" style="width: 80px;">
                 <p>구매내역</p>
-            </div>
-            <div class="my-card">
-                <a href="/cart" class="move-right">
-                    <img th:src="@{/images/cart.png}" alt="장바구니" style="width: 80px;">
-                </a>
+            </a>
+            <a href="/cart" class="my-card">
+                <img th:src="@{/images/cart.png}" alt="장바구니" style="width: 80px;">
                 <p>장바구니</p>
-            </div>
-            <div class="my-card">
-                <a href="/members/wishlist">
-                    <img th:src="@{/images/wishlist.png}" alt="관심상품" style="width: 80px;">
-                </a>
+            </a>
+            <a href="/members/wishlist" class="my-card">
+                <img th:src="@{/images/wishlist.png}" alt="관심상품" style="width: 80px;">
                 <p>관심상품</p>
-            </div>
-            <div class="my-card">
-                <a href="/members/memberUpdate">
-                    <img th:src="@{/images/account.png}" alt="계좌관리" style="width: 80px;">
-                </a>
+            </a>
+            <a href="/members/memberUpdate" class="my-card">
+                <img th:src="@{/images/account.png}" alt="계좌관리" style="width: 80px;">
                 <p>포인트관리</p>
-            </div>
-            <div class="my-card" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                <a href="/admin/items">
-                    <img th:src="@{/images/sell.png}" alt="일반상품관리" style="width: 80px;">
-                </a>
+            </a>
+            <a href="/admin/items" class="my-card" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                <img th:src="@{/images/sell.png}" alt="일반상품관리" style="width: 80px;">
                 <p>일반상품관리</p>
-            </div>
-            <div class="my-card">
-                <a href="/customer-service/notices">
-                    <img th:src="@{/images/notice.png}" alt="공지사항" style="width: 80px;">
-                </a>
+            </a>
+            <a href="/customer-service/notices" class="my-card">
+                <img th:src="@{/images/notice.png}" alt="공지사항" style="width: 80px;">
                 <p>공지사항</p>
-            </div>
-            <div class="my-card" sec:authorize="hasAnyAuthority('ROLE_MEMBER', 'ROLE_ADMIN')">
-                <a href="/biditem/mybidlist">
-                    <img th:src="@{/images/review.png}" alt="내가 쓴 리뷰" style="width: 80px;">
-                </a>
+            </a>
+            <a href="/biditem/mybidlist" class="my-card" sec:authorize="hasAnyAuthority('ROLE_MEMBER', 'ROLE_ADMIN')">
+                <img th:src="@{/images/review.png}" alt="내가 쓴 리뷰" style="width: 80px;">
                 <p>나의 경매</p>
-            </div>
+            </a>
         </div>
     </div>
 
