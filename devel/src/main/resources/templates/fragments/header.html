@@ -95,9 +95,9 @@
         const row = button.closest("tr");
         const cid = row.cells[0].querySelector("input").value;
         const cname = row.cells[1].querySelector("input").value;
-        const cDesc = row.cells[2].querySelector("input").value;
+        const cdesc = row.cells[2].querySelector("input").value;
 
-        const category = { cid, cname, cDesc };
+        const category = { cid, cname, cdesc };
 
         fetch("/api/categories", {
             method: "POST",
@@ -119,9 +119,9 @@
         const row = button.closest("tr");
         const cid = row.cells[0].querySelector("input").value;
         const cname = row.cells[1].querySelector("input").value;
-        const cDesc = row.cells[2].querySelector("input").value;
+        const cdesc = row.cells[2].querySelector("input").value;
 
-        const category = { cid, cname, cDesc };
+        const category = { cid, cname, cdesc };
 
         fetch("/api/categories", {
             method: "PUT",
@@ -149,7 +149,7 @@
             if (response.ok) {
                 location.reload();
             } else {
-                alert("삭제 실패");
+                alert("해당 카테고리에 물품이 존재합니다....");
             }
         });
     }

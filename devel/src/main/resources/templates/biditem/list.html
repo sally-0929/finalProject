@@ -450,17 +450,18 @@
     <div class="pagination justify-content-center mt-4">
         <ul class="pagination">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/biditem/list(page=${currentPage > 0 ? currentPage - 1 : 0})}"> < </a>
+                <a class="page-link" th:href="@{/biditem/list(page=${currentPage > 0 ? currentPage - 1 : 0}, cid=${cid}, auctionStatus=${auctionStatus})}"> < </a>
             </li>
             <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
                 th:classappend="${pageNum == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/biditem/list(page=${pageNum})}" th:text="${pageNum + 1}">1</a>
+                <a class="page-link" th:href="@{/biditem/list(page=${pageNum}, cid=${cid}, auctionStatus=${auctionStatus})}" th:text="${pageNum + 1}">1</a>
             </li>
             <li class="page-item" th:classappend="${currentPage == (totalPages != null ? totalPages - 1 : 0)} ? 'disabled'">
-                <a class="page-link" th:href="@{/biditem/list(page=${currentPage < (totalPages != null ? totalPages - 1 : 0) ? currentPage + 1 : currentPage})}"> > </a>
+                <a class="page-link" th:href="@{/biditem/list(page=${currentPage < (totalPages != null ? totalPages - 1 : 0) ? currentPage + 1 : currentPage}, cid=${cid}, auctionStatus=${auctionStatus})}"> > </a>
             </li>
         </ul>
     </div>
+
 
 
 </div>
