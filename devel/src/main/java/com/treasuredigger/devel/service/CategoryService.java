@@ -35,15 +35,15 @@ public class CategoryService {
 
     }
 
-    public void update(CategoryDto categoryDto){
-        ItemCategory itemCategory  = dtoToEntity(categoryDto);
-        categoryRepository.findById(itemCategory.getCid()).ifPresent(category -> {
-            category.setCname(itemCategory.getCname());
-            category.setCDesc(itemCategory.getCDesc());
+    public void update(CategoryDto categoryDto) {
+        ItemCategory itemCategory = dtoToEntity(categoryDto);
+        categoryRepository.findById(itemCategory.getCid()).ifPresent(existingCategory -> {
+            existingCategory.setCname(itemCategory.getCname());
+            existingCategory.setCdesc(itemCategory.getCdesc()); // Cdesc 수정
+            categoryRepository.save(existingCategory); // 수정된 기존 엔티티를 저장
         });
-        categoryRepository.save(itemCategory);
-
     }
+
 
     public void delete(String cid){
         categoryRepository.deleteById(cid);
@@ -56,7 +56,7 @@ public class CategoryService {
         ItemCategory category = new ItemCategory();
         category.setCid(categoryDto.getCid());
         category.setCname(categoryDto.getCname());
-        category.setCDesc(categoryDto.getCDesc());
+        category.setCdesc(categoryDto.getCDesc());
         return category;
     }
 
@@ -67,7 +67,7 @@ public class CategoryService {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setCid(category.getCid());
         categoryDto.setCname(category.getCname());
-        categoryDto.setCDesc(category.getCDesc());
+        categoryDto.setCDesc(category.getCdesc());
         return categoryDto;
     }
 

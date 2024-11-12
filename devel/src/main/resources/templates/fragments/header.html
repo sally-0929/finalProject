@@ -81,7 +81,7 @@
         row.innerHTML = `
             <td><input type="text" class="form-control" value="${category.cid}" ${!isNew ? 'readonly' : ''}></td>
             <td><input type="text" class="form-control" value="${category.cname}"></td>
-            <td><input type="text" class="form-control" value="${category.cDesc}"></td>
+            <td><input type="text" class="form-control" value="${category.cdesc}"></td>
             <td>
                 ${isNew ? `<button class="btn btn-success" onclick="saveCategory(this)">저장</button>` :
                 `<button class="btn btn-primary" onclick="updateCategory(this)">수정</button>
