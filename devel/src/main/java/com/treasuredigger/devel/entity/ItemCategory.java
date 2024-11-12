@@ -19,5 +19,5 @@ public class ItemCategory {
 
     private String cname;
 
-    private String cDesc;
+    private String cdesc;
 }
