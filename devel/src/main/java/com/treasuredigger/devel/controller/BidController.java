@@ -58,7 +58,7 @@ public class BidController {
                         Authentication authentication) {
         if (page < 0) page = 0;
         bidItemService.updateItemStatuses();
-        Pageable pageable = PageRequest.of(page, 15);
+        Pageable pageable = PageRequest.of(page, 20);
         Page<BidItemDto> bidItemPage = bidItemService.getList(searchQuery, pageable, cid, auctionStatus);
 
         model.addAttribute("categories", categoryService.list());

@@ -12,12 +12,6 @@
                 const formattedPrice = Number(priceText.replace(/[^0-9.-]+/g, "")).toLocaleString();
                 priceElement.textContent = formattedPrice + '원';
             });
-            document.getElementById("resetBtn").addEventListener("click", function() {
-                document.querySelector("[name='searchDateType']").value = "all";
-                document.querySelector("[name='searchSellStatus']").value = "";
-                document.querySelector("[name='searchBy']").value = "itemNm";
-                document.querySelector("[name='cid']").value = "";
-            });
         });
     </script>
 </th:block>
@@ -181,7 +175,7 @@
             </select>
             <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="검색어를 입력해주세요">
             <button style="margin-left:5px;" id="searchBtn" type="submit" class="btn btn-primary">검색</button>
-            <button type="button" id="resetBtn" class="btn btn-secondary" style="margin-left:5px;">초기화</button>
+            <button type="button" id="resetBtn" class="btn btn-secondary" style="margin-left:5px;" onclick="window.location.href='/admin/items'">초기화</button>
         </div>
         <!-- 검색 결과 테이블 -->
         <table class="table table-striped">

@@ -64,10 +64,11 @@ public class MainController {
     public String loadItems(@RequestParam("page") int page,
                             @RequestParam("size") Optional<Integer> size,
                             @RequestParam("cid") Optional<String> cid,
+                            @RequestParam("searchQuery") Optional<String> searchQuery,
                             ItemSearchDto itemSearchDto, Model model) {
         int pageSize = size.orElse(20);
         Pageable pageable = PageRequest.of(page, pageSize);
-
+        itemSearchDto.setSearchQuery(searchQuery.orElse(""));
         Page<MainItemDto> items;
         if (cid.isPresent()) {
             items = itemService.getMainItemPageByCategory(cid.get(), itemSearchDto, pageable);
