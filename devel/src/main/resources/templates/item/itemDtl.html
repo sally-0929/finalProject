@@ -370,7 +370,7 @@
 
 <div layout:fragment="content" style="margin-left: 25%; margin-right: 25%;">
     <!-- 추가된 결제/구매 컨테이너 -->
-    <div id="floatingPurchaseContainer" class="floating-container">
+    <div th:if="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL}" id="floatingPurchaseContainer" class="floating-container">
         <div class="floating-purchase">
             <div th:if="${item.stockNumber > 0}" class="text-right">
                 <h5>결제 금액</h5>

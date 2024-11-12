@@ -189,7 +189,27 @@
                 cache: false,
                 success: function(result, status) {
                     console.log('result ' + result);
-                    location.href = '/payments/paymentP?orderId=' + result;
+                    // 팝업 창 크기 설정
+                    var width = 1000;
+                    var height = 700;
+
+                    // 브라우저 창의 중앙에 위치 계산
+                    var left = window.screenX + (window.innerWidth - width) / 2;
+                    var top = window.screenY + (window.innerHeight - height) / 2;
+
+                    // 새 창으로 결제 페이지 열기
+                    var paymentWindow = window.open(
+                        '/payments/paymentP?orderId=' + result,
+                        'paymentPopup',
+                        `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+                    );
+                    // 결제 창이 닫힐 때 /orders로 이동
+                    var timer = setInterval(function() {
+                        if (paymentWindow.closed) {
+                            clearInterval(timer);
+                            window.location.href = '/orders';
+                        }
+                    }, 500); // 0.5초 간격으로 창 상태 확인
                 },
                 error: function(jqXHR, status, error) {
                     if (jqXHR.status == '401') {
@@ -298,7 +318,7 @@
         </h2>
 
         <div class="text-center mt-3">
-            <button type="button" class="btn btn-primary btn-lg" onclick="orders()">주문하기</button>
+            <button type="button" class="btn btn-primary btn-lg" onclick="orders()">구매하기</button>
         </div>
     </div>
 </div>
