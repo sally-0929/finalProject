@@ -240,7 +240,7 @@
                 <li th:each="wishlistItem : ${recentItemWishlist}" style="margin-bottom: 15px;">
                     <a th:href="'/item/' + ${wishlistItem.itemId}" class="text-dark d-flex flex-column align-items-center">
                         <img th:src="${wishlistItem.imgUrl}" style="width: 95px; height: 95px; object-fit: contain; object-position: center;margin-bottom: 5px; border:1px solid lightgray; border-radius:10px;">
-                        <span th:text="${wishlistItem.itemNm}" style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; display: block; width: 130px;"></span>
+                        <span th:text="${wishlistItem.itemNm}" style="font-size: 14px; overflow: hidden; text-overflow: ellipsis; text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; width: 100px; line-height: 1.3em; max-height: 2.6em;"></span>
                     </a>
                 </li>
             </ul>
@@ -279,7 +279,7 @@
                                   th:text="${item.itemSellStatus == T(com.treasuredigger.devel.constant.ItemSellStatus).SELL ? '판매중' : '품절'}">
                             </span>
                         </div>
-                        <span class="card-title" style="font-size:18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 100%; margin-bottom:0px">[[${item.itemNm}]]</span><br>
+                        <span class="card-title" style="font-size:18px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; max-width: 100%; line-height: 1.3em; max-height: 2.6em; margin-bottom: 5px;">[[${item.itemNm}]]</span>
                         <span class="card-title text-danger" style="font-size:18px; font-weight:bold"><span th:text="${item.price}"></span>원</span>
                     </div>
                 </div>

@@ -63,7 +63,7 @@ public class OrderController {
     public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model){
         System.out.println("prin value" + principal.getName());
 
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 20);
         Page<OrderHistDto> ordersHistDtoList = orderService.getOrderList(principal.getName(), pageable);
         System.out.println("orderHist" + ordersHistDtoList.toString());
 
