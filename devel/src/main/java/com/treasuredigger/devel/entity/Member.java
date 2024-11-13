@@ -67,7 +67,8 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // carts와의 관계
     private List<Cart> carts;
 
-
+    // 추가: 포인트 필드
+    private int points = 0;  // 기본값은 0
 
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder){
         Member member = new Member();
@@ -78,6 +79,7 @@ public class Member extends BaseEntity {
         member.setPassword(password);
         member.setRole(Role.USER);
 
+        // 기본 등급 생성
         MemberGrade memberGrade = new MemberGrade(member);
         member.setMemberGrade(memberGrade);
 
@@ -89,6 +91,16 @@ public class Member extends BaseEntity {
         this.email = memberFormDto.getEmail();
         this.phone = memberFormDto.getPhone();
         this.address = memberFormDto.getAddress();
+    }
+
+    // 포인트 증가
+    public void addPoints(int pointsToAdd) {
+        this.points += pointsToAdd;
+    }
+
+    // 포인트 차감
+    public void deductPoints(int pointsToDeduct) {
+        this.points = Math.max(0, this.points - pointsToDeduct);  // 포인트가 0 이하로 떨어지지 않도록
     }
 
     @Builder

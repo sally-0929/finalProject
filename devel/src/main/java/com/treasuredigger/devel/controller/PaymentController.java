@@ -38,6 +38,7 @@ public class PaymentController {
     private final BidItemService bidItemService;
     private final RefundService refundService;
     private final IamportConfig iamportConfig;
+    private final PointService pointService;
 
     /**
      * 아임포트 결제 검증
@@ -58,10 +59,6 @@ public class PaymentController {
             if (payment != null && "paid".equals(payment.getStatus())) {
                 // 결제 성공 처리
                 log.info("결제 성공 - 주문 번호: {}, 상태: {}, 금액: {}", payment.getMerchantUid(), payment.getStatus(), payment.getAmount());
-                String merchantUid = payment.getMerchantUid();
-//                String orderIdString = orderId1.substring(6); // "order_" 이후의 부분을 가져옴
-//
-//                Long orderId = Long.parseLong(orderIdString); // 숫자 부분을 Long으로 변환
                 orderService.changeOrderStatus(orderId, OrderStatus.PAYMENT_COMPLETED);
 
                 try {
@@ -73,6 +70,8 @@ public class PaymentController {
 
                     bidService.saveBid(bidItemId, mid, bidNowPrice, "Y");
                     bidItemService.updateItemStatuses();
+
+                    pointService.addPoints(member.getId(), payment.getAmount());
                     return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿
                 } catch (Exception e) {
                     return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿

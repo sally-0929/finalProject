@@ -38,7 +38,7 @@ public class MemberGradeService {
         return totalPurchaseAmount;
     }
 
-    private void updateGradeStatus(MemberGrade memberGrade, long totalPurchaseAmount) {
+    public void updateGradeStatus(MemberGrade memberGrade, long totalPurchaseAmount) {
         if (totalPurchaseAmount >= 1_000_000) {
             memberGrade.setMemberGradeStatus(MemberGradeStatus.VVIP);
         } else if (totalPurchaseAmount >= 500_000) {
