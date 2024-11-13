@@ -429,7 +429,8 @@
                         </span><br>
                         <span class="card-title" style="font-size:16px">입찰횟수 : [[${item.bidCount-1}]]</span><br>
                         <span class="card-title text-danger" style="font-size:10px" th:attr="data-enddate=${item.bidEndDate}"></span>
-                        <p style="font-size:16px; margin-bottom:0 !important" th:id="'remainingTime-' + ${item.bidItemId}">남은 시간 계산 중...</p>
+                        <p style="font-size:16px; margin-bottom:0 !important" th:id="'remainingTime-' + ${item.bidItemId}" th:data-status="${item.itemStatus}">남은 시간 계산 중...</p>
+
 
                         판매자 <span class="sellerInfo" style="font-weight:bold" th:text="${item.memberId}">
                         </span>
@@ -437,6 +438,17 @@
                         <div class="sellerEmail" style="display:none;" th:text="${item.email}"></div>
 
                         <script> document.addEventListener("DOMContentLoaded", function() {
+
+                        const remainingTimeElements = document.querySelectorAll("[id^='remainingTime-']");
+                        remainingTimeElements.forEach(function(element) {
+                        // 각 요소의 data-status 값을 확인
+                        const status = element.getAttribute('data-status');
+                        if (status === 'END') {
+                        // itemStatus가 END이면 display를 none으로 설정
+                         element.style.display = 'none';
+                         }
+                         });
+
                         const sellerInfoElements = document.querySelectorAll('.sellerInfo');
                         const sellerEmailElements = document.querySelectorAll('.sellerEmail');
 
