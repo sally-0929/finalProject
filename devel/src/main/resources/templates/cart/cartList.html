@@ -42,10 +42,17 @@
             $("input[name=cartChkBox]").each(function() {
                 var cartItemId = $(this).val();
                 var stockNumber = $("#stock_" + cartItemId).data("stock");
+                var countInput = $("#count_" + cartItemId);
+                var currentCount = parseInt(countInput.val());
 
                 if (stockNumber <= 0) {
                     alert($("#price_" + cartItemId).data("item-name") + " 상품이 품절되었습니다.");
                     deleteCartItem(cartItemId); // cartItemId를 인자로 전달
+                } else if (currentCount > stockNumber) {
+                    alert($("#price_" + cartItemId).data("item-name") + " 상품의 수량이 재고를 초과하여 최대 수량으로 변경되었습니다.");
+                    countInput.val(stockNumber); // 수량을 재고 수량으로 조정
+                    updateCartItemCount(cartItemId, stockNumber); // 서버에 변경된 수량 업데이트
+                    getOrderTotalPrice(); // 총 금액 업데이트
                 }
             });
         }

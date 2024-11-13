@@ -312,23 +312,103 @@
         }
 
         #refundModal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-content-container {
+            width: 600px;
+            height: 500px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10001;
+        }
+
+        .modal-content-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(135deg, #c0c0c0 15%, transparent 15%, transparent 50%, #c0c0c0 50%, #c0c0c0 65%, transparent 65%, transparent),
+                              linear-gradient(135deg, #c0c0c0 15%, transparent 15%, transparent 50%, #c0c0c0 50%, #c0c0c0 65%, transparent 65%, transparent);
+            background-size: 40px 40px;
+            opacity: 0.25; /* 패턴이 더 진하게 보이도록 */
+            z-index: -1; /* 패턴이 모달 내용 뒤에 위치하도록 설정 */
+            border-radius: 12px; /* 모달 테두리에 맞춰 모양 조정 */
         }
 
         .modal-content {
-            background-color: white;
+            background-color: #fff;
             padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            z-index: 2;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            width: 400px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-button:hover {
+            background-color: #45a049;
+        }
+
+        .modal-cancel {
+            background-color: #f44336;
+        }
+
+        .modal-cancel:hover {
+            background-color: #d32f2f;
         }
 
         textarea {
@@ -373,11 +453,22 @@
                     <h6>(취소 완료)</h6>
                 </th:block>
                 <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).PAYMENT_COMPLETED}">
-                    <button type="button" class="btn btn-outline-secondary btn-sm"
-                            th:value="${order.orderId}"
-                            th:data-order-merchantUid="${order.merchantUid}" onclick="openRefundModal(this.value, this.getAttribute('data-order-merchantUid'))">
-                    (결제 완료) 환불 요청
-                    </button>
+                    <div th:each="orderItem : ${order.orderItemDtoList}">
+                        <th:block th:if="${orderItem != null}">
+                            <th:block th:if="${orderItem.itemId != null}">
+                                <!-- 일반상품: 결제 완료 시 환불 요청 버튼 -->
+                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        th:value="${order.orderId}"
+                                        th:data-order-merchantUid="${order.merchantUid}" onclick="openRefundModal(this.value, this.getAttribute('data-order-merchantUid'))">
+                                    (결제 완료) 환불 요청
+                                </button>
+                            </th:block>
+                            <th:block th:if="${orderItem.itemId == null}">
+                                <!-- 경매상품: 결제 완료 시 환불 불가 표시 -->
+                                <h6>(결제 완료) 환불 불가</h6>
+                            </th:block>
+                        </th:block>
+                    </div>
                 </th:block>
             </div>
 
@@ -385,12 +476,16 @@
 
         <!-- 환불 사유 입력 모달 -->
         <div id="refundModal" style="display: none;">
-            <div class="modal-content">
-                <h3>환불 요청</h3>
-                <textarea id="refundReason" placeholder="환불 사유를 입력하세요." rows="4" cols="50"></textarea>
-                <br>
-                <button type="button" onclick="submitRefund()">환불 요청</button>
-                <button type="button" onclick="closeRefundModal()">취소</button>
+            <div class="modal-content-container">
+                <div class="modal-content">
+                    <h3>환불 요청</h3>
+                    <textarea id="refundReason" placeholder="환불 사유를 입력하세요." rows="4" cols="50"></textarea>
+                    <br>
+                    <div class="modal-buttons">
+                        <button type="button" class="modal-button" onclick="submitRefund()">환불 요청</button>
+                        <button type="button" class="modal-button modal-cancel" onclick="closeRefundModal()">취소</button>
+                    </div>
+                </div>
             </div>
         </div>
 
