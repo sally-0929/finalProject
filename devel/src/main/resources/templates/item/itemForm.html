@@ -30,6 +30,15 @@
 
                 $(this).siblings(".custom-file-label").html(fileName);
             });
+
+            // 카테고리 선택 확인
+            $("form").on("submit", function(event) {
+                var selectedCategory = $("select[name='cid']").val();
+                if (selectedCategory === "") {
+                    alert("카테고리를 선택하세요.");
+                    event.preventDefault(); // 폼 제출 중단
+                }
+            });
         }
 
     </script>

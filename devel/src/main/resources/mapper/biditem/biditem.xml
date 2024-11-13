@@ -121,11 +121,18 @@
     </select>
 
     <select id="getSuccessfulBid" resultType="com.treasuredigger.devel.dto.BidDto">
-        select max(bt.bid_reg_price) as bidregprice,
+        SELECT max(bt.bid_reg_price) as bidregprice,
         m.email as email,
         m.mid as mid
-        from bids_tbl bt join `member` m on bt.member_id = m.member_id
+        FROM bids_tbl bt
+        JOIN `member` m ON bt.member_id = m.member_id
         WHERE bt.bid_item_id = #{bidItemId}
+        AND bt.bid_reg_price = (
+        SELECT MAX(bid_reg_price)
+        FROM bids_tbl
+        WHERE bid_item_id = #{bidItemId}
+        )
+
     </select>
 
 
