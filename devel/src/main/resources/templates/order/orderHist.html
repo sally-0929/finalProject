@@ -430,12 +430,16 @@
 
         <!-- 환불 사유 입력 모달 -->
         <div id="refundModal" style="display: none;">
-            <div class="modal-content">
-                <h3>환불 요청</h3>
-                <textarea id="refundReason" placeholder="환불 사유를 입력하세요." rows="4" cols="50"></textarea>
-                <br>
-                <button type="button" onclick="submitRefund()">환불 요청</button>
-                <button type="button" onclick="closeRefundModal()">취소</button>
+            <div class="modal-content-container">
+                <div class="modal-content">
+                    <h3>환불 요청</h3>
+                    <textarea id="refundReason" placeholder="환불 사유를 입력하세요." rows="4" cols="50"></textarea>
+                    <br>
+                    <div class="modal-buttons">
+                        <button type="button" class="modal-button" onclick="submitRefund()">환불 요청</button>
+                        <button type="button" class="modal-button modal-cancel" onclick="closeRefundModal()">취소</button>
+                    </div>
+                </div>
             </div>
         </div>
 
