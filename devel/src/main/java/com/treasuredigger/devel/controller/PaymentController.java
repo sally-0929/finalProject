@@ -116,6 +116,9 @@ public class PaymentController {
             paymentEntity.cancelPayment();  // 결제 상태를 CANCELED로 변경
             paymentService.save(paymentEntity);  // 변경된 PaymentEntity 저장
 
+            // 환불 사유 저장
+            refundService.saveRefundReason(merchantUid, reason);
+
             return ResponseEntity.ok("환불 요청이 완료되었습니다.");
         } catch (Exception e) {
             log.error("환불 요청 처리 중 오류 발생", e);

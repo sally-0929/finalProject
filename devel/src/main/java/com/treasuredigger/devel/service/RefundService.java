@@ -3,6 +3,8 @@ package com.treasuredigger.devel.service;
 import com.nimbusds.jose.shaded.gson.Gson;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.siot.IamportRestClient.IamportClient;
+import com.treasuredigger.devel.entity.RefundReason;
+import com.treasuredigger.devel.repository.RefundReasonRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 public class RefundService {
+
+    private final RefundReasonRepository refundReasonRepository;
 
     public void refundRequest(String accessToken, String merchantUid, String reason) throws IOException {
         URL url = new URL("https://api.iamport.kr/payments/cancel");
@@ -95,6 +99,11 @@ public class RefundService {
 
         log.info("Iamport 엑세스 토큰 발급 성공 : {}", accessToken);
         return accessToken;
+    }
+
+    public void saveRefundReason(String merchantUid, String reason) {
+        RefundReason refundReason = new RefundReason(merchantUid, reason);
+        refundReasonRepository.save(refundReason);
     }
 }
 
