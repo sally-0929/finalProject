@@ -5,11 +5,10 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.treasuredigger.devel.config.IamportConfig;
 import com.treasuredigger.devel.constant.OrderStatus;
-import com.treasuredigger.devel.entity.BidItem;
-import com.treasuredigger.devel.entity.Member;
-import com.treasuredigger.devel.entity.Order;
-import com.treasuredigger.devel.entity.OrderItem;  // OrderItem 추가
+import com.treasuredigger.devel.constant.PaymentStatus;
+import com.treasuredigger.devel.entity.*;
 import com.treasuredigger.devel.repository.OrderRepository;
+import com.treasuredigger.devel.repository.PaymentRepository;
 import com.treasuredigger.devel.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +30,7 @@ import java.util.Optional;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
     private final BidService bidService;
     private final OrderService orderService;
@@ -108,6 +108,13 @@ public class PaymentController {
             refundService.refundRequest(accessToken, merchantUid, reason);
 
             log.info("환불 요청 성공 - orderId: {}, merchantUid: {}, reason: {}", orderId, merchantUid, reason);
+
+            orderService.cancelOrder(orderId);
+
+            // PaymentEntity 상태를 CANCELED로 변경
+            PaymentEntity paymentEntity = paymentService.findPaymentByMerchantUid(merchantUid); // merchantUid로 PaymentEntity 조회
+            paymentEntity.cancelPayment();  // 결제 상태를 CANCELED로 변경
+            paymentService.save(paymentEntity);  // 변경된 PaymentEntity 저장
 
             return ResponseEntity.ok("환불 요청이 완료되었습니다.");
         } catch (Exception e) {
