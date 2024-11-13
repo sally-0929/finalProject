@@ -150,6 +150,10 @@ public class BidController {
                                            @RequestParam("buyNowCheck") String buyNowCheck,Principal principal) {
         System.out.println("buyNowCheck + " + buyNowCheck + bidNowPrice);
         Member member =  memberService.findMemberByMid(principal.getName());
+        System.out.println("email +++" + member.getEmail());
+        if(member.getEmail() == null || member.getEmail().isEmpty()){
+            return new ResponseEntity<String>("인증을 해야 입찰하실수있습니다.", HttpStatus.BAD_REQUEST);
+        }
 
 
         Long mid = member.getId();

@@ -745,7 +745,7 @@
                         },
                         error: function(error) {
                             console.log('error: ' + JSON.stringify(error));
-                            alert('입찰이 실패했습니다.');
+                            alert(error.responseText);
                         }
                     });
                 } else {

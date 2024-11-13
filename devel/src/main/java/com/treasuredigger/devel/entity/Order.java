@@ -56,7 +56,8 @@ public class Order extends BaseEntity {
         for (OrderItem orderItem : orderItemList) {
             order.addOrderItem(orderItem);
         }
-
+        order.setCreatedBy(member.getMid());
+        order.setModifiedBy(member.getMid());
         order.setOrderStatus(OrderStatus.ORDER);
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(order.getTotalPrice());
