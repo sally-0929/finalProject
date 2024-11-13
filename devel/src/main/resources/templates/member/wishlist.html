@@ -46,6 +46,14 @@
             vertical-align: middle;
             text-align: center;
         }
+
+        /* 상품명 스타일 */
+        .table td.product-name {
+            white-space: nowrap; /* 한 줄로 유지 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 넘칠 때 생략 부호 */
+            max-width: 200px; /* 최대 너비 설정 */
+        }
     </style>
 </th:block>
 
@@ -94,7 +102,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="wishlist : ${wishlist}" th:if="${wishlist.itemId != null}">
-                    <td th:text="${wishlist.itemNm}"></td>
+                    <td class="product-name" th:text="${wishlist.itemNm}"></td>
                     <td th:text="${wishlist.iSellStatus == 'SELL' ? '판매중' : (wishlist.iSellStatus == 'SOLD_OUT' ? '품절' : '')}"></td>
                     <td class="price" th:text="${wishlist.price}"></td>
                     <td th:text="${wishlist.stockNumber}"></td>
@@ -117,7 +125,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="wishlist : ${wishlist}" th:if="${wishlist.itemId == null}">
-                    <td th:text="${wishlist.bidItemName}"></td>
+                    <td class="product-name" th:text="${wishlist.bidItemName}"></td>
                     <td th:text="${wishlist.itemStatus == 'WAIT' ? '경매대기중' : (wishlist.itemStatus == 'ING' ? '경매중' : '경매종료')}"></td>
                     <td class="bid-price" th:text="${wishlist.bidNowPrice}"></td>
                     <td class="bid-price" th:text="${wishlist.maxPrice}"></td>
