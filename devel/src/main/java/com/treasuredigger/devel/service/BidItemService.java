@@ -189,6 +189,7 @@ public class BidItemService {
         return () -> {
             BidDto bidDto =  bidItemMapper.getSuccessfulBid(bidItemId);
             //order로 옮겨주는 로직 필요
+            System.out.println("task log " + bidDto.toString());
             Long orderId =  orderService.orderBidItem(bidItemId, bidDto.getMid(), bidDto.getBidRegPrice());
 
 

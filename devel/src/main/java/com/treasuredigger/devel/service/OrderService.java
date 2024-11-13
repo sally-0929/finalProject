@@ -75,6 +75,7 @@ public class OrderService {
         Member member = memberRepository.findByMid(mid);
         List<OrderItem> orderItemList = new ArrayList<>();
         bidItem.setMaxPrice(bidPrice);
+        bidItem.setMember(member);
         OrderItem orderItem = OrderItem.createOrderBidItem(bidItem);
         orderItemList.add(orderItem);
         Order order = Order.createOrder(member, orderItemList);
