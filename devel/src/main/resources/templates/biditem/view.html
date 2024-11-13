@@ -818,6 +818,13 @@
             const imageTarget = $(this).find('img'); // 대상 이미지
             const magnifierDiv = $(this).find('.magnifier'); // 돋보기 요소
 
+            // 돋보기 크기를 늘리기 (예: width와 height를 150px로 설정)
+            const magnifierSize = 250;  // 돋보기의 크기
+            magnifierDiv.css({
+                "width": `${magnifierSize}px`,
+                "height": `${magnifierSize}px`
+            });
+
             // 확대 효과 함수 정의
             function magnify(e) {
                 const mousePosX = e.pageX - $(this).offset().left; // 마우스 X 좌표

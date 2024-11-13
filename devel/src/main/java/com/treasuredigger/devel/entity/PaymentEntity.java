@@ -107,4 +107,9 @@ public class PaymentEntity {
                 ", merchantUid='" + merchantUid + '\'' +
                 '}';
     }
+
+    public void cancelPayment() {
+        this.paymentStatus = PaymentStatus.CANCELED;  // 결제 상태를 CANCELED로 변경
+        this.paymentDate = LocalDateTime.now();        // 결제 취소 일시를 현재 시간으로 설정
+    }
 }
