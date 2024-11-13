@@ -77,14 +77,9 @@ public class OrderService {
         bidItem.setMaxPrice(bidPrice);
         bidItem.setMember(member);
 
-        bidItem.setCreatedBy(mid);
-        bidItem.setModifiedBy(mid);
-
-
         OrderItem orderItem = OrderItem.createOrderBidItem(bidItem);
         orderItem.setCreatedBy(mid);
         orderItem.setModifiedBy(mid);
-        System.out.println("orderItem" + orderItem.toString());
         orderItemList.add(orderItem);
         Order order = Order.createOrder(member, orderItemList);
         orderRepository.save(order);

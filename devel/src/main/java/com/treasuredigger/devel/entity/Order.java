@@ -63,6 +63,9 @@ public class Order extends BaseEntity {
         order.setTotalAmount(order.getTotalPrice());
         order.setMerchantUid(merchantUid); // merchantUid 설정
 
+        System.out.print("yyyyyyyyyyyyyyyyyyyyy" + order.getCreatedBy());
+        System.out.print("yyyyyyyyyyyyyyyyyyyyy" + order.getModifiedBy());
+
         return order;
     }
 

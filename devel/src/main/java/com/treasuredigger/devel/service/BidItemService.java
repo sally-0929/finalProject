@@ -192,6 +192,10 @@ public class BidItemService {
             System.out.println("task log " + bidDto.toString());
             Long orderId =  orderService.orderBidItem(bidItemId, bidDto.getMid(), bidDto.getBidRegPrice());
 
+            System.out.print("xxxxxxxxxxxxxxxxx" + bidItemId);
+            System.out.print("xxxxxxxxxxxxxxxxx" + bidDto.getMid());
+            System.out.print("xxxxxxxxxxxxxxxxx" + bidDto.getBidRegPrice());
+
 
             String htmlContent = "<html>"
                     + "<body style=\"margin: 0; padding: 0; font-family: Arial, sans-serif;\">"
