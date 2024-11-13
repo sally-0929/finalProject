@@ -407,15 +407,17 @@
                     <h6>(취소 완료)</h6>
                 </th:block>
                 <th:block th:if="${order.orderStatus == T(com.treasuredigger.devel.constant.OrderStatus).PAYMENT_COMPLETED}">
-                    <div th:each="orderItem : ${order.orderItemDtoList}">
+                    <div th:each="orderItem, iterStat : ${order.orderItemDtoList}">
                         <th:block th:if="${orderItem != null}">
                             <th:block th:if="${orderItem.itemId != null}">
-                                <!-- 일반상품: 결제 완료 시 환불 요청 버튼 -->
-                                <button type="button" class="btn btn-outline-secondary btn-sm"
-                                        th:value="${order.orderId}"
-                                        th:data-order-merchantUid="${order.merchantUid}" onclick="openRefundModal(this.value, this.getAttribute('data-order-merchantUid'))">
-                                    (결제 완료) 환불 요청
-                                </button>
+                                <th:block th:if="${iterStat.index == 0}">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                            th:value="${order.orderId}"
+                                            th:data-order-merchantUid="${order.merchantUid}"
+                                            onclick="openRefundModal(this.value, this.getAttribute('data-order-merchantUid'))">
+                                        (결제 완료) 환불 요청
+                                    </button>
+                                </th:block>
                             </th:block>
                             <th:block th:if="${orderItem.itemId == null}">
                                 <!-- 경매상품: 결제 완료 시 환불 불가 표시 -->
