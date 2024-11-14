@@ -4,12 +4,14 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.treasuredigger.devel.config.IamportConfig;
+import com.treasuredigger.devel.constant.MemberGradeStatus;
 import com.treasuredigger.devel.constant.OrderStatus;
 import com.treasuredigger.devel.constant.PaymentStatus;
 import com.treasuredigger.devel.entity.*;
 import com.treasuredigger.devel.repository.OrderRepository;
 import com.treasuredigger.devel.repository.PaymentRepository;
 import com.treasuredigger.devel.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,15 +49,20 @@ public class PaymentController {
      */
     @RequestMapping(value = "/validation/{orderId}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> validateIamport(@PathVariable Long orderId, @RequestParam("imp_uid") String imp_uid, Model model, Principal principal) throws IamportResponseException, IOException {
+    public ResponseEntity<String> validateIamport(@PathVariable Long orderId,
+                                                  @RequestParam("imp_uid") String imp_uid,
+                                                  @RequestParam(value = "usePoints", required = false) BigDecimal usePoints,
+                                                  Model model,
+                                                  Principal principal) throws IamportResponseException, IOException {
 
         // 결제 검증 결과
         IamportResponse<Payment> paymentResponse = paymentService.validateIamport(imp_uid);
 
-// paymentResponse가 null이 아니고, 응답 코드가 0이면 결제 검증 성공
+        // paymentResponse가 null이 아니고, 응답 코드가 0이면 결제 검증 성공
         if (paymentResponse != null && paymentResponse.getCode() == 0) {
             // response.getResponse()를 사용해서 Payment 객체 확인
             Payment payment = paymentResponse.getResponse();
+            BigDecimal finalAmount = payment.getAmount(); // 결제 금액을 BigDecimal로 저장
 
             // 결제 상태 확인
             if (payment != null && "paid".equals(payment.getStatus())) {
@@ -62,25 +71,79 @@ public class PaymentController {
                 orderService.changeOrderStatus(orderId, OrderStatus.PAYMENT_COMPLETED);
 
                 try {
+                    // 2. 회원 및 포인트 처리 (포인트 차감 먼저 처리)
+                    Member member = memberService.findMemberByMid(principal.getName());
+                    Long mid = member.getId();
+                    BigDecimal availablePoints = BigDecimal.valueOf(member.getPoints());  // int -> BigDecimal 변환
+
+                    log.info("회원 ID: {}, 보유 포인트: {}", mid, availablePoints);
+
+                    // 포인트 사용 여부 체크 (포인트 사용 요청이 있을 경우)
+                    if (usePoints != null && usePoints.compareTo(BigDecimal.ZERO) > 0) {
+                        // 포인트 사용 가능 여부 체크
+                        if (usePoints.compareTo(availablePoints) > 0) {
+                            log.warn("사용하려는 포인트가 보유한 포인트보다 큽니다. 사용하지 않습니다.");
+                            return new ResponseEntity<>("fail", HttpStatus.OK);  // 포인트 부족
+                        }
+
+                        // 결제 금액에서 포인트 차감
+                        finalAmount = finalAmount.subtract(usePoints);  // 포인트만큼 차감한 금액
+                        member.deductPoints(usePoints.intValue());  // 포인트 차감
+
+                        log.info("포인트 사용: {}원, 결제 금액 차감 후 금액: {}", usePoints, finalAmount);
+                    }
+
+                    Order order = orderService.getOrderById(orderId);
+
+                    // 1. 결제 정보 DB에 저장 (포인트 차감 후 금액 저장)
+                    PaymentEntity paymentEntity = new PaymentEntity();
+                    paymentEntity.setMerchantUid(payment.getMerchantUid());
+                    paymentEntity.setAmount(finalAmount.intValue());  // 결제 금액 저장 (최종 결제 금액)
+                    paymentEntity.setPaymentDate(LocalDateTime.now());
+                    paymentEntity.setOrder(order);
+                    String status = payment.getStatus();
+                    if (status != null) {
+                        // 예시: Enum 타입으로 변환하는 경우
+                        try {
+                            PaymentStatus paymentStatus = PaymentStatus.valueOf(status.toUpperCase());  // enum 변환
+                            paymentEntity.setPaymentStatus(paymentStatus);  // 변환된 enum을 설정
+                        } catch (IllegalArgumentException e) {
+                            // 변환할 수 없는 상태 값 처리
+                            log.error("유효하지 않은 결제 상태: {}", status);
+                        }
+                    }
+                    paymentRepository.save(paymentEntity);  // 결제 정보 DB 저장
+
+                    // 3. 포인트 적립
+                    MemberGradeStatus memberGrade = member.getMemberGrade().getMemberGradeStatus();
+                    int pointRate = memberGrade.getPointRate();  // 회원 등급에 따른 포인트 비율
+                    log.info("회원 ID: {}, 등급: {}, 포인트 비율: {}%", mid, memberGrade.name(), pointRate);
+
+                    // 결제 금액을 포인트로 환산하여 적립
+                    BigDecimal pointsToAdd = finalAmount.multiply(BigDecimal.valueOf(pointRate))
+                            .divide(BigDecimal.valueOf(100));  // 포인트 계산
+
+                    log.info("결제 금액: {}원 -> 포인트 적립: {}원 (포인트 비율: {}%)", finalAmount, pointsToAdd, pointRate);
+
+                    // 포인트 적립
+                    pointService.addPoints(mid, pointsToAdd);
+                    log.info("회원 {}에게 {} 포인트 적립 완료", mid, pointsToAdd);
+
+                    // 4. 경매 처리
                     BidItem bidItem = orderService.getBidItemByOrderId(orderId);
                     String bidItemId = bidItem.getBidItemId();
                     long bidNowPrice = bidItem.getMaxPrice();
-                    Member member = memberService.findMemberByMid(principal.getName());
-                    Long mid = member.getId();
-
                     bidService.saveBid(bidItemId, mid, bidNowPrice, "Y");
                     bidItemService.updateItemStatuses();
 
-                    pointService.addPoints(member.getId(), payment.getAmount());
                     return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿
                 } catch (Exception e) {
-                    return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿
+                    log.error("결제 처리 중 예외 발생", e);
+                    return new ResponseEntity<>("fail", HttpStatus.OK);  // 예외 발생 시 실패 처리
                 }
-
             } else {
                 // 결제 실패 처리
                 log.info("결제 실패 - 주문 번호: {}, 상태: {}", payment.getMerchantUid(), payment.getStatus());
-//                model.addAttribute("errorMessage", "결제 실패 또는 결제 정보가 유효하지 않습니다.");
                 return new ResponseEntity<>("fail", HttpStatus.OK);  // 결제 실패 템플릿
             }
         } else {
@@ -90,6 +153,8 @@ public class PaymentController {
             return new ResponseEntity<>("invalid", HttpStatus.OK);
         }
     }
+
+
 
     @RequestMapping(value = "/{orderId}/refund", method = RequestMethod.POST)
     public ResponseEntity<String> refundOrder(@PathVariable Long orderId, @RequestParam String reason, @RequestParam String merchantUid) {
@@ -145,6 +210,7 @@ public class PaymentController {
             // 모델에 데이터 추가
             model.addAttribute("order", order);
             model.addAttribute("orderItems", orderItems);
+            model.addAttribute("member", order.getMember());
 
             return "payment/paymentP";  // 결제 페이지 반환
         } catch (Exception e) {

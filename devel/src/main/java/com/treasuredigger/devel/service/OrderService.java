@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.treasuredigger.devel.dto.OrderHistDto;
 import com.treasuredigger.devel.dto.OrderItemDto;
@@ -181,5 +182,14 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with id " + orderId));
         order.setOrderStatus(newStatus);
         orderRepository.save(order);
+    }
+
+    public Order getOrderById(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isPresent()) {
+            return orderOptional.get();  // 존재하면 반환
+        } else {
+            throw new IllegalArgumentException("주문을 찾을 수 없습니다. 주문 ID: " + orderId);  // 예외 처리
+        }
     }
 }

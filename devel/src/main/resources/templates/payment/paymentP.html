@@ -23,6 +23,7 @@
       background-size: 40px 40px;
       background-position: 0 0, 20px;
     }
+
     .container {
       background-color: white;
       width: 80%;
@@ -31,29 +32,35 @@
       border-radius: 8px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
+
     h1 {
       color: #333;
       text-align: center;
       margin-bottom: 30px;
     }
+
     h2, h3 {
       color: #555;
       border-bottom: 1px solid #ddd;
       padding-bottom: 10px;
       margin-bottom: 20px;
     }
+
     .order-info, .order-items {
       margin-bottom: 30px;
     }
+
     .order-info p, .order-items p {
       color: #666;
       margin: 5px 0;
     }
+
     .order-items {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
+
     .order-item-card {
       background-color: #f9f9f9;
       padding: 15px;
@@ -63,29 +70,35 @@
       justify-content: space-between;
       align-items: center;
     }
+
     .order-item-card div {
       flex: 1;
       text-align: center;
       font-size: 0.9em;
     }
+
     .order-item-card .item-name {
       font-weight: bold;
       color: #333;
     }
+
     .order-item-card .item-price, .order-item-card .item-total {
       color: #007bff;
     }
+
     .total-amount {
       text-align: center;
       color: #333;
       font-size: 1.2em;
       margin-bottom: 30px;
     }
+
     .payment-buttons {
       display: flex;
       justify-content: center; /* 중앙 정렬 */
       gap: 20px; /* 버튼 간격 조정 */
     }
+
     .payment-button {
       background-color: transparent; /* 배경색 제거 */
       border: none; /* 테두리 제거 */
@@ -103,6 +116,7 @@
       height: auto;
       transition: transform 0.3s, filter 0.3s; /* 이미지 애니메이션 */
     }
+
     .payment-button:hover {
       transform: scale(1.05); /* 버튼이 약간 확대 */
       filter: brightness(1.1); /* 밝기를 10% 증가 */
@@ -112,6 +126,22 @@
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 추가 */
       border-radius: 8px; /* 이미지 가장자리 부드럽게 */
     }
+
+    .point-section {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .point-section input {
+      width: 100%;
+      max-width: 200px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1em;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
   </style>
 </head>
 <body>
@@ -121,7 +151,6 @@
   <!-- 주문 정보 출력 -->
   <div class="order-items">
     <h2>주문 항목</h2>
-    <!-- 제목 행 추가 -->
     <div class="order-item-card" style="font-weight: bold; background-color: #e9e9e9;">
       <div style="flex: 2;">상품명</div>
       <div style="flex: 1;">상품 가격</div>
@@ -142,10 +171,18 @@
   <div class="total-amount">
     <h3>총 금액: <span id="totalAmount" th:text="${order.totalAmount}"></span></h3>
   </div>
+
+  <!-- 포인트 사용 입력 -->
+  <div class="point-section">
+    <label for="usePoints">포인트 사용</label>
+    <input type="number" id="usePoints" placeholder="사용할 포인트를 입력하세요" min="0" max="[[${member.points}]]" />
+    <p>보유 포인트: [[${member.points}]] 포인트</p>
+  </div>
+
   <!-- 결제 버튼 -->
   <div class="payment-buttons">
     <button id="inicisPay" class="payment-button" onclick="handlePayment('html5_inicis.INIpayTest')">
-      <img src="/images/kginicis.png"alt="inicis logo">
+      <img src="/images/kginicis.png" alt="inicis logo">
     </button>
     <button id="kakaoPay" class="payment-button" onclick="handlePayment('kakaopay')">
       <img src="/images/kakaopay.png" alt="kakao logo">
@@ -157,6 +194,23 @@
   var IMP = window.IMP;
   IMP.init("imp14351567");  // 아임포트 가맹점 코드
 
+  // 총 결제 금액 계산 함수
+  function updateTotalAmount() {
+    var totalAmount = parseInt("[[${order.totalAmount}]]");
+    var usePoints = parseInt(document.getElementById("usePoints").value) || 0;
+
+    // 포인트 사용 후 총 금액 계산
+    totalAmount = totalAmount - usePoints;
+
+    // 총 금액을 페이지에 업데이트
+    document.getElementById("totalAmount").textContent = totalAmount.toLocaleString() + " 원";
+  }
+
+  // 포인트 사용 시 총 금액 업데이트
+  document.getElementById("usePoints").addEventListener("input", function() {
+    updateTotalAmount();
+  });
+
   function handlePayment(pg) {
     console.log("handlePayment", pg);
     $(document).ready(function() {
@@ -164,8 +218,8 @@
       var header = $("meta[name='_csrf_header']").attr("content");
 
       var orderId = "[[${order.id}]]";
-      var totalAmount = "[[${order.totalAmount}]]";
-      totalAmount = Number(totalAmount);
+      var totalAmount = parseInt(document.getElementById("totalAmount").textContent.replace(/[^\d]/g, ''));  // 실시간으로 계산된 총 금액
+      var usePoints = parseInt(document.getElementById("usePoints").value) || 0;
 
       IMP.request_pay({
         pg: pg,
@@ -175,7 +229,8 @@
         amount: totalAmount,
         buyer_name: "[[${order.member.name}]]",
         buyer_tel: "[[${order.member.phone}]]",
-        buyer_email: "[[${order.member.email}]]"
+        buyer_email: "[[${order.member.email}]]",
+        custom_data: { usePoints: usePoints }  // 서버에 포인트 사용 정보를 전달
       }, function (rsp) {
         if (rsp.success) {
           alert("결제 완료!");
@@ -183,7 +238,7 @@
           $.ajax({
             type: 'POST',
             url: '/payments/validation/' + orderId,
-            data:{imp_uid:rsp.imp_uid},
+            data:{imp_uid:rsp.imp_uid, usePoints: usePoints},
             beforeSend: function(xhr) {
               xhr.setRequestHeader(header, token);
             },
@@ -209,19 +264,18 @@
       });
     });
   }
+
   document.addEventListener("DOMContentLoaded", function() {
-    // 모든 금액 요소를 포맷팅
-    document.querySelectorAll(".item-price, .item-total, #totalAmount").forEach(function(element) {
-      const text = element.textContent.replace(/[^\d]/g, ''); // 숫자만 추출
-      element.textContent = Number(text).toLocaleString() + ' 원'; // 숫자를 포맷팅하여 콤마 추가
-    });
+    // 페이지 로딩 시 기본 금액 표시
+    updateTotalAmount();
   });
+
   function redirectToOrders() {
-  if (window.opener) {
-    window.opener.location.href = "/orders"; // 부모 창 이동
+    if (window.opener) {
+      window.opener.location.href = "/orders";
+    }
+    window.close();
   }
-  window.close(); // 현재 창 닫기
-}
 </script>
 </body>
 </html>
