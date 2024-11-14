@@ -34,8 +34,8 @@ dependencies {
 	implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '3.0.3'
 
 	// Database
-	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'  // MariaDB JDBC 드라이버
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'          // MariaDB runtime 의존성
+	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
 	// JPA and QueryDSL
 	implementation 'org.projectlombok:lombok:1.18.26'
@@ -86,7 +86,10 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
-// Spring Boot plugin 설정
+bootWar {
+	enabled = true
+}
+
 bootJar {
-	exclude('org/projectlombok/lombok')
+	enabled = false
 }
