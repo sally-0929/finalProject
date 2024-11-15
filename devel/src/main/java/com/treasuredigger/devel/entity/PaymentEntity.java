@@ -2,6 +2,7 @@ package com.treasuredigger.devel.entity;
 
 import com.treasuredigger.devel.constant.PaymentStatus;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -93,19 +94,6 @@ public class PaymentEntity {
 
     public String getMerchantUid(){
         return merchantUid;
-    }
-
-    // toString 메서드 (디버깅 및 로그용)
-    @Override
-    public String toString() {
-        return "PaymentEntity{" +
-                "id=" + id +
-                ", order=" + order +
-                ", amount=" + amount +
-                ", paymentStatus=" + paymentStatus +
-                ", paymentDate=" + paymentDate +
-                ", merchantUid='" + merchantUid + '\'' +
-                '}';
     }
 
     public void cancelPayment() {

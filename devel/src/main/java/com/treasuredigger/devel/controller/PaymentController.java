@@ -86,8 +86,6 @@ public class PaymentController {
                             return new ResponseEntity<>("fail", HttpStatus.OK);  // 포인트 부족
                         }
 
-                        // 결제 금액에서 포인트 차감
-                        finalAmount = finalAmount.subtract(usePoints);  // 포인트만큼 차감한 금액
                         member.deductPoints(usePoints.intValue());  // 포인트 차감
 
                         log.info("포인트 사용: {}원, 결제 금액 차감 후 금액: {}", usePoints, finalAmount);
@@ -129,12 +127,16 @@ public class PaymentController {
                     pointService.addPoints(mid, pointsToAdd);
                     log.info("회원 {}에게 {} 포인트 적립 완료", mid, pointsToAdd);
 
-                    // 4. 경매 처리
-                    BidItem bidItem = orderService.getBidItemByOrderId(orderId);
-                    String bidItemId = bidItem.getBidItemId();
-                    long bidNowPrice = bidItem.getMaxPrice();
-                    bidService.saveBid(bidItemId, mid, bidNowPrice, "Y");
-                    bidItemService.updateItemStatuses();
+                    // 경매 처리 부분: 경매 상품이면 BidItem 처리, 일반 상품은 처리하지 않음
+                    for (OrderItem orderItem : order.getOrderItems()) {
+                        if (orderItem.isBidItem()) {
+                            BidItem bidItem = orderItem.getBiditem();
+                            String bidItemId = bidItem.getBidItemId();
+                            long bidNowPrice = bidItem.getMaxPrice();
+                            bidService.saveBid(bidItemId, mid, bidNowPrice, "Y");
+                            bidItemService.updateItemStatuses();
+                        }
+                    }
 
                     return new ResponseEntity<>("success", HttpStatus.OK);  // 결제 성공 템플릿
                 } catch (Exception e) {
@@ -153,8 +155,6 @@ public class PaymentController {
             return new ResponseEntity<>("invalid", HttpStatus.OK);
         }
     }
-
-
 
     @RequestMapping(value = "/{orderId}/refund", method = RequestMethod.POST)
     public ResponseEntity<String> refundOrder(@PathVariable Long orderId, @RequestParam String reason, @RequestParam String merchantUid) {
@@ -228,11 +228,13 @@ public class PaymentController {
             Order order = orderRepository.findById(orderId)
                     .orElseThrow(() -> new IllegalArgumentException("주문 정보를 찾을 수 없습니다."));
 
-            // 결제 처리 (예: 123 금액으로 결제 처리)
-            paymentService.processOrderPayment(orderId);
+            // 해당 주문에 대한 PaymentEntity 조회
+            PaymentEntity paymentEntity = paymentRepository.findByOrderId(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("결제 정보가 없습니다."));
 
             // 모델에 주문 정보 추가
             model.addAttribute("order", order);
+            model.addAttribute("payment", paymentEntity);
 
             // 주문 확인 페이지로 이동
             return "payment/paymentSuccess";  // 결제 성공 페이지

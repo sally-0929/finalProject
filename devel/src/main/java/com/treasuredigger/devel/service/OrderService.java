@@ -99,7 +99,10 @@ public class OrderService {
         List<OrderHistDto> orderHistDtos = new ArrayList<>();
 
         for (Order order : orders) {
+            // Order 객체를 기반으로 OrderHistDto 생성
             OrderHistDto orderHistDto = new OrderHistDto(order);
+
+            // 주문 항목 처리
             List<OrderItem> orderItems = order.getOrderItems();
             for (OrderItem orderItem : orderItems) {
                 if (orderItem.getItem() != null) {
@@ -112,16 +115,17 @@ public class OrderService {
                     orderHistDto.addOrderItemDto(orderItemDto);
                 } else {
                     // 둘 다 null인 경우 처리 (필요에 따라 로깅 또는 예외 처리 추가 가능)
-                    // 예를 들어, 로깅
-                    // log.warn("OrderItem has neither Item nor BidItem: " + orderItem.getId());
                 }
             }
+
+            // 주문에 대한 결제 정보가 이미 Order 객체에 포함되어 있으므로, OrderHistDto에 결제 정보 추가됨
             orderHistDtos.add(orderHistDto);
             System.out.println("orderHistDto" + orderHistDto.toString());
         }
 
         return new PageImpl<>(orderHistDtos, pageable, totalCount);
     }
+
 
     @Transactional(readOnly = true)
     public boolean validateOrder(Long orderId, String mid){

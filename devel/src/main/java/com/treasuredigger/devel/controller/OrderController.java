@@ -1,6 +1,8 @@
 package com.treasuredigger.devel.controller;
 
 import com.treasuredigger.devel.dto.OrderDto;
+import com.treasuredigger.devel.entity.OrderItem;
+import com.treasuredigger.devel.entity.PaymentEntity;
 import com.treasuredigger.devel.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,17 +58,31 @@ public class OrderController {
     }
 
     @GetMapping(value = {"/orders", "/orders/{page}"})
-    public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model){
+    public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model) {
         System.out.println("prin value" + principal.getName());
 
+        // 페이지 정보 설정
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 20);
+
+        // 주문 내역과 결제 정보 가져오기
         Page<OrderHistDto> ordersHistDtoList = orderService.getOrderList(principal.getName(), pageable);
         System.out.println("orderHist" + ordersHistDtoList.toString());
 
+        // 모델에 주문 내역과 결제 정보 추가
         model.addAttribute("orders", ordersHistDtoList);
         model.addAttribute("page", pageable.getPageNumber());
         model.addAttribute("maxPage", 5);
         model.addAttribute("orderStatusOrder", com.treasuredigger.devel.constant.OrderStatus.ORDER);
+
+        // 결제 정보도 모델에 포함
+        ordersHistDtoList.forEach(orderHistDto -> {
+            PaymentEntity payment = orderHistDto.getPaymentEntity();
+//            model.addAttribute("payment_" + orderHistDto.getOrderId(), payment); // 개별 주문에 대해 결제 정보 모델에 추가
+            System.out.println("------------------------");
+            System.out.println(orderHistDto.getOrderId());
+            System.out.println(payment);
+        });
+
         return "order/orderHist";
     }
 

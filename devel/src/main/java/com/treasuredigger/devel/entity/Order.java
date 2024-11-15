@@ -63,9 +63,6 @@ public class Order extends BaseEntity {
         order.setTotalAmount(order.getTotalPrice());
         order.setMerchantUid(merchantUid); // merchantUid 설정
 
-        System.out.print("yyyyyyyyyyyyyyyyyyyyy" + order.getCreatedBy());
-        System.out.print("yyyyyyyyyyyyyyyyyyyyy" + order.getModifiedBy());
-
         return order;
     }
 
@@ -118,5 +115,12 @@ public class Order extends BaseEntity {
                 ", payments=" + payments.size() + " payments" +  // payments의 개수만 표시
                 '}';
     }
+    public PaymentEntity getPayment() {
+        if (this.payments != null && !this.payments.isEmpty()) {
+            return this.payments.get(0);  // 첫 번째 결제 반환
+        }
+        return null;  // 결제 내역이 없으면 null 반환
+    }
+
 }
 

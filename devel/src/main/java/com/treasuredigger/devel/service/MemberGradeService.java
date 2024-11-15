@@ -73,14 +73,6 @@ public class MemberGradeService {
         };
     }
 
-//    public MemberGradeStatus getMemberGradeStatus(Member member) {
-//        MemberGrade memberGrade = memberGradeRepository.findByMember(member); // MemberGrade 조회
-//        if (memberGrade != null) {
-//            return memberGrade.getMemberGradeStatus();
-//        }
-//        return MemberGradeStatus.NORMAL; // 기본 값
-//    }
-
     public MemberGradeDto getMemberGrade(Long memberId) {
         return memberMapper.getMemberGrade(memberId);
     }

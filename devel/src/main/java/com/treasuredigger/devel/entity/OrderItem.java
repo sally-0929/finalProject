@@ -58,7 +58,11 @@ public class OrderItem extends BaseEntity {
         }else if(this.getBiditem() != null){
 
         }
+    }
 
+    // 경매 상품인지 일반 상품인지 확인하는 메서드
+    public boolean isBidItem() {
+        return biditem != null;
     }
 
 }

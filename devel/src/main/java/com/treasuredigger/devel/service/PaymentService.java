@@ -76,7 +76,6 @@ public class PaymentService {
         paymentEntity.setMerchantUid(order.getMerchantUid());  // 주문의 merchantUid를 결제 정보에 설정
 
         // 결제 내역 저장
-        paymentRepository.save(paymentEntity);
         log.info("결제 정보 저장 완료. 결제 ID: {}", paymentEntity.getId());
 
         // 주문에 결제 정보 추가 (주문 객체에 결제 내역 연결)

@@ -28,8 +28,6 @@ public class PointService {
 
             member.addPoints(pointAmount);  // 포인트를 증가
 
-            System.out.println("sssssssssssssss" + pointAmount);
-
             memberRepository.save(member);  // 변경된 회원 정보 저장
         } else {
             throw new IllegalArgumentException("포인트는 0보다 큰 값이어야 합니다.");
