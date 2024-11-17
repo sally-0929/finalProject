@@ -462,8 +462,12 @@
                             <div class="fs15 font-weight-bold">
                                 <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
                                 <span th:text="${orderItem.count} + '개'"></span><br>
-                                원래 금액 : <span th:text="${orderItem.orderPrice}*${orderItem.count} + '원'"></span><br>
-                                포인트 사용 후 결제 금액 : <span class="order-price" th:text="${order.paymentEntity.amount} + '원'"></span>
+
+                                <!-- 결제 대기 중 상태일 경우 '원래 금액'과 '포인트 사용 후 결제 금액'을 숨김 -->
+                                <span th:if="${order.orderStatus != T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
+                    원래 금액 : <span th:text="${orderItem.orderPrice}*${orderItem.count} + '원'"></span><br>
+                    포인트 사용 후 결제 금액 : <span class="order-price" th:text="${order.paymentEntity.amount} + '원'"></span>
+                </span>
                             </div>
                         </a>
                         <a th:unless="${order.orderStatus == orderStatusOrder}" th:href="@{'/item/' + ${orderItem.itemId}}" style="text-decoration: none; color: inherit;">
@@ -472,11 +476,16 @@
                             <div class="fs15 font-weight-bold">
                                 <span class="order-price" th:text="${orderItem.orderPrice} + '원'"></span>
                                 <span th:text="${orderItem.count} + '개'"></span><br>
-                                원래 금액 : <span th:text="${orderItem.orderPrice}*${orderItem.count} + '원'"></span><br>
-                                포인트 사용 후 결제 금액 : <span class="order-price" th:text="${order.paymentEntity.amount} + '원'"></span>
+
+                                <!-- 결제 대기 중 상태일 경우 '원래 금액'과 '포인트 사용 후 결제 금액'을 숨김 -->
+                                <span th:if="${order.orderStatus != T(com.treasuredigger.devel.constant.OrderStatus).ORDER}">
+                    원래 금액 : <span th:text="${orderItem.orderPrice}*${orderItem.count} + '원'"></span><br>
+                    포인트 사용 후 결제 금액 : <span class="order-price" th:text="${order.paymentEntity.amount} + '원'"></span>
+                </span>
                             </div>
                         </a>
                     </div>
+
                     <div th:if="${orderItem.itemId == null}">
                         <a th:if="${order.orderStatus == orderStatusOrder}"
                            th:href="@{'/payments/paymentP?orderId=' + ${orderItem.orderId}}"
@@ -497,6 +506,7 @@
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
